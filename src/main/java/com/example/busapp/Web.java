@@ -7,7 +7,13 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 public class Web {
+    static JSONParser parser = new JSONParser();
     public Web() {
 
     }
@@ -33,5 +39,8 @@ public class Web {
         URL url = new URL(webURL);
         InputStream is =  url.openStream();
         return readInStream(is);
+    }
+    public static JSONObject readJSON(String json) throws ParseException {
+        return (JSONObject) parser.parse(json);
     }
 }
