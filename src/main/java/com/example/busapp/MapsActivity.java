@@ -5,11 +5,16 @@ import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.JsonReader;
+import android.view.View;
+import android.widget.Button;
 
+import com.google.android.gms.dynamic.IObjectWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.busapp.databinding.ActivityMapsBinding;
@@ -19,6 +24,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +34,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Pattern;
+import java.util.Random;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -49,7 +56,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-    //ee
 
     /**
      * Manipulates the map once available.
@@ -64,9 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String[] l = json.split(Pattern.quote("{"));
         System.out.println(Arrays.toString(l));
     }
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void showBusLocations() {
         try {
             String data = Web.readFromWeb("https://s3.amazonaws.com/kcm-alerts-realtime-prod/vehiclepositions_pb.json");
             JSONObject o = Web.readJSON(data);
@@ -76,10 +80,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 JSONObject jj = iterator.next();
                 JSONObject vehicle = (JSONObject) jj.get("vehicle");
                 JSONObject pos = (JSONObject) vehicle.get("position");
+                JSONObject trip = (JSONObject) vehicle.get("trip");
                 System.out.println(pos.get("latitude"));
                 if (pos.get("latitude") != null) {
                     LatLng bus = new LatLng((double) pos.get("latitude"), (double) pos.get("longitude"));
-                    mMap.addMarker(new MarkerOptions().position(bus).title("Bus"));
+                    MarkerOptions BusMarker = new MarkerOptions();
+                    BusMarker.position(bus);
+                    Random r = new Random();
+                    BusMarker.icon(BitmapDescriptorFactory.defaultMarker(new Random().nextInt(360)));
+                    BusMarker.title("Route " + trip.get("route_id"));
+                    mMap.addMarker(BusMarker);
                 }
             }
         } catch (IOException e) {
@@ -87,6 +97,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        showBusLocations();
+        Button oval = (Button)findViewById(R.id.oval);
+        /*Button button = findViewById(R.id.button_send);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("button");
+            }
+        });*/
+
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(47.7318, -122.3274);
