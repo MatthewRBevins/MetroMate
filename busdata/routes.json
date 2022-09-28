@@ -1,0 +1,832 @@
+{
+    "100001": {
+        "short_name": "1",
+        "description": "Kinnear - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/001/n0.html"
+    },
+    "100002": {
+        "short_name": "10",
+        "description": "Capitol Hill - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/010/n0.html"
+    },
+    "100003": {
+        "short_name": "101",
+        "description": "Renton Transit Center - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/101/n0.html"
+    },
+    "100004": {
+        "short_name": "105",
+        "description": "Renton Highlands - Renton Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/105/n0.html"
+    },
+    "100005": {
+        "short_name": "106",
+        "description": "Renton Transit Center - Skyway - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/106/n0.html"
+    },
+    "100006": {
+        "short_name": "107",
+        "description": "Renton Transit Center - Rainier Beach",
+        "url": "http://metro.kingcounty.gov/schedules/107/n0.html"
+    },
+    "100009": {
+        "short_name": "11",
+        "description": "Madison Park - Capitol Hill - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/011/n0.html"
+    },
+    "100011": {
+        "short_name": "111",
+        "description": "Lake Kathleen - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/111/n0.html"
+    },
+    "100012": {
+        "short_name": "113",
+        "description": "Shorewood - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/113/n0.html"
+    },
+    "100013": {
+        "short_name": "114",
+        "description": "Renton Highlands - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/114/n0.html"
+    },
+    "100016": {
+        "short_name": "118",
+        "description": "Tahlequah - Vashon - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/118/n0.html"
+    },
+    "100017": {
+        "short_name": "119",
+        "description": "Dockton - Vashon - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/119/n0.html"
+    },
+    "100018": {
+        "short_name": "12",
+        "description": "Interlaken Park - First Hill - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/012/n0.html"
+    },
+    "100019": {
+        "short_name": "120",
+        "description": "Burien TC - Westwood Village - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/120/n0.html"
+    },
+    "100020": {
+        "short_name": "121",
+        "description": "Highline Coll-Marine Vw-BurienTC-Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/121/n0.html"
+    },
+    "100023": {
+        "short_name": "124",
+        "description": "Tukwila International Blvd Sta - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/124/n0.html"
+    },
+    "100024": {
+        "short_name": "125",
+        "description": "Westwood Vill - S Seattle Coll - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/125/n0.html"
+    },
+    "100026": {
+        "short_name": "128",
+        "description": "Southcenter - Alaska Junction - Admiral District",
+        "url": "http://metro.kingcounty.gov/schedules/128/n0.html"
+    },
+    "100028": {
+        "short_name": "13",
+        "description": "Seattle Pacific - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/013/n0.html"
+    },
+    "100030": {
+        "short_name": "131",
+        "description": "Burien TC - Georgetown - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/131/n0.html"
+    },
+    "100031": {
+        "short_name": "132",
+        "description": "Burien TC - South Park - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/132/n0.html"
+    },
+    "100039": {
+        "short_name": "14",
+        "description": "Mt Baker - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/014/n0.html"
+    },
+    "100042": {
+        "short_name": "148",
+        "description": "Fairwood - Renton Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/148/n0.html"
+    },
+    "100044": {
+        "short_name": "15",
+        "description": "Blue Ridge - Crown Hill - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/015/n0.html"
+    },
+    "100045": {
+        "short_name": "150",
+        "description": "Kent Station - Southcenter - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/150/n0.html"
+    },
+    "100048": {
+        "short_name": "153",
+        "description": "Kent Sounder Station - Renton Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/153/n0.html"
+    },
+    "100059": {
+        "short_name": "167",
+        "description": "South Renton P&R - University District",
+        "url": "http://metro.kingcounty.gov/schedules/167/n0.html"
+    },
+    "100060": {
+        "short_name": "168",
+        "description": "Maple Valley - Kent Sounder Station",
+        "url": "http://metro.kingcounty.gov/schedules/168/n0.html"
+    },
+    "100062": {
+        "short_name": "17",
+        "description": "Loyal Heights-Sunset Hill-Ballard-Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/017/n0.html"
+    },
+    "100068": {
+        "short_name": "177",
+        "description": "Federal Way S 320th P&R - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/177/n0.html"
+    },
+    "100071": {
+        "short_name": "18",
+        "description": "North Beach - Ballard - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/018/n0.html"
+    },
+    "100072": {
+        "short_name": "181",
+        "description": "Twin Lakes P&R - Auburn Station - Green River Coll",
+        "url": "http://metro.kingcounty.gov/schedules/181/n0.html"
+    },
+    "100073": {
+        "short_name": "182",
+        "description": "Northeast Tacoma - Federal Way TC",
+        "url": "http://metro.kingcounty.gov/schedules/182/n0.html"
+    },
+    "100074": {
+        "short_name": "183",
+        "description": "Federal Way TC - Star Lake - Kent Station",
+        "url": "http://metro.kingcounty.gov/schedules/183/n0.html"
+    },
+    "100078": {
+        "short_name": "187",
+        "description": "Federal Way - Twin Lakes",
+        "url": "http://metro.kingcounty.gov/schedules/187/n0.html"
+    },
+    "100082": {
+        "short_name": "190",
+        "description": "Redondo Heights P&R - Star Lake - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/190/n0.html"
+    },
+    "100089": {
+        "short_name": "2",
+        "description": "West Queen Anne - Downtown Seattle - Madrona Park",
+        "url": "http://metro.kingcounty.gov/schedules/002/n0.html"
+    },
+    "100099": {
+        "short_name": "208",
+        "description": "North Bend - Issaquah Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/208/n0.html"
+    },
+    "100101": {
+        "short_name": "21",
+        "description": "Arbor Heights-Westwood Village-Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/021/n0.html"
+    },
+    "100104": {
+        "short_name": "212",
+        "description": "Eastgate P&R - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/212/n0.html"
+    },
+    "100106": {
+        "short_name": "214",
+        "description": "Issaquah - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/214/n0.html"
+    },
+    "100108": {
+        "short_name": "216",
+        "description": "Bear Creek P&R - Sammamish - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/216/n0.html"
+    },
+    "100109": {
+        "short_name": "217",
+        "description": "Downtown Seattle - North Issaquah",
+        "url": "http://metro.kingcounty.gov/schedules/217/n0.html"
+    },
+    "100111": {
+        "short_name": "22",
+        "description": "Westwood Villge-Shorewood-Gatewood-Alaska Junction",
+        "url": "http://metro.kingcounty.gov/schedules/022/n0.html"
+    },
+    "100113": {
+        "short_name": "221",
+        "description": "Education Hill - Crossroads - Eastgate",
+        "url": "http://metro.kingcounty.gov/schedules/221/n0.html"
+    },
+    "100124": {
+        "short_name": "232",
+        "description": "Duvall - Redmond TC - Overlake - Bellevue TC",
+        "url": "http://metro.kingcounty.gov/schedules/232/n0.html"
+    },
+    "100129": {
+        "short_name": "237",
+        "description": "Woodinville P&R - Bellevue TC",
+        "url": "http://metro.kingcounty.gov/schedules/237/n0.html"
+    },
+    "100132": {
+        "short_name": "24",
+        "description": "West Magnolia - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/024/n0.html"
+    },
+    "100133": {
+        "short_name": "240",
+        "description": "Bellevue Transit Center - Renton Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/240/n0.html"
+    },
+    "100136": {
+        "short_name": "245",
+        "description": "Kirkland Transit Center - Crossroads - Factoria",
+        "url": "http://metro.kingcounty.gov/schedules/245/n0.html"
+    },
+    "100137": {
+        "short_name": "246",
+        "description": "Eastgate P&R-Somerset-Bellevue TC-Clyde Hill",
+        "url": "http://metro.kingcounty.gov/schedules/246/n0.html"
+    },
+    "100139": {
+        "short_name": "249",
+        "description": "Overlake - South Bellevue Station",
+        "url": "http://metro.kingcounty.gov/schedules/249/n0.html"
+    },
+    "100146": {
+        "short_name": "255",
+        "description": "Totem Lake TC-Kirkand TC-UW Link Sta-Univ Dist",
+        "url": "http://metro.kingcounty.gov/schedules/255/n0.html"
+    },
+    "100148": {
+        "short_name": "257",
+        "description": "Brickyard P&R - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/257/n0.html"
+    },
+    "100159": {
+        "short_name": "268",
+        "description": "Redmond - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/268/n0.html"
+    },
+    "100160": {
+        "short_name": "269",
+        "description": "Issaquah Transit Center - Overlake P&R",
+        "url": "http://metro.kingcounty.gov/schedules/269/n0.html"
+    },
+    "100161": {
+        "short_name": "27",
+        "description": "Colman Park - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/027/n0.html"
+    },
+    "100162": {
+        "short_name": "271",
+        "description": "Issaquah - University District",
+        "url": "http://metro.kingcounty.gov/schedules/271/n0.html"
+    },
+    "100169": {
+        "short_name": "28",
+        "description": "Whittier Heights - Fremont - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/028/n0.html"
+    },
+    "100173": {
+        "short_name": "3",
+        "description": "North Queen Anne - Downtown Seattle - Madrona",
+        "url": "http://metro.kingcounty.gov/schedules/003/n0.html"
+    },
+    "100175": {
+        "short_name": "301",
+        "description": "Aurora Vill TC -Shoreline P&R -Northgate Station",
+        "url": "http://metro.kingcounty.gov/schedules/301/n0.html"
+    },
+    "100177": {
+        "short_name": "303",
+        "description": "Aurora Village - Northgate Station - First Hill",
+        "url": "http://metro.kingcounty.gov/schedules/303/n0.html"
+    },
+    "100178": {
+        "short_name": "304",
+        "description": "Shoreline P&R - Northgate Station",
+        "url": "http://metro.kingcounty.gov/schedules/304/n0.html"
+    },
+    "100184": {
+        "short_name": "31",
+        "description": "Children's Hospital - Fremont - Central Magnolia",
+        "url": "http://metro.kingcounty.gov/schedules/031/n0.html"
+    },
+    "100186": {
+        "short_name": "311",
+        "description": "Woodinville - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/311/n0.html"
+    },
+    "100193": {
+        "short_name": "32",
+        "description": "Children's Hospital - Fremont -Seattle Center West",
+        "url": "http://metro.kingcounty.gov/schedules/032/n0.html"
+    },
+    "100194": {
+        "short_name": "33",
+        "description": "Discovery Park - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/033/n0.html"
+    },
+    "100195": {
+        "short_name": "330",
+        "description": "Shoreline Community College - Lake City",
+        "url": "http://metro.kingcounty.gov/schedules/330/n0.html"
+    },
+    "100196": {
+        "short_name": "331",
+        "description": "Shoreline Comm Coll-Aurora Village TC-Kenmore P&R",
+        "url": "http://metro.kingcounty.gov/schedules/331/n0.html"
+    },
+    "100201": {
+        "short_name": "342",
+        "description": "Shoreline P&R - Renton TC",
+        "url": "http://metro.kingcounty.gov/schedules/342/n0.html"
+    },
+    "100202": {
+        "short_name": "345",
+        "description": "Shoreline Community College - Northgate Station",
+        "url": "http://metro.kingcounty.gov/schedules/345/n0.html"
+    },
+    "100203": {
+        "short_name": "346",
+        "description": "Aurora Village TC - Northgate Station",
+        "url": "http://metro.kingcounty.gov/schedules/346/n0.html"
+    },
+    "100204": {
+        "short_name": "347",
+        "description": "Mountlake Terrace - Northgate Station",
+        "url": "http://metro.kingcounty.gov/schedules/347/n0.html"
+    },
+    "100205": {
+        "short_name": "348",
+        "description": "Richmond Beach - Shoreline - Northgate Station",
+        "url": "http://metro.kingcounty.gov/schedules/348/n0.html"
+    },
+    "100210": {
+        "short_name": "36",
+        "description": "Othello Station - Beacon Hill - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/036/n0.html"
+    },
+    "100214": {
+        "short_name": "372",
+        "description": "UW/Cascadia College - University District",
+        "url": "http://metro.kingcounty.gov/schedules/372/n0.html"
+    },
+    "100219": {
+        "short_name": "4",
+        "description": "East Queen Anne - Downtown Seattle - Judkins Park",
+        "url": "http://metro.kingcounty.gov/schedules/004/n0.html"
+    },
+    "100223": {
+        "short_name": "43",
+        "description": "Univ Dist-Montlake-Capitol Hill-Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/043/n0.html"
+    },
+    "100224": {
+        "short_name": "44",
+        "description": "Ballard - Montlake",
+        "url": "http://metro.kingcounty.gov/schedules/044/n0.html"
+    },
+    "100225": {
+        "short_name": "45",
+        "description": "Loyal Heights - University District",
+        "url": "http://metro.kingcounty.gov/schedules/045/n0.html"
+    },
+    "100228": {
+        "short_name": "48",
+        "description": "Mt Baker - University District",
+        "url": "http://metro.kingcounty.gov/schedules/048/n0.html"
+    },
+    "100229": {
+        "short_name": "5",
+        "description": "Shoreline CC - Greenwood - Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/005/n0.html"
+    },
+    "100230": {
+        "short_name": "50",
+        "description": "West Seattle - SODO - Beacon Hill - Columbia City",
+        "url": "http://metro.kingcounty.gov/schedules/050/n0.html"
+    },
+    "100232": {
+        "short_name": "522",
+        "description": "Woodinville - Roosevelt Link Station",
+        "url": "http://www.soundtransit.org/Schedules/ST-Express-Bus/522"
+    },
+    "100236": {
+        "short_name": "545",
+        "description": "Redmond - Seattle",
+        "url": "http://www.soundtransit.org/Schedules/ST-Express-Bus/545"
+    },
+    "100238": {
+        "short_name": "55",
+        "description": "Admiral District-Alaska Junction-Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/055/n0.html"
+    },
+    "100239": {
+        "short_name": "550",
+        "description": "Bellevue - Seattle",
+        "url": "http://www.soundtransit.org/Schedules/ST-Express-Bus/550"
+    },
+    "100240": {
+        "short_name": "554",
+        "description": "Issaquah - Seattle",
+        "url": "http://www.soundtransit.org/Schedules/ST-Express-Bus/554"
+    },
+    "100242": {
+        "short_name": "56",
+        "description": "Alki - Admiral District - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/056/n0.html"
+    },
+    "100246": {
+        "short_name": "57",
+        "description": "Alaska Junction - Genesee Hill - Admiral District",
+        "url": "http://metro.kingcounty.gov/schedules/057/n0.html"
+    },
+    "100249": {
+        "short_name": "60",
+        "description": "Westwood Village - Georgetown - Broadway",
+        "url": "http://metro.kingcounty.gov/schedules/060/n0.html"
+    },
+    "100252": {
+        "short_name": "62",
+        "description": "Sand Point - Green Lake - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/062/n0.html"
+    },
+    "100253": {
+        "short_name": "64",
+        "description": "Lake City - Univ Dist - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/064/n0.html"
+    },
+    "100254": {
+        "short_name": "65",
+        "description": "Lake City  - University District",
+        "url": "http://metro.kingcounty.gov/schedules/065/n0.html"
+    },
+    "100259": {
+        "short_name": "67",
+        "description": "Northgate - Roosevelt - University District",
+        "url": "http://metro.kingcounty.gov/schedules/067/n0.html"
+    },
+    "100263": {
+        "short_name": "7",
+        "description": "Prentice St - Rainier Beach - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/007/n0.html"
+    },
+    "100264": {
+        "short_name": "70",
+        "description": "University District - Eastlake - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/070/n0.html"
+    },
+    "100267": {
+        "short_name": "73",
+        "description": "Jackson Park - Univ District",
+        "url": "http://metro.kingcounty.gov/schedules/073/n0.html"
+    },
+    "100269": {
+        "short_name": "75",
+        "description": "Northgate - Lake City - Sand Point - Univ District",
+        "url": "http://metro.kingcounty.gov/schedules/075/n0.html"
+    },
+    "100272": {
+        "short_name": "773",
+        "description": "Seacrest Park - West Seattle Junction",
+        "url": "http://metro.kingcounty.gov/schedules/773/n0.html"
+    },
+    "100275": {
+        "short_name": "8",
+        "description": "Seattle Center - Capitol Hill - Rainier Beach",
+        "url": "http://metro.kingcounty.gov/schedules/008/n0.html"
+    },
+    "100289": {
+        "short_name": "9",
+        "description": "Rainier Beach - Columbia City - Broadway",
+        "url": "http://metro.kingcounty.gov/schedules/009/n0.html"
+    },
+    "100290": {
+        "short_name": "901",
+        "description": "Mirror Lake - Federal Way TC",
+        "url": "http://metro.kingcounty.gov/schedules/901/n0.html"
+    },
+    "100292": {
+        "short_name": "903",
+        "description": "Twin Lakes - Federal Way TC",
+        "url": "http://metro.kingcounty.gov/schedules/903/n0.html"
+    },
+    "100297": {
+        "short_name": "914",
+        "description": "Downtown Kent - Kent East Hill",
+        "url": "http://metro.kingcounty.gov/schedules/914/n0.html"
+    },
+    "100300": {
+        "short_name": "917",
+        "description": "Pacific - Algona - Auburn Station",
+        "url": "http://metro.kingcounty.gov/schedules/917/n0.html"
+    },
+    "100336": {
+        "short_name": "973",
+        "description": "Water Taxi: West Seattle - Downtown Seattle",
+        "url": "http://www.kingcounty.gov/transportation/kcdot/WaterTaxi.aspx"
+    },
+    "100337": {
+        "short_name": "975",
+        "description": "Water Taxi: Vashon Island - Downtown Seattle",
+        "url": "http://www.kingcounty.gov/transportation/kcdot/WaterTaxi.aspx"
+    },
+    "100340": {
+        "short_name": "South Lake Union Streetcar",
+        "description": "Streetcar: Fairview/Aloha - Westlake/McGraw",
+        "url": "https://www.seattle.gov/transportation/getting-around/transit/streetcar/south-lake-union-line"
+    },
+    "100341": {
+        "short_name": "982",
+        "description": "Bear Creek P&R - Lakeside School",
+        "url": "http://metro.kingcounty.gov/schedules/982/n0.html"
+    },
+    "100343": {
+        "short_name": "984",
+        "description": "Lakeside School - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/984/n0.html"
+    },
+    "100344": {
+        "short_name": "986",
+        "description": "Kirkland - Lakeside School",
+        "url": "http://metro.kingcounty.gov/schedules/986/n0.html"
+    },
+    "100345": {
+        "short_name": "987",
+        "description": "Rainier Beach - Lakeside School",
+        "url": "http://metro.kingcounty.gov/schedules/987/n0.html"
+    },
+    "100346": {
+        "short_name": "988",
+        "description": "Madrona - Lakeside School",
+        "url": "http://metro.kingcounty.gov/schedules/988/n0.html"
+    },
+    "100347": {
+        "short_name": "989",
+        "description": "Eastgate - Lakeside School",
+        "url": "http://metro.kingcounty.gov/schedules/989/n0.html"
+    },
+    "100350": {
+        "short_name": "994",
+        "description": "Downtown Seattle - Lakeside School",
+        "url": "http://metro.kingcounty.gov/schedules/994/n0.html"
+    },
+    "100447": {
+        "short_name": "49",
+        "description": "Univ District - Broadway - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/049/n0.html"
+    },
+    "100451": {
+        "short_name": "556",
+        "description": "Issaquah-University District",
+        "url": "http://www.soundtransit.org/Schedules/ST-Express-Bus/556"
+    },
+    "100459": {
+        "short_name": "218",
+        "description": "Issaquah Highlands - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/218/n0.html"
+    },
+    "100473": {
+        "short_name": "981",
+        "description": "Lakeside School - Houghton P&R",
+        "url": "http://metro.kingcounty.gov/schedules/981/n0.html"
+    },
+    "100481": {
+        "short_name": "775",
+        "description": "Seacrest Park - Admiral District - Alki",
+        "url": "http://metro.kingcounty.gov/schedules/775/n0.html"
+    },
+    "100487": {
+        "short_name": "102",
+        "description": "Fairwood - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/102/n0.html"
+    },
+    "100489": {
+        "short_name": "156",
+        "description": "Southcenter - SeaTac - Des Moines - Highline Coll",
+        "url": "http://metro.kingcounty.gov/schedules/156/n0.html"
+    },
+    "100495": {
+        "short_name": "193",
+        "description": "Federal Way S 320th P&R-Federal Way TC-First Hill",
+        "url": "http://metro.kingcounty.gov/schedules/193/n0.html"
+    },
+    "100496": {
+        "short_name": "930",
+        "description": "Kingsgate P&R - Redmond Town Center",
+        "url": "http://metro.kingcounty.gov/schedules/930/n0.html"
+    },
+    "100511": {
+        "short_name": "542",
+        "description": "Redmond - University District",
+        "url": "http://www.soundtransit.org/Schedules/ST-Express-Bus/542"
+    },
+    "100512": {
+        "short_name": "A Line",
+        "description": "Federal Way TC - SeaTac - Tukwila Intl Blvd Sta",
+        "url": "http://metro.kingcounty.gov/schedules/671/n0.html"
+    },
+    "102548": {
+        "short_name": "B Line",
+        "description": "Redmond TC - Overlake TC - Bellevue TC",
+        "url": "http://metro.kingcounty.gov/schedules/672/n0.html"
+    },
+    "102552": {
+        "short_name": "226",
+        "description": "Eastgate P&R-Crossroads-Overlake-Bellevue TC",
+        "url": "http://metro.kingcounty.gov/schedules/226/n0.html"
+    },
+    "102554": {
+        "short_name": "241",
+        "description": "Eastgate P&R - Bellevue Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/241/n0.html"
+    },
+    "102555": {
+        "short_name": "893",
+        "description": "Forbes Crk - Kirkland - Lk WA HS",
+        "url": "http://metro.kingcounty.gov/schedules/893/n0.html"
+    },
+    "102557": {
+        "short_name": "915",
+        "description": "Enumclaw - Auburn Station",
+        "url": "http://metro.kingcounty.gov/schedules/915/n0.html"
+    },
+    "102561": {
+        "short_name": "907",
+        "description": "Enumclaw - Renton TC",
+        "url": "http://metro.kingcounty.gov/schedules/907/n0.html"
+    },
+    "102572": {
+        "short_name": "29",
+        "description": "Ballard - SPU - Queen Anne - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/029/n0.html"
+    },
+    "102574": {
+        "short_name": "40",
+        "description": "Northgte-Ballard-Fremont-Westlake-Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/040/n0.html"
+    },
+    "102576": {
+        "short_name": "C Line",
+        "description": "Valley St/Fairview Av N - SW Barton St/26 Av SW",
+        "url": "http://metro.kingcounty.gov/schedules/673/n0.html"
+    },
+    "102581": {
+        "short_name": "D Line",
+        "description": "Blue Ridge/Crown Hill - Ballard - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/674/n0.html"
+    },
+    "102593": {
+        "short_name": "906",
+        "description": "Fairwood - Southcenter - Tukwila Sounder Station",
+        "url": "http://metro.kingcounty.gov/schedules/906/n0.html"
+    },
+    "102615": {
+        "short_name": "E Line",
+        "description": "Aurora Village Transit Center - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/675/n0.html"
+    },
+    "102619": {
+        "short_name": "F Line",
+        "description": "Burien TC - Tukwila Intl Blvd Sta - Renton Landing",
+        "url": "http://metro.kingcounty.gov/schedules/676/n0.html"
+    },
+    "102628": {
+        "short_name": "895",
+        "description": "Ardmore Park - Lake WA HS",
+        "url": "http://metro.kingcounty.gov/schedules/895/n0.html"
+    },
+    "102634": {
+        "short_name": "630",
+        "description": "So Mercer Island - First Hill - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/630/n0.html"
+    },
+    "102636": {
+        "short_name": "631",
+        "description": "Gregory Heights - Burien Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/631/n0.html"
+    },
+    "102638": {
+        "short_name": "First Hill Streetcar",
+        "description": "Streetcar: Pioneer Square - Capitol Hill",
+        "url": "https://www.seattle.gov/transportation/getting-around/transit/streetcar/first-hill-line"
+    },
+    "102647": {
+        "short_name": "635",
+        "description": "Des Moines Marina District - Angle Lake Station",
+        "url": "http://metro.kingcounty.gov/schedules/635/n0.html"
+    },
+    "102652": {
+        "short_name": "204",
+        "description": "S Mercer Island-Island Crest Way-Mercer Island P&R",
+        "url": "http://metro.kingcounty.gov/schedules/204/n0.html"
+    },
+    "102653": {
+        "short_name": "224",
+        "description": "Duvall - Redmond Transit Center",
+        "url": "http://metro.kingcounty.gov/schedules/224/n0.html"
+    },
+    "102698": {
+        "short_name": "Duvall-Monroe Shuttle",
+        "description": "Duvall - Monroe Shuttle",
+        "url": "http://metro.kingcounty.gov/schedules/627/n0.html"
+    },
+    "102699": {
+        "short_name": "629",
+        "description": "No. Bend-Snoqualmie-Fall City-Carnation-Duvall",
+        "url": "http://metro.kingcounty.gov/schedules/629/n0.html"
+    },
+    "102701": {
+        "short_name": "225",
+        "description": "Kenmore - Totem Lake TC - Overlake",
+        "url": "http://metro.kingcounty.gov/schedules/225/n0.html"
+    },
+    "102702": {
+        "short_name": "239",
+        "description": "UW/Cascadia Coll - Totem Lake TC - Kirkland TC",
+        "url": "http://metro.kingcounty.gov/schedules/239/n0.html"
+    },
+    "102703": {
+        "short_name": "231",
+        "description": "Woodinville - Brickyard - Juanita - Kirkland TC",
+        "url": "http://metro.kingcounty.gov/schedules/231/n0.html"
+    },
+    "102704": {
+        "short_name": "250",
+        "description": "Avondale -  Redmond TC - Kirkland TC - Bellevue TC",
+        "url": "http://metro.kingcounty.gov/schedules/250/n0.html"
+    },
+    "102705": {
+        "short_name": "230",
+        "description": "North Creek - Bothell - Juanita - Kirkland TC",
+        "url": "http://metro.kingcounty.gov/schedules/230/n0.html"
+    },
+    "102715": {
+        "short_name": "162",
+        "description": "Lake Meridean P&R - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/162/n0.html"
+    },
+    "102717": {
+        "short_name": "165",
+        "description": "Green River College - Kent - Des Moines - Burien",
+        "url": "http://metro.kingcounty.gov/schedules/165/n0.html"
+    },
+    "102718": {
+        "short_name": "184",
+        "description": "Auburn Station - White River Junction",
+        "url": "http://metro.kingcounty.gov/schedules/184/n0.html"
+    },
+    "102719": {
+        "short_name": "161",
+        "description": "Burien - Kent Station",
+        "url": "http://metro.kingcounty.gov/schedules/161/n0.html"
+    },
+    "102720": {
+        "short_name": "160",
+        "description": "Renton TC - Kent Station - Auburn Station",
+        "url": "http://metro.kingcounty.gov/schedules/160/n0.html"
+    },
+    "102727": {
+        "short_name": "16",
+        "description": "Broadview/Carkeek Park - Downtown Seattle",
+        "url": "http://metro.kingcounty.gov/schedules/016/n0.html"
+    },
+    "102728": {
+        "short_name": "320",
+        "description": "Kenmore - Lake City - Northgate - SLU",
+        "url": "http://metro.kingcounty.gov/schedules/320/n0.html"
+    },
+    "102729": {
+        "short_name": "322",
+        "description": "Kenmore P&R - 12 Av/E Terrace St",
+        "url": "http://metro.kingcounty.gov/schedules/322/n0.html"
+    },
+    "102730": {
+        "short_name": "20",
+        "description": "Lake City - Northgate - University District",
+        "url": "http://metro.kingcounty.gov/schedules/020/n0.html"
+    },
+    "102731": {
+        "short_name": "302",
+        "description": "Richmond Beach - AVTC - Northgate - First Hill",
+        "url": "http://metro.kingcounty.gov/schedules/302/n0.html"
+    },
+    "102732": {
+        "short_name": "79",
+        "description": "Greenlake - University District",
+        "url": "http://metro.kingcounty.gov/schedules/079/n0.html"
+    },
+    "102734": {
+        "short_name": "566",
+        "description": "Auburn - Redmond",
+        "url": "http://www.soundtransit.org/Schedules/ST-Express-Bus/566"
+    }
+}
