@@ -102,13 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         showBusLocations();
-        Button oval = (Button)findViewById(R.id.oval);
-        /*Button button = findViewById(R.id.button_send);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                System.out.println("button");
-            }
-        });*/
 
 
         // Add a marker in Sydney and move the camera
