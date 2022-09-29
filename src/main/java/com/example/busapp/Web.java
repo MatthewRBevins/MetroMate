@@ -1,9 +1,11 @@
 package com.example.busapp;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -40,7 +42,7 @@ public class Web {
         InputStream is =  url.openStream();
         return readInStream(is);
     }
-    public static JSONObject readJSON(String json) throws ParseException {
+    public static JSONObject readJSON(Reader json) throws ParseException, IOException {
         return (JSONObject) parser.parse(json);
     }
 }

@@ -25,6 +25,8 @@ import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.Random;
 
@@ -73,7 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void showBusLocations() {
         try {
             String data = Web.readFromWeb("https://s3.amazonaws.com/kcm-alerts-realtime-prod/vehiclepositions_pb.json");
-            JSONObject o = Web.readJSON(data);
+            JSONObject o = Web.readJSON(new StringReader(data));
             JSONArray a = (JSONArray) o.get("entity");
             Iterator<JSONObject> iterator = a.iterator();
             while (iterator.hasNext()) {
@@ -81,7 +84,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 JSONObject vehicle = (JSONObject) jj.get("vehicle");
                 JSONObject pos = (JSONObject) vehicle.get("position");
                 JSONObject trip = (JSONObject) vehicle.get("trip");
-                System.out.println(pos.get("latitude"));
                 if (pos.get("latitude") != null) {
                     LatLng bus = new LatLng((double) pos.get("latitude"), (double) pos.get("longitude"));
                     MarkerOptions BusMarker = new MarkerOptions();
@@ -101,9 +103,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        showBusLocations();
-
-
+        //showBusLocations();
+        Button b = (Button) findViewById(R.id.button1);
+        b.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("*********************************************************************");
+                //showBusLocations();
+                for (String i : Crap.stopsKeys) {
+                    try {
+                        JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("stops.json")));
+                        JSONObject os = (JSONObject) o.get(i);
+                        MarkerOptions stopMarker = new MarkerOptions();
+                        stopMarker.position(new LatLng(Double.valueOf(os.get("latitude").toString()), Double.valueOf(os.get("longitude").toString())));
+                        stopMarker.title("BUS STOP");
+                        mMap.addMarker(stopMarker);
+                    } catch (ParseException | IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(47.7318, -122.3274);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
