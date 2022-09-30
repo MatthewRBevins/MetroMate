@@ -30,7 +30,7 @@ public class CoordinateHelper {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("latitude", (double) location.get("lat"));
                     map.put("longitude", (double) location.get("longitude"));
-                    map.put("formatted_address", (String) results.get("formatted_address"))
+                    map.put("formatted_address", (String) results.get("formatted_address"));
                     arr[i] = map;
                 }
                 return arr;
