@@ -2,11 +2,15 @@ package com.example.busapp;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.JsonReader;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SearchView;
 
 import com.google.android.gms.dynamic.IObjectWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -59,19 +63,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    public void jsonToObj(String json) {
-        String[] l = json.split(Pattern.quote("{"));
-        System.out.println(Arrays.toString(l));
+    public void createMapMarker(Double latitude, Double longitude, String title) {
+        LatLng pos = new LatLng(latitude, longitude);
+        MarkerOptions marker = new MarkerOptions();
+        marker.position(pos);
+        //BusMarker.icon(BitmapDescriptorFactory.defaultMarker(new Random().nextInt(360)));
+        marker.title(title);
+        mMap.addMarker(marker);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
     }
     public void showBusLocations() {
         try {
@@ -85,13 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 JSONObject pos = (JSONObject) vehicle.get("position");
                 JSONObject trip = (JSONObject) vehicle.get("trip");
                 if (pos.get("latitude") != null) {
-                    LatLng bus = new LatLng((double) pos.get("latitude"), (double) pos.get("longitude"));
-                    MarkerOptions BusMarker = new MarkerOptions();
-                    BusMarker.position(bus);
-                    Random r = new Random();
-                    BusMarker.icon(BitmapDescriptorFactory.defaultMarker(new Random().nextInt(360)));
-                    BusMarker.title("Route " + trip.get("route_id"));
-                    mMap.addMarker(BusMarker);
+                    createMapMarker((double) pos.get("latitude"), (double) pos.get("longitude"), "Bus");
                 }
             }
         } catch (IOException e) {
@@ -108,24 +101,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 System.out.println("*********************************************************************");
-                //showBusLocations();
-                for (String i : Crap.stopsKeys) {
-                    try {
-                        JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("stops.json")));
-                        JSONObject os = (JSONObject) o.get(i);
-                        MarkerOptions stopMarker = new MarkerOptions();
-                        stopMarker.position(new LatLng(Double.valueOf(os.get("latitude").toString()), Double.valueOf(os.get("longitude").toString())));
-                        stopMarker.title("BUS STOP");
-                        mMap.addMarker(stopMarker);
-                    } catch (ParseException | IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         });
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(47.7318, -122.3274);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        SearchView v = (SearchView) findViewById(R.id.searchView);
+        v.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (CoordinateHelper.textToCoordinatesAndAddress(query)[0] != null) {
+                    createMapMarker((Double) CoordinateHelper.textToCoordinatesAndAddress(query)[0], (Double) CoordinateHelper.textToCoordinatesAndAddress(query)[1], "Selected Location");
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
 }
