@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.busapp.databinding.ActivityMapsBinding;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -93,14 +95,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
+    public void showRouteMap(String shapeID) throws IOException, ParseException {
+        JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+        JSONArray locations = (JSONArray) o.get(shapeID);
+        Iterator<JSONObject> i = locations.iterator();
+        PolylineOptions polyline = new PolylineOptions();
+        Double[][] ll = new Double[1000][2];
+        int index = 0;
+        while (i.hasNext()) {
+            JSONObject currentObject = i.next();
+            ll[index] = new Double[]{(double) currentObject.get("latitude"), (double) currentObject.get("longitude")};
+            index++;
+        }
+        mMap.addPolyline(polyline);
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        try {
+            showRouteMap("10002005");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         //showBusLocations();
         Button b = (Button) findViewById(R.id.button1);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.out.println("*********************************************************************");
+
+                mMap.moveCamera(CameraUpdateFactory.zoomOut());
             }
         });
         SearchView v = (SearchView) findViewById(R.id.searchView);

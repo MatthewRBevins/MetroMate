@@ -22,8 +22,8 @@
     android:layout_alignParentEnd="true"
     android:padding="8dp"
     android:layout_margin="5dp"
-    android:text="Take Me Somewhere"
-    android:visibility="invisible"
+    android:text="Zoom Out"
+    android:visibility="visible"
     android:textColor="#ffffff" />
 <SearchView
     android:id="@+id/searchView"
