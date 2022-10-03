@@ -95,31 +95,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
-    public void showRouteMap(String shapeID) throws IOException, ParseException {
-        JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
-        JSONArray locations = (JSONArray) o.get(shapeID);
-        Iterator<JSONObject> i = locations.iterator();
-        PolylineOptions polyline = new PolylineOptions();
-        int index = 0;
-        String[] hi = new String[1000];
-        String[] hi2 = new String[1000];
-        while (i.hasNext()) {
-            JSONObject currentObject = i.next();
-            hi[index] = (String) currentObject.get("latitude");
-            hi2[index] = (String) currentObject.get("longitude");
-            index++;
+    public String getRouteID(String routeNum) throws IOException, ParseException {
+        JSONObject r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
+        Object[] keys = r.keySet().toArray();
+        for (Object i : keys) {
+            JSONObject ii = (JSONObject) r.get(i.toString());
+            if (ii.get("short_name").toString().equals(routeNum)) {
+                return i.toString();
+            }
         }
-
-        System.out.println(Arrays.toString(hi));
-        System.out.println(Arrays.toString(hi2));
-        mMap.addPolyline(polyline);
+        return null;
+    }
+    public void showRouteMap(String routeID) throws IOException, ParseException {
+        JSONObject r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
+        JSONObject item = (JSONObject) r.get(routeID);
+        JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
+        Object[] shapeIDs = shapeIDss.toArray();
+        for (Object ii : shapeIDs) {
+            JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+            JSONArray locations = (JSONArray) o.get(ii.toString());
+            Iterator<JSONObject> i = locations.iterator();
+            PolylineOptions polyline = new PolylineOptions();
+            int index = 0;
+            String[] hi = new String[1000];
+            String[] hi2 = new String[1000];
+            while (i.hasNext()) {
+                JSONObject currentObject = i.next();
+                hi[index] = (String) currentObject.get("latitude");
+                hi2[index] = (String) currentObject.get("longitude");
+                LatLng hii = new LatLng(Double.valueOf((String) currentObject.get("latitude")), Double.valueOf((String) currentObject.get("longitude")));
+                polyline.add(hii);
+                index++;
+            }
+            mMap.addPolyline(polyline);
+        }
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         try {
-            showRouteMap("10002005");
+            showRouteMap(getRouteID("240"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
