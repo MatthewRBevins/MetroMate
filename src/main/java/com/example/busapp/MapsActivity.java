@@ -100,13 +100,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         JSONArray locations = (JSONArray) o.get(shapeID);
         Iterator<JSONObject> i = locations.iterator();
         PolylineOptions polyline = new PolylineOptions();
-        Double[][] ll = new Double[1000][2];
         int index = 0;
+        String[] hi = new String[1000];
+        String[] hi2 = new String[1000];
         while (i.hasNext()) {
             JSONObject currentObject = i.next();
-            ll[index] = new Double[]{(double) currentObject.get("latitude"), (double) currentObject.get("longitude")};
+            hi[index] = (String) currentObject.get("latitude");
+            hi2[index] = (String) currentObject.get("longitude");
             index++;
         }
+
+        System.out.println(Arrays.toString(hi));
+        System.out.println(Arrays.toString(hi2));
         mMap.addPolyline(polyline);
     }
     @Override
