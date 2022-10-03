@@ -1,29 +1,25 @@
 package com.example.busapp;
 
-import android.util.JsonReader;
+import android.content.Context;
 
-import org.json.JSONTokener;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+
 
 public class CoordinateHelper {
+
+    private static Context context;
+    public CoordinateHelper(Context context){
+        this.context=context;
+    }
+
     public static Object[] textToCoordinatesAndAddress(String text) {
         String addressURLFormatted = text.replace(" ","+");
         String URL = "https://maps.googleapis.com/maps/api/geocode/json?address="
@@ -81,14 +77,31 @@ public class CoordinateHelper {
         }
     }
 
-    public static void findNearestBusStop(double latitude, double longitude) {
+    public static String findNearestBusStop(double currentLat, double currentLng) {
         try {
-            File file = new File("busdata/stops.json");
-            Object obj = new JSONParser().parse(new FileReader(file));
-            JSONObject json = (JSONObject) obj;
-            JSONArray resultsArr = (JSONArray) json.get("results");
-        } catch (IOException | ParseException e) {
+            JSONObject json = Web.readJSON(new InputStreamReader(context.getAssets().open("stops.json")));
 
+            double distance = Double.POSITIVE_INFINITY;
+            String stopID = "";
+            for (Object key: json.keySet()) {
+                Map<String, Object> data = (Map<String, Object>) json.get(key);
+                double lat = Double.valueOf((String) data.get("latitude"));
+                double lng = Double.valueOf((String) data.get("longitude"));
+                double d = distance(lat, lng, currentLat, currentLng);
+                if (d < distance) {
+                    distance = d;
+                    stopID = (String) key;
+                }
+            }
+            return stopID;
+        } catch (IOException | ParseException e) {
+            return null;
         }
+    }
+
+    public static double distance(double lat1, double lng1, double lat2, double lng2) {
+        double x = Math.pow(lat2 - lat1, 2);
+        double y = Math.pow(lng2 - lng1, 2);
+        return Math.sqrt(x + y);
     }
 }
