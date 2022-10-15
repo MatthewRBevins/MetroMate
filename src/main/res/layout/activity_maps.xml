@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -13,119 +14,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MapsActivity" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"/>
     <Button
         android:id="@+id/zoomout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="6dp"
         android:background="#359c5e"
         android:text="Zoom Out"
         android:textColor="#ffffff"
-        android:visibility="visible" />
-
-    <Button
-        android:id="@+id/showRoutes"
-        android:layout_width="67dp"
+        android:visibility="visible"/>
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="92dp"
-        android:layout_marginEnd="252dp"
-        android:layout_marginBottom="1dp"
-        android:background="#359c5e"
-        android:text="ROUTES"
-        android:textColor="#ffffff"
+        android:background="#ffffff"
+        android:queryHint="Search for a destination, resources, etc"
+        android:iconifiedByDefault="false"
+        android:layout_alignParentTop="true"
         android:visibility="visible" />
 
-    <Button
-        android:id="@+id/stops"
-        android:layout_width="67dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="173dp"
-        android:layout_marginEnd="171dp"
-        android:layout_marginBottom="2dp"
-        android:background="#359c5e"
-        android:text="STOPS"
-        android:textColor="#ffffff"
-        android:visibility="visible" />
-
-    <Button
-        android:id="@+id/saved"
-        android:layout_width="67dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="258dp"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="-4dp"
-        android:background="#359c5e"
-        android:text="SAVED"
-        android:textColor="#ffffff"
-        android:visibility="visible" />
-
-    <Button
-        android:id="@+id/settings"
-        android:layout_width="78dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="333dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="#359c5e"
-        android:text="SETTINGS"
-        android:textColor="#ffffff"
-        android:visibility="visible" />
-
-    <Button
-        android:id="@+id/showBuses"
-        android:layout_width="66dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="11dp"
-        android:layout_marginEnd="334dp"
-        android:layout_marginBottom="2dp"
-        android:background="#359c5e"
-        android:text="BUSES"
-        android:textColor="#ffffff"
-        android:visibility="visible" />
-
-    <Button
-        android:id="@+id/location"
-        android:layout_width="155dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="254dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="618dp"
-        android:background="#359c5e"
-        android:text="Show My Location"
-        android:textColor="#ffffff"
-        android:visibility="visible" />
-<SearchView
-    android:id="@+id/searchView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="#ffffff"
-    android:queryHint="Search for a destination, resources, etc"
-    android:iconifiedByDefault="false"
-    android:layout_alignParentTop="true"
-    android:visibility="visible" />
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -254,9 +254,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
         try {
             showRouteMap(getRouteID("162"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -270,9 +272,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.zoomOut());
             }
         });
-        Button c = (Button) findViewById(R.id.location);
-        c.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
                 /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -282,8 +281,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });*/
-            }
-        });
         SearchView v = (SearchView) findViewById(R.id.searchView);
         v.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
