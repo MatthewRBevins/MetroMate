@@ -57,7 +57,7 @@ public class CoordinateHelper {
                     JSONObject location = (JSONObject) geometry.get("location");
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("latitude", (double) location.get("lat"));
-                    map.put("longitude", (double) location.get("longitude"));
+                    map.put("longitude", (double) location.get("lng"));
                     map.put("formatted_address", (String) results.get("formatted_address"));
                     arr[i] = map;
                 }

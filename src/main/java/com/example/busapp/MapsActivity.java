@@ -3,6 +3,10 @@ package com.example.busapp;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -95,7 +99,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        checkLocationAvailable();
     }
 
     @SuppressLint("MissingPermission")
@@ -253,7 +256,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            showRouteMap(getRouteID("989"));
+            showRouteMap(getRouteID("162"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -270,13 +273,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Button c = (Button) findViewById(R.id.location);
         c.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.out.println(Arrays.toString(CoordinateHelper.findRoutesBetweenBusStops("1000", "12712")));
                 /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         Location location = task.getResult();
-                        LatLng locationLL = new LatLng(location.getLatitude(), location.getLongitude());
-                        createMapMarker(location.getLatitude(), location.getLongitude(), "Your Location");
+                        if (!Object.equals(location.getLatitude(),null)) {
+                            createMapMarker(location.getLatitude(), location.getLongitude(), "Your Location");
+                        }
                     }
                 });*/
             }
@@ -286,7 +289,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (CoordinateHelper.textToCoordinatesAndAddress(query)[0] != null) {
-                    createMapMarker((Double) CoordinateHelper.textToCoordinatesAndAddress(query)[0], (Double) CoordinateHelper.textToCoordinatesAndAddress(query)[1], "Selected Location");
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location");
                 }
                 return false;
             }
