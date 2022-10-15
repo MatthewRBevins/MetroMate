@@ -15,7 +15,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Web {
-    static JSONParser parser = new JSONParser();
+        static JSONParser parser = new JSONParser();
     public Web() {
 
     }

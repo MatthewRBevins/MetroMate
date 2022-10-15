@@ -253,7 +253,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            showRouteMap(getRouteID("240"));
+            showRouteMap(getRouteID("989"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -270,14 +270,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Button c = (Button) findViewById(R.id.location);
         c.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                System.out.println(Arrays.toString(CoordinateHelper.findRoutesBetweenBusStops("1000", "12712")));
+                /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         Location location = task.getResult();
                         LatLng locationLL = new LatLng(location.getLatitude(), location.getLongitude());
                         createMapMarker(location.getLatitude(), location.getLongitude(), "Your Location");
                     }
-                });
+                });*/
             }
         });
         SearchView v = (SearchView) findViewById(R.id.searchView);
