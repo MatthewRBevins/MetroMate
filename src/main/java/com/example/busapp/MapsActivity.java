@@ -75,6 +75,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -255,16 +256,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        mMap = googleMap;
-        try {
-            showRouteMap(getRouteID("162"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
+        BottomNavigationView mBottomNavigationView=(BottomNavigationView)findViewById(R.id.nav_view);
+        mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
+        mBottomNavigationView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println(mBottomNavigationView.getMenu().getI);
+            }
+        });
+        mMap = googleMap;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
         //showBusLocations();
         Button b = (Button) findViewById(R.id.zoomout);
         b.setOnClickListener(new View.OnClickListener() {
