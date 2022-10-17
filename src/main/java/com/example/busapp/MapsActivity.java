@@ -261,7 +261,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
         mBottomNavigationView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.out.println(mBottomNavigationView.getMenu().getI);
+                //System.out.println(mBottomNavigationView.getMenu().getI);
             }
         });
         mMap = googleMap;

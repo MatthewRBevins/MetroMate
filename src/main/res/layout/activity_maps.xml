@@ -161,7 +161,7 @@
         android:weightSum="100"
         android:orientation="vertical"
         android:id="@+id/settingsMenu"
-        android:visibility="visible"
+        android:visibility="invisible"
         >
         <LinearLayout
             android:layout_width="fill_parent"

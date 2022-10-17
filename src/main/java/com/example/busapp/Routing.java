@@ -1,5 +1,7 @@
 package com.example.busapp;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Routing {
     public Routing(){
 
@@ -88,11 +90,10 @@ console.log(bestTripPlan);
         return best;
     }
 //10 secs
-
-    function checkDistance(pos1, pos2) {
-        let latDiff = Math.abs(pos1.lat-pos2.lat);
-        let longDiff = Math.abs(pos1.long-pos2.long);
-        return latDiff + longDiff;
-    }
 */
+    public static double checkDistance(LatLng pos1, LatLng pos2) {
+        double latDiff = pos1.latitude - pos2.latitude;
+        double longDiff = pos1.longitude - pos2.longitude;
+        return Math.sqrt(latDiff * latDiff + longDiff * longDiff);
+    }
 }
