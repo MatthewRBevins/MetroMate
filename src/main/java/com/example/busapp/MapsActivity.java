@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.JsonReader;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +77,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -259,9 +261,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         BottomNavigationView mBottomNavigationView=(BottomNavigationView)findViewById(R.id.nav_view);
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
-        mBottomNavigationView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //System.out.println(mBottomNavigationView.getMenu().getI);
+        mBottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                System.out.println("yes");
+                return false;
             }
         });
         mMap = googleMap;
