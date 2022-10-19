@@ -48,7 +48,6 @@ function getClosest(startStop, endPos) {
     let best = [100,"0","0"]
     for (let i in toStops) {
         let tripss = stopsToStopsTrips[startStop][i];
-        let ok = false;
         let tripID = "";
         let bestTime = 100;
         //Loop through all possible trips
