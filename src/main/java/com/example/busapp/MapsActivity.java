@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.google.android.gms.dynamic.IObjectWrapper;
@@ -264,11 +265,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mBottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                System.out.println("yes");
+                String stuff = item.toString() + "Menu";
+                LinearLayout menuToShow = (LinearLayout) findViewById(getResources().getIdentifier(stuff, "id", getPackageName()));
+                menuToShow.setVisibility(View.VISIBLE);
+                item.setCheckable(true);
+                item.setChecked(true);
                 return false;
             }
         });
+
+        LinearLayout desperado = (LinearLayout) findViewById(R.id.desperado);
+        desperado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("CLOSE THE FUKC ");
+            }
+        });
+
+
+
+
         mMap = googleMap;
+
+
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
         //showBusLocations();
         Button b = (Button) findViewById(R.id.zoomout);

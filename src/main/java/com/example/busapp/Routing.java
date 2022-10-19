@@ -1,99 +1,122 @@
 package com.example.busapp;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Date;
+
 public class Routing {
-    public Routing(){
-
-    }/*
-const routes = require('./busdata/routes.json');
-const shapes = require('./busdata/shapes.json');
-const stops = require('./busdata/stops.json');
-const trips = require('./busdata/trips.json');
-const stopsToStops = require('./stopsToStops.json');
-const stopsToStopsTrips = require('./test2.json');
-const fs = require('fs');
-const { listeners } = require('process');
-
-    class LatLng{
-        constructor(lat, long) {
-            this.lat = lat;
-            this.long = long;
-        }
+    JSONParser parser = new JSONParser();
+    JSONObject routes;
+    JSONObject shapes;
+    JSONObject stops;
+    JSONObject trips;
+    JSONObject stopsToStops;
+    JSONObject stopsToStopsTrips;
+    Context context;
+    public Routing(Context context) throws IOException, ParseException {
+        this.context = context;
+        routes = readJson("routes.json");
+        shapes = readJson("shapes.json");
+        stops = readJson("stops.json");
+        trips = readJson("trips.json");
+        stopsToStops = readJson("stopsToStops.json");
+        stopsToStopsTrips = readJson("test2.json");
     }
-
-const startStop = "260"
-            const endStop = "260"
-            const endPos = new LatLng(47.481230,-122.216501);
-    let toStops = stopsToStops[startStop];
-    let absBest = [100,"0"];
-    let bestTripPlan = [];
-for (let i in toStops) {
-        let tripPlan = [toStops[i]];
-        let best = getClosest(toStops[i],endPos);
-        let alreadyFound = [];
-        while (! alreadyFound.includes(best[1])) {
-            alreadyFound.push(best[1]);
-            let gc = getClosest(best[1],endPos);
-            best = gc;
-            tripPlan.push(gc)
-        }
-        if (best[0] < absBest[0]) {
-            absBest[0] = best[0];
-            absBest[1] = best[1];
-            absBest[2] = best[2];
-            bestTripPlan = [];
-            for (let i in tripPlan) {
-                bestTripPlan.push(tripPlan[i]);
+    public ArrayList<Object[]> findRoute(String startStop, LatLng endPos) {
+        JSONArray toStops = (JSONArray) stopsToStops.get(startStop);
+        Object[] absBest = new Object[]{100,"0","0"};
+        ArrayList<Object[]> bestTripPlan = new ArrayList();
+        Iterator<Object> ii = toStops.iterator();
+        while(ii.hasNext()) {
+            String i = ii.next().toString();
+            ArrayList<Object[]> tripPlan = new ArrayList();
+            tripPlan.add(new Object[]{i});
+            Object[] best = getClosest(i,endPos);
+            ArrayList<String> alreadyFound = new ArrayList();
+            while (! alreadyFound.contains(best[1])) {
+                alreadyFound.add(best[1].toString());
+                Object[] gc = getClosest(best[1].toString(),endPos);
+                best = gc;
+                tripPlan.add(gc);
+            }
+            if (Double.parseDouble(best[0].toString()) < Double.parseDouble(absBest[0].toString())) {
+                absBest[0] = best[0];
+                absBest[1] = best[1];
+                absBest[2] = best[2];
+                bestTripPlan = tripPlan;
             }
         }
+        System.out.println("ABSOLUTE BEST: " + Arrays.toString(absBest));
+        return bestTripPlan;
     }
-console.log("ABSOLUTE BEST: " + absBest);
-console.log(bestTripPlan);
-    //TODO: shrink test2.json
-    function getClosest(startStop, endPos) {
-        let toStops = stopsToStops[startStop];
-        let best = [100,"0","0"]
-        for (let i in toStops) {
-            let tripss = stopsToStopsTrips[startStop][i];
-            let ok = false;
-            let tripID = "";
-            let bestTime = 100;
+    public Object[] getClosest(String startStop, LatLng endPos) {
+        JSONArray toStops = (JSONArray) stopsToStops.get(startStop);
+        Object[] best = new Object[]{100,"0","0"};
+        for (int i = 0; i < toStops.size(); i++) {
+            JSONArray aTripss = (JSONArray) stopsToStopsTrips.get(startStop);
+            JSONArray tripss = (JSONArray) aTripss.get(i);
+            String tripID = "";
+            int bestTime = 100;
             //Loop through all possible trips
-            for (let j in tripss) {
+            Iterator<Object> jj = tripss.iterator();
+            int ji = 0;
+            while (jj.hasNext()) {
+                String j = jj.next().toString();
                 //Find what time the trip gets to the target stop
-                let currentTrip = trips[tripss[j]];
-                let stopIndex = 0;
-                for (let k in currentTrip) {
-                    if (currentTrip[k].stop_id == toStops[i]) {
-                        stopIndex = k;
-                        break;
+                JSONArray currentTrip = (JSONArray) trips.get(j);
+                int stopIndex = 0;
+                Iterator<JSONObject> kk = currentTrip.iterator();
+                int ki = 0;
+                while (kk.hasNext()) {
+                    JSONObject k = kk.next();
+                    if (k.get("stop_id").equals(toStops.get(i))) {
+                        stopIndex = ki;
                     }
+                    ki++;
                 }
-                let timeAtStop = parseInt(trips[tripss[j]][stopIndex].time.substr(0,2));
-                if (timeAtStop < parseInt(new Date().getHours())) {
-                    timeAtStop = 24 - (parseInt(new Date().getHours()) - timeAtStop)
+                JSONArray tAS = (JSONArray) trips.get(tripss.get(ji));
+                JSONObject tAS2 = (JSONObject) tAS.get(stopIndex);
+                int timeAtStop = Integer.parseInt(tAS2.get("time").toString().substring(0,2));
+                if (timeAtStop < new Date().getHours()) {
+                    timeAtStop = 24 - (new Date().getHours() - timeAtStop);
                 }
-                if (timeAtStop - parseInt(new Date().getHours()) < bestTime) {
-                    bestTime = timeAtStop - parseInt(new Date().getHours());
-                    tripID = tripss[j];
+                if (timeAtStop - new Date().getHours() < bestTime) {
+                    bestTime = timeAtStop - new Date().getHours();
+                    tripID = tripss.get(ji).toString();
                 }
+                ji++;
             }
-            currentPos = new LatLng(parseFloat(stops[toStops[i]].latitude), parseFloat(stops[toStops[i]].longitude));
-            let dis = checkDistance(currentPos,endPos);
-            if (dis < best[0]) {
+            JSONObject la = (JSONObject) stops.get(toStops.get(i));
+            LatLng currentPos = new LatLng(Double.parseDouble(la.get("latitude").toString()), Double.parseDouble(la.get("longitude").toString()));
+            Double dis = checkDistance(currentPos, endPos);
+            if (dis < Double.parseDouble(best[0].toString())) {
                 best[0] = dis;
-                best[1] = toStops[i];
+                best[1] = toStops.get(i);
                 best[2] = tripID;
             }
         }
         return best;
     }
-//10 secs
-*/
-    public static double checkDistance(LatLng pos1, LatLng pos2) {
-        double latDiff = pos1.latitude - pos2.latitude;
-        double longDiff = pos1.longitude - pos2.longitude;
-        return Math.sqrt(latDiff * latDiff + longDiff * longDiff);
+    public double checkDistance(LatLng pos1, LatLng pos2) {
+        double latDiff = Math.abs(pos1.latitude-pos2.latitude);
+        double longDiff = Math.abs(pos1.longitude-pos2.longitude);
+        return latDiff + longDiff;
+    }
+    public JSONObject readJson(String s) throws IOException, ParseException {
+        return (JSONObject) parser.parse(new InputStreamReader(context.getAssets().open(s)));
     }
 }

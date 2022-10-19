@@ -36,14 +36,15 @@
         android:layout_height="match_parent"
         android:weightSum="100"
         android:orientation="vertical"
-        android:id="@+id/busMenu"
+        android:id="@+id/BusesMenu"
         android:visibility="invisible"
         >
         <LinearLayout
+            android:id="@+id/desperado"
+            android:background="#00FF0000"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:visibility="invisible">
+            android:layout_weight="25">
         </LinearLayout>
 
         <LinearLayout
@@ -67,14 +68,15 @@
         android:layout_height="match_parent"
         android:weightSum="100"
         android:orientation="vertical"
-        android:id="@+id/routeMenu"
+        android:id="@+id/RoutesMenu"
         android:visibility="invisible"
         >
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:visibility="invisible">
+            android:id="@+id/desperado"
+            android:background="#00FF0000">
         </LinearLayout>
 
         <LinearLayout
@@ -98,14 +100,15 @@
         android:layout_height="match_parent"
         android:weightSum="100"
         android:orientation="vertical"
-        android:id="@+id/resourceMenu"
+        android:id="@+id/ResourcesMenu"
         android:visibility="invisible"
         >
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:visibility="invisible">
+            android:id="@+id/desperado"
+            android:background="#00FF0000">
         </LinearLayout>
 
         <LinearLayout
@@ -129,14 +132,15 @@
         android:layout_height="match_parent"
         android:weightSum="100"
         android:orientation="vertical"
-        android:id="@+id/savedMenu"
+        android:id="@+id/SavedMenu"
         android:visibility="invisible"
         >
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:visibility="invisible">
+            android:id="@+id/desperado"
+            android:background="#00FF0000">
         </LinearLayout>
 
         <LinearLayout
@@ -160,14 +164,15 @@
         android:layout_height="match_parent"
         android:weightSum="100"
         android:orientation="vertical"
-        android:id="@+id/settingsMenu"
+        android:id="@+id/SettingsMenu"
         android:visibility="invisible"
         >
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:visibility="invisible">
+            android:id="@+id/desperado"
+            android:background="#00FF0000">
         </LinearLayout>
 
         <LinearLayout

@@ -18,7 +18,7 @@ const startStop = "260"
 const endStop = "260"
 const endPos = new LatLng(47.481230,-122.216501);
 let toStops = stopsToStops[startStop];
-let absBest = [100,"0"];
+let absBest = [100,"0","0"];
 let bestTripPlan = [];
 for (let i in toStops) {
     let tripPlan = [toStops[i]];
