@@ -2,7 +2,10 @@ package com.example.busapp;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,6 +30,8 @@ public class Routing {
     JSONObject stopsToStops;
     JSONObject stopsToStopsTrips;
     Context context;
+
+
     public Routing(Context context) throws IOException, ParseException {
         this.context = context;
         routes = readJson("routes.json");
@@ -118,5 +123,51 @@ public class Routing {
     }
     public JSONObject readJson(String s) throws IOException, ParseException {
         return (JSONObject) parser.parse(new InputStreamReader(context.getAssets().open(s)));
+    }
+
+    public Polyline drawStopToStop(String stopID1, String stopID2, String viaRouteID, GoogleMap mMap) {
+        JSONObject stopID1Data = (JSONObject) stops.get(stopID1);
+        LatLng stopID1LatLng = new LatLng((double) stopID1Data.get("latitude"), (double) stopID1Data.get("longitude"));
+        JSONObject stopID2Data = (JSONObject) stops.get(stopID2);
+        LatLng stopID2LatLng = new LatLng((double) stopID2Data.get("latitude"), (double) stopID2Data.get(("longitude")));
+
+        PolylineOptions pathLine = new PolylineOptions();
+
+        JSONObject routeData = (JSONObject) routes.get(viaRouteID);
+        JSONArray shape_ids = (JSONArray) routeData.get("shape_ids");
+        boolean foundStart = false;
+        boolean foundEnd = false;
+        // iterate over every shape id
+        for (int i = 0; i < shape_ids.size(); i++) {
+            String shape_id = (String) shape_ids.get(i);
+            JSONArray shape_coordinates_list = (JSONArray) shapes.get(shape_id);
+            ArrayList<LatLng> passedCoordinates = new ArrayList<>();
+            for (int j = 0; j < shape_coordinates_list.size(); j++) {
+                JSONObject coord = (JSONObject) shape_coordinates_list.get(j);
+                LatLng coordLatLng = new LatLng((double) coord.get("latitude"), (double) coord.get("longitude"));
+                // check for a point close to the first stop
+                if (!foundStart) {
+                    if (checkDistance(stopID1LatLng, coordLatLng) < 0.01d) {
+                        foundStart = true;
+                        // add point to line
+                        pathLine.add(coordLatLng);
+                    }
+                } else {
+                    // add point to line
+                    pathLine.add(coordLatLng);
+                    // check if reached point near last stop
+                    if (checkDistance(coordLatLng, stopID2LatLng) < 0.01d) {
+                        foundEnd = true;
+                        break;
+                    }
+                }
+            }
+            // check if should continue to next shape id
+            if (foundEnd) {
+                break;
+            }
+        }
+        Polyline polyline = mMap.addPolyline(pathLine);
+        return polyline;
     }
 }

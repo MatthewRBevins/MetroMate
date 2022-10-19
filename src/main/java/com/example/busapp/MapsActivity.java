@@ -313,6 +313,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (CoordinateHelper.textToCoordinatesAndAddress(query)[0] != null) {
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location");
+
+                    // uses [[distance, stop_id to go to, trip_id to get there], [""]]
+
                 }
                 return false;
             }
