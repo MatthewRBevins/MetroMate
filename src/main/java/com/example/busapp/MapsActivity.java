@@ -82,16 +82,19 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static Context context;
+    /*private static Context context;
     public MapsActivity(Context context) throws IOException, ParseException {
         this.context=context;
-    }
+    }*/
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     FusedLocationProviderClient mFusedLocationClient;
     final int PERMISSION_ID = 44;
-    private Routing routing = new Routing(context);
+    private Routing routing = new Routing(getApplicationContext());
+
+    public MapsActivity() throws IOException, ParseException {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
