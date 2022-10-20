@@ -40,7 +40,7 @@
         android:visibility="invisible"
         >
         <LinearLayout
-            android:id="@+id/desperado"
+            android:id="@+id/BusesEmptyTouch"
             android:background="#00FF0000"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado"
+            android:id="@+id/RoutesEmptyTouch"
             android:background="#00FF0000">
         </LinearLayout>
 
@@ -107,7 +107,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado"
+            android:id="@+id/ResourcesEmptyTouch"
             android:background="#00FF0000">
         </LinearLayout>
 
@@ -139,7 +139,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado"
+            android:id="@+id/SavedEmptyTouch"
             android:background="#00FF0000">
         </LinearLayout>
 
@@ -171,7 +171,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado"
+            android:id="@+id/SettingsEmptyTouch"
             android:background="#00FF0000">
         </LinearLayout>
 
