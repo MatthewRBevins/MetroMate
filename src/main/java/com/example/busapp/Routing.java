@@ -43,7 +43,7 @@ public class Routing {
     }
     public ArrayList<Object[]> findRoute(String startStop, LatLng endPos) {
         JSONArray toStops = (JSONArray) stopsToStops.get(startStop);
-        Object[] absBest = new Object[]{100,"0","0","0"};
+        Object[] absBest = new Object[]{100,"0","0"};
         ArrayList<Object[]> bestTripPlan = new ArrayList();
         Iterator<Object> ii = toStops.iterator();
         while(ii.hasNext()) {
@@ -62,7 +62,6 @@ public class Routing {
                 absBest[0] = best[0];
                 absBest[1] = best[1];
                 absBest[2] = best[2];
-                absBest[3] = best[3];
                 bestTripPlan = tripPlan;
             }
         }
@@ -71,7 +70,7 @@ public class Routing {
     }
     public Object[] getClosest(String startStop, LatLng endPos) {
         JSONArray toStops = (JSONArray) stopsToStops.get(startStop);
-        Object[] best = new Object[]{100,"0","0","0"};
+        Object[] best = new Object[]{100,"0","0"};
         for (int i = 0; i < toStops.size(); i++) {
             JSONArray aTripss = (JSONArray) stopsToStopsTrips.get(startStop);
             JSONArray tripss = (JSONArray) aTripss.get(i);
@@ -113,25 +112,9 @@ public class Routing {
                 best[0] = dis;
                 best[1] = toStops.get(i);
                 best[2] = tripID;
-                best[3] = findRouteID(tripID);
             }
         }
         return best;
-    }
-    public String findRouteID(String tripID) {
-        Object[] keys = routes.keySet().toArray();
-        for (Object i : keys) {
-            JSONObject currentRoute = (JSONObject) routes.get(i.toString());
-            JSONArray tripIDsRoute = (JSONArray) currentRoute.get("trip_ids");
-            Iterator<Object> ii = tripIDsRoute.iterator();
-            while (ii.hasNext()) {
-                Object iii = ii.next();
-                if (iii.toString().equals(tripID)) {
-                    return i.toString();
-                }
-            }
-        }
-        return null;
     }
     public double checkDistance(LatLng pos1, LatLng pos2) {
         double latDiff = Math.abs(pos1.latitude-pos2.latitude);

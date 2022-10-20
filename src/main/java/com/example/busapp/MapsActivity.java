@@ -82,19 +82,10 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    /*private static Context context;
-    public MapsActivity(Context context) throws IOException, ParseException {
-        this.context=context;
-    }*/
-
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     FusedLocationProviderClient mFusedLocationClient;
     final int PERMISSION_ID = 44;
-    private Routing routing = new Routing(getApplicationContext());
-
-    public MapsActivity() throws IOException, ParseException {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,6 +258,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        try {
+            String startStop = "260";
+            LatLng endPos = new LatLng(47.572912, -122.145946);
+            Routing r = new Routing(this);
+            r.findRoute(startStop, endPos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         BottomNavigationView mBottomNavigationView=(BottomNavigationView)findViewById(R.id.nav_view);
@@ -275,7 +276,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 String stuff = item.toString() + "Menu";
-                mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
                 LinearLayout menuToShow = (LinearLayout) findViewById(getResources().getIdentifier(stuff, "id", getPackageName()));
                 menuToShow.setVisibility(View.VISIBLE);
                 item.setCheckable(true);
@@ -284,15 +284,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        LinearLayout[] EmptyTouch = new LinearLayout[]{(LinearLayout) findViewById(R.id.BusesEmptyTouch), (LinearLayout) findViewById(R.id.RoutesEmptyTouch), (LinearLayout) findViewById(R.id.ResourcesEmptyTouch), (LinearLayout) findViewById(R.id.SavedEmptyTouch), (LinearLayout) findViewById(R.id.SettingsEmptyTouch)};
-        for (LinearLayout i : EmptyTouch) {
-            i.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println("CLOSE THE FUKC ");
-                }
-            });
-        }
+        LinearLayout desperado = (LinearLayout) findViewById(R.id.desperado);
+        desperado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("CLOSE THE FUKC ");
+            }
+        });
 
 
 
@@ -327,17 +325,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location");
 
                     // uses [[distance, stop_id to go to, trip_id to get there], [""]]
-                    String startStop = "260";
-                    String endStop = "260";
-                    LatLng endPos = new LatLng(47.481230,-122.216501);
-
-                    ArrayList<Object[]> route = routing.findRoute(startStop, endPos);
-                    String prevStopID = startStop;
-                    for (int i = 0; i < route.size(); i++) {
-                        Object[] data = route.get(i);
-                        routing.drawStopToStop(prevStopID, (String) data[1], (String) data[3], mMap);
-                        prevStopID = (String) data[1];
-                    }
 
                 }
                 return false;
