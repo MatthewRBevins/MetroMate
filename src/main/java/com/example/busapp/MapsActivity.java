@@ -272,6 +272,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 String stuff = item.toString() + "Menu";
+                mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
                 LinearLayout menuToShow = (LinearLayout) findViewById(getResources().getIdentifier(stuff, "id", getPackageName()));
                 menuToShow.setVisibility(View.VISIBLE);
                 item.setCheckable(true);
@@ -280,13 +281,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        LinearLayout desperado = (LinearLayout) findViewById(R.id.desperado);
-        desperado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println("CLOSE THE FUKC ");
-            }
-        });
+        LinearLayout[] EmptyTouch = new LinearLayout[]{(LinearLayout) findViewById(R.id.BusesEmptyTouch), (LinearLayout) findViewById(R.id.RoutesEmptyTouch), (LinearLayout) findViewById(R.id.ResourcesEmptyTouch), (LinearLayout) findViewById(R.id.SavedEmptyTouch), (LinearLayout) findViewById(R.id.SettingsEmptyTouch)};
+        for (LinearLayout i : EmptyTouch) {
+            i.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    System.out.println("CLOSE THE FUKC ");
+                }
+            });
+        }
 
 
 
