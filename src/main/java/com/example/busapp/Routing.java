@@ -12,8 +12,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -31,7 +29,6 @@ public class Routing {
     JSONObject stopsToStopsTrips;
     Context context;
 
-
     public Routing(Context context) throws IOException, ParseException {
         this.context = context;
         routes = readJson("routes.json");
@@ -41,6 +38,7 @@ public class Routing {
         stopsToStops = readJson("stopsToStops.json");
         stopsToStopsTrips = readJson("test2.json");
     }
+
     public ArrayList<Object[]> findRoute(String startStop, LatLng endPos) {
         JSONArray toStops = (JSONArray) stopsToStops.get(startStop);
         Object[] absBest = new Object[]{100,"0","0"};
@@ -68,6 +66,7 @@ public class Routing {
         System.out.println("ABSOLUTE BEST: " + Arrays.toString(absBest));
         return bestTripPlan;
     }
+
     public Object[] getClosest(String startStop, LatLng endPos) {
         JSONArray toStops = (JSONArray) stopsToStops.get(startStop);
         Object[] best = new Object[]{100,"0","0"};
@@ -116,11 +115,13 @@ public class Routing {
         }
         return best;
     }
+
     public double checkDistance(LatLng pos1, LatLng pos2) {
         double latDiff = Math.abs(pos1.latitude-pos2.latitude);
         double longDiff = Math.abs(pos1.longitude-pos2.longitude);
         return latDiff + longDiff;
     }
+
     public JSONObject readJson(String s) throws IOException, ParseException {
         return (JSONObject) parser.parse(new InputStreamReader(context.getAssets().open(s)));
     }
