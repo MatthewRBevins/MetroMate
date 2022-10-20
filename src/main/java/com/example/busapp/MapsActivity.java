@@ -82,10 +82,16 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static Context context;
+    public MapsActivity(Context context) throws IOException, ParseException {
+        this.context=context;
+    }
+
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     FusedLocationProviderClient mFusedLocationClient;
     final int PERMISSION_ID = 44;
+    private Routing routing = new Routing(context);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -315,6 +321,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location");
 
                     // uses [[distance, stop_id to go to, trip_id to get there], [""]]
+                    String startStop = "260";
+                    String endStop = "260";
+                    LatLng endPos = new LatLng(47.481230,-122.216501);
+
+                    ArrayList<Object[]> route = routing.findRoute(startStop, endPos);
+                    for (int i = 0; i < route.size(); i++) {
+                        Object[] data = route.get(i);
+                        if (i == 0) {
+                            // first adventure
+                            routing.drawStopToStop(startStop, data[1], )
+                        } else {
+                            // last adventure
+                        }
+                    }
 
                 }
                 return false;
