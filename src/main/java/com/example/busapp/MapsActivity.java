@@ -329,14 +329,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng endPos = new LatLng(47.481230,-122.216501);
 
                     ArrayList<Object[]> route = routing.findRoute(startStop, endPos);
+                    String prevStopID = startStop;
                     for (int i = 0; i < route.size(); i++) {
                         Object[] data = route.get(i);
-                        if (i == 0) {
-                            // first adventure
-                            routing.drawStopToStop(startStop, data[1], )
-                        } else {
-                            // last adventure
-                        }
+                        routing.drawStopToStop(prevStopID, (String) data[1], (String) data[3], mMap);
+                        prevStopID = (String) data[1];
                     }
 
                 }
