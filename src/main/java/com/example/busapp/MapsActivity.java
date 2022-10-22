@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -120,24 +121,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
 
         //BOTTOM NAVIGATION VIEW STYLES
+        final int[] menuShowing = {-1};
         BottomNavigationView mBottomNavigationView=(BottomNavigationView)findViewById(R.id.nav_view);
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
         mBottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                String stuff = item.toString() + "Menu";
-                LinearLayout menuToShow = (LinearLayout) findViewById(getResources().getIdentifier(stuff, "id", getPackageName()));
+                String stuff = item.toString();
+                LinearLayout menuToClose = (LinearLayout) findViewById(menuShowing[0]);
+                if (menuToClose != null) {
+                    menuToClose.setVisibility(View.INVISIBLE);
+                }
+                LinearLayout menuToShow = (LinearLayout) findViewById(getResources().getIdentifier(stuff + "Menu", "id", getPackageName()));
+                menuShowing[0] = menuToShow.getId();
                 menuToShow.setVisibility(View.VISIBLE);
                 item.setCheckable(true);
                 item.setChecked(true);
+                LinearLayout closeButton = (LinearLayout) findViewById(getResources().getIdentifier(stuff + "Exit", "id", getPackageName()));
+                closeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                       menuToShow.setVisibility(View.INVISIBLE);
+                       mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
+                    }
+                });
                 return false;
-            }
-        });
-        LinearLayout desperado = (LinearLayout) findViewById(R.id.desperado);
-        desperado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println("CLOSE THE FUKC ");
             }
         });
 

@@ -28,8 +28,6 @@
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"/>
 
-
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -40,11 +38,11 @@
         android:visibility="invisible"
         >
         <LinearLayout
-            android:id="@+id/desperado"
-            android:background="#00FF0000"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="25">
+            android:layout_weight="25"
+            android:id="@+id/BusesExit"
+            android:background="#00FF0000">
         </LinearLayout>
 
         <LinearLayout
@@ -52,11 +50,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="75"
             android:orientation="vertical"
-            android:background="#00fd77">
+            android:background="#ffffff">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This is the bus menu."
+                android:text="This is the buses menu."
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
@@ -75,7 +73,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado2"
+            android:id="@+id/RoutesExit"
             android:background="#00FF0000">
         </LinearLayout>
 
@@ -84,11 +82,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="75"
             android:orientation="vertical"
-            android:background="#00fd77">
+            android:background="#ffffff">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This is the route menu."
+                android:text="This is the routes menu."
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
@@ -107,7 +105,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado3"
+            android:id="@+id/ResourcesExit"
             android:background="#00FF0000">
         </LinearLayout>
 
@@ -116,11 +114,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="75"
             android:orientation="vertical"
-            android:background="#00fd77">
+            android:background="#ffffff">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This is the resource menu."
+                android:text="This is the resources menu."
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
@@ -139,7 +137,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado4"
+            android:id="@+id/SavedExit"
             android:background="#00FF0000">
         </LinearLayout>
 
@@ -148,7 +146,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="75"
             android:orientation="vertical"
-            android:background="#00fd77">
+            android:background="#ffffff">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -171,7 +169,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="25"
-            android:id="@+id/desperado5"
+            android:id="@+id/SettingsExit"
             android:background="#00FF0000">
         </LinearLayout>
 
@@ -180,9 +178,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="75"
             android:orientation="vertical"
-            android:background="#00fd77">
+            android:background="#ffffff">
             <TextView
-                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="This is the settings menu."
@@ -190,10 +187,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
-
-
 
 
     <RelativeLayout
