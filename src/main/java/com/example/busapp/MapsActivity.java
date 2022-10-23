@@ -134,7 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
 
         try {
-            Routing r = new Routing(new LatLng(47.6205099,-122.3514661), "1000", getApplicationContext());
+            Routing r = new Routing(getApplicationContext());
+            r.genRoute(new LatLng(47.6205099,-122.3514661), "1000");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {

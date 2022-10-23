@@ -20,19 +20,14 @@ import java.util.Iterator;
 public class Routing {
     private JSONObject routesToStops;
     private JSONObject stops;
-    private JSONObject startStop;
-    private LatLng endPos;
     private Context context;
     public Routing(Context c) throws IOException, ParseException {
         this.context = c;
-        this.endPos = endPos;
         this.stops = readJSON("newStops.json");
         this.routesToStops = readJSON("routesToStops.json");
-        this.startStop = (JSONObject) stops.get(startStopStr);
-        ArrayList<Object[]> route = findRoute(startStop, 200, true, "1000");
-        for (int i = 0; i < route.size(); i++) {
-            System.out.println(Arrays.toString(route.get(i)));
-        }
+    }
+    public ArrayList genRoute(LatLng endPos, String startStopStr) {
+        JSONObject startStop = (JSONObject) stops.get(startStopStr);
         /*routesToStops = readJSON("routesToStops.json");
         stops = readJSON("newStops.json");
 
@@ -43,11 +38,9 @@ public class Routing {
         for (int i = 0; i < route.size(); i++) {
             System.out.println(Arrays.toString(route.get(i)));
         }*/
+        return findRoute(startStop, 200, true, "1000", endPos);
     }
-    public ArrayList genRoute(LatLng endPos, String startStopStr, ) {
-
-    }
-    public ArrayList findRoute(JSONObject startStop, double absBestDis, boolean latDisMethod, String startStopID) {
+    public ArrayList findRoute(JSONObject startStop, double absBestDis, boolean latDisMethod, String startStopID, LatLng endPos) {
         ArrayList<Object[]> bestTripPlan = new ArrayList();
         JSONArray jA = (JSONArray) startStop.get("route_ids");
         String absBestStop = "";
