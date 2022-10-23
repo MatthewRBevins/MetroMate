@@ -210,37 +210,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>
-
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <Button
-        android:id="@+id/zoomout"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:background="#359c5e"
-        android:text="Zoom Out"
-        android:textColor="#ffffff"
-        android:visibility="visible"
-        tools:layout_editor_absoluteX="299dp"
-        tools:layout_editor_absoluteY="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_height="match_parent"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:id="@+id/defaultSearchLayout"
         android:visibility="visible"
         >
     <SearchView
         android:id="@+id/searchView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:background="@drawable/search_background"
         android:queryHint="Search for a destination..."
         android:iconifiedByDefault="false"
         android:layout_alignParentTop="true"
@@ -253,6 +234,15 @@
         android:id="@+id/newSearchLayout"
         android:visibility="invisible"
         >
+        <Button
+            android:id="@+id/closeDirections"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="#fc2529"
+            android:textColor="#ffffff"
+            android:text="Close Route" />
         <SearchView
             android:id="@+id/searchView2"
             android:layout_width="match_parent"
@@ -261,7 +251,7 @@
             android:queryHint="FROM: "
             android:searchIcon="@drawable/home"
             android:iconifiedByDefault="false"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/closeDirections"
             android:visibility="visible" />
         <SearchView
             android:id="@+id/searchView3"
@@ -283,6 +273,15 @@
             android:background="#359c5e"
             android:textColor="#ffffff"
             android:text="Show Route" />
+        <Button
+            android:id="@+id/saveLocation"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/submitDirections"
+            android:background="#1d28f7"
+            android:textColor="#ffffff"
+            android:text="Save Route" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -46,6 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Initialize app
@@ -224,19 +227,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //BUTTON EVENTS
-        Button zoomOutButton = (Button) findViewById(R.id.zoomout);
-        Routing finalR = r;
-        zoomOutButton.setOnClickListener(new View.OnClickListener() {
-
+        Button closeDirections = (Button) findViewById(R.id.closeDirections);
+        closeDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("GEN");
-                System.out.println(finalR.genRoute(new LatLng(47.6205099,-122.3514661), "1000"));
+                RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
+                defaultSearchView.setVisibility(View.VISIBLE);
+                RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
+                newSearchView.setVisibility(View.INVISIBLE);
+            }
+        });
+        SearchView locationSearch = (SearchView) findViewById(R.id.searchView);
+
+        Button saveButton = (Button) findViewById(R.id.saveLocation);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map<String, Object> coordsToSave = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(locationSearch.getQuery().toString())[0];
+                System.out.println("ROUTE TO SAVE: " + coordsToSave.get("latitude") + " , " + coordsToSave.get("longitude"));
             }
         });
 
         //TEXT BOX EVENTS
-        SearchView locationSearch = (SearchView) findViewById(R.id.searchView);
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
