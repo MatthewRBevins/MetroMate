@@ -8,7 +8,6 @@
     android:orientation="vertical">
 
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/map"
     android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -28,166 +27,101 @@
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="100"
-        android:orientation="vertical"
+        android:layout_height="120dp"
         android:id="@+id/BusesMenu"
+        android:orientation="vertical"
         android:visibility="invisible"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
         >
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <SearchView
+            android:id="@+id/BusesSearchBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:gravity="center"
+            android:allowClickWhenDisabled="false"
+            android:queryHint="Enter Bus Route (e.g. 989)"
+            android:iconifiedByDefault="false"
+            android:inputType="number" />
+        <Button
             android:id="@+id/BusesExit"
-            android:background="#00FF0000">
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="75"
-            android:orientation="vertical"
-            android:background="#ffffff">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is the buses menu."
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="x" />
+    </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="100"
-        android:orientation="vertical"
+        android:layout_height="120dp"
         android:id="@+id/RoutesMenu"
+        android:orientation="vertical"
         android:visibility="invisible"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
         >
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <SearchView
+            android:id="@+id/RoutesSearchBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:gravity="center"
+            android:allowClickWhenDisabled="false"
+            android:queryHint="Enter Bus Route (e.g. 989)"
+            android:iconifiedByDefault="false"
+            android:inputType="number" />
+        <Button
             android:id="@+id/RoutesExit"
-            android:background="#00FF0000">
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="75"
-            android:orientation="vertical"
-            android:background="#ffffff">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is the routes menu."
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="x" />
+    </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="100"
-        android:orientation="vertical"
-        android:id="@+id/ResourcesMenu"
-        android:visibility="invisible"
-        >
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:id="@+id/ResourcesExit"
-            android:background="#00FF0000">
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="75"
-            android:orientation="vertical"
-            android:background="#ffffff">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is the resources menu."
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="100"
-        android:orientation="vertical"
-        android:id="@+id/SavedMenu"
-        android:visibility="invisible"
-        >
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:id="@+id/SavedExit"
-            android:background="#00FF0000">
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="75"
-            android:orientation="vertical"
-            android:background="#ffffff">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is the saved menu."
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="100"
-        android:orientation="vertical"
+        android:layout_height="275dp"
         android:id="@+id/SettingsMenu"
+        android:orientation="vertical"
         android:visibility="invisible"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
         >
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="25"
+        <Button
             android:id="@+id/SettingsExit"
-            android:background="#00FF0000">
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="75"
-            android:orientation="vertical"
-            android:background="#ffffff">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is the settings menu."
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-    </LinearLayout>
-
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="x" />
+        <ToggleButton
+            android:id="@+id/setting1"
+            android:onClick="settingsButtonClicked"
+            android:layout_marginTop="50dp"
+            android:textOff="Setting 1: OFF"
+            android:textOn="Setting 1: ON"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <ToggleButton
+            android:id="@+id/setting2"
+            android:onClick="settingsButtonClicked"
+            android:layout_marginTop="100dp"
+            android:textOff="Setting 2: OFF"
+            android:textOn="Setting 2: ON"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <ToggleButton
+            android:id="@+id/setting3"
+            android:onClick="settingsButtonClicked"
+            android:layout_marginTop="150dp"
+            android:textOff="Setting 3: OFF"
+            android:textOn="Setting 3: ON"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
