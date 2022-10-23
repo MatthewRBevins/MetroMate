@@ -2,27 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_buses"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/bus"
         android:title="Buses" />
 
     <item
         android:id="@+id/navigation_routes"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/route"
         android:title="Routes" />
 
     <item
         android:id="@+id/navigation_resources"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/resource"
         android:title="Resources" />
 
     <item
         android:id="@+id/navigation_saved"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/saved"
         android:title="Saved" />
 
     <item
         android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/setting"
         android:title="Settings" />
 
 </menu>

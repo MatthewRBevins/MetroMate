@@ -29,17 +29,28 @@
 
     <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="140dp"
         android:id="@+id/BusesMenu"
         android:orientation="vertical"
         android:visibility="invisible"
         android:background="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textColor="#000000"
+            android:id="@+id/busText"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="SHOW BUS LOCATION"/>
         <SearchView
             android:id="@+id/BusesSearchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/busText"
             android:gravity="center"
             android:allowClickWhenDisabled="false"
             android:queryHint="Enter Bus Route (e.g. 989)"
@@ -56,24 +67,91 @@
 
     <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="140dp"
         android:id="@+id/RoutesMenu"
         android:orientation="vertical"
         android:visibility="invisible"
         android:background="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:id="@+id/routeText"
+            android:text="SHOW ROUTE MAP"/>
         <SearchView
             android:id="@+id/RoutesSearchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_below="@id/routeText"
             android:allowClickWhenDisabled="false"
             android:queryHint="Enter Bus Route (e.g. 989)"
             android:iconifiedByDefault="false"
             android:inputType="number" />
         <Button
             android:id="@+id/RoutesExit"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="x" />
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:id="@+id/ResourcesMenu"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textColor="#000000"
+            android:id="@+id/resourcesText"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="RESOURCES"/>
+        <Button
+            android:id="@+id/ResourcesExit"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="x" />
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:id="@+id/SavedMenu"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textColor="#000000"
+            android:id="@+id/savedText"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="SAVED"/>
+        <Button
+            android:id="@+id/SavedExit"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -90,12 +168,22 @@
         android:background="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:id="@+id/settingsText"
+            android:text="SETTINGS"/>
         <Button
             android:id="@+id/SettingsExit"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:text="x" />
         <ToggleButton
             android:id="@+id/setting1"
@@ -142,14 +230,59 @@
         app:layout_constraintTop_toTopOf="parent"
         />
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/defaultSearchLayout"
+        android:visibility="visible"
+        >
     <SearchView
         android:id="@+id/searchView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#ffffff"
-        android:queryHint="Search for a destination, resources, etc"
+        android:queryHint="Search for a destination..."
         android:iconifiedByDefault="false"
         android:layout_alignParentTop="true"
         android:visibility="visible" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:background="#ffffff"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/newSearchLayout"
+        android:visibility="invisible"
+        >
+        <SearchView
+            android:id="@+id/searchView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:queryHint="FROM: "
+            android:searchIcon="@drawable/home"
+            android:iconifiedByDefault="false"
+            android:layout_alignParentTop="true"
+            android:visibility="visible" />
+        <SearchView
+            android:id="@+id/searchView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:queryHint="TO: "
+            android:iconifiedByDefault="false"
+            android:searchIcon="@drawable/location"
+            android:orientation="vertical"
+            android:layout_below="@id/searchView2"
+            android:visibility="visible" />
+        <Button
+            android:id="@+id/submitDirections"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/searchView3"
+            android:background="#359c5e"
+            android:textColor="#ffffff"
+            android:text="Show Route" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

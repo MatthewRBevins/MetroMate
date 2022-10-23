@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class Routing {
     private JSONObject routesToStops;
@@ -26,21 +27,21 @@ public class Routing {
         this.stops = readJSON("newStops.json");
         this.routesToStops = readJSON("routesToStops.json");
     }
-    public ArrayList genRoute(LatLng endPos, String startStopStr) {
+    public ArrayList<Object[]> genRoute(LatLng endPos, String startStopStr) {
         JSONObject startStop = (JSONObject) stops.get(startStopStr);
-        /*routesToStops = readJSON("routesToStops.json");
-        stops = readJSON("newStops.json");
-
-        startStop = (JSONObject) stops.get(startStopStr);
-        endPos = new LatLng(47.6205099, -122.3514661);
-        ArrayList<Object[]> route = findRoute(startStop, 200, true, "1000");
-        //Object[] route2 = findRoute((JSONObject) stops.get(route[1]), Double.parseDouble(route[0].toString()), false, route[1].toString());
-        for (int i = 0; i < route.size(); i++) {
-            System.out.println(Arrays.toString(route.get(i)));
-        }*/
-        return findRoute(startStop, 200, true, "1000", endPos);
+        assert startStop != null;
+        ArrayList<Object[]> route = findRoute(startStop, 200, true, "1000", endPos);
+        if (Double.parseDouble(route.get(route.size()-1)[0].toString()) >= 0.05) {
+            ArrayList<Object[]> route2 = findRoute((JSONObject) Objects.requireNonNull(stops.get(route.get(route.size() - 2)[0].toString())), Double.parseDouble(route.get(route.size() - 1)[0].toString()), false, route.get(route.size() - 2)[0].toString(), endPos);
+            route.remove(route.size()-1);
+            route.addAll(route2);
+        }
+        else {
+            route.remove(route.size()-1);
+        }
+        return route;
     }
-    public ArrayList findRoute(JSONObject startStop, double absBestDis, boolean latDisMethod, String startStopID, LatLng endPos) {
+    public ArrayList<Object[]> findRoute(JSONObject startStop, double absBestDis, boolean latDisMethod, String startStopID, LatLng endPos) {
         ArrayList<Object[]> bestTripPlan = new ArrayList();
         JSONArray jA = (JSONArray) startStop.get("route_ids");
         String absBestStop = "";

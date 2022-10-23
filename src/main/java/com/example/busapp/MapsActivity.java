@@ -3,6 +3,7 @@ package com.example.busapp;
 import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -133,9 +134,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        //INITIALIZE ROUTING OBJECT
+        Routing r = null;
         try {
-            Routing r = new Routing(getApplicationContext());
-            r.genRoute(new LatLng(47.6205099,-122.3514661), "1000");
+            r = new Routing(getApplicationContext());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -191,13 +193,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public boolean onQueryTextSubmit(String query) {
                         if (name.equals("Buses")) {
                             ArrayList<LatLng> positions = getBusLocation(query);
-                            try {
+                            if (positions == null || positions.size() == 0) {
+                                System.out.println("No running buses with id " + query);
+                            }
+                            else {
                                 for (int i = 0; i < positions.size(); i++) {
                                     LatLng pos = positions.get(i);
                                     createMapMarker(pos.latitude, pos.longitude, "");
                                 }
-                            } catch (NullPointerException e) {
-                                System.out.println("No running buses with id " + query);
                             }
                         } else if (name.equals("Routes")) {
                             try {
@@ -222,7 +225,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //BUTTON EVENTS
         Button zoomOutButton = (Button) findViewById(R.id.zoomout);
-        zoomOutButton.setOnClickListener(v -> mMap.moveCamera(CameraUpdateFactory.zoomOut()));
+        Routing finalR = r;
+        zoomOutButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                System.out.println("GEN");
+                System.out.println(finalR.genRoute(new LatLng(47.6205099,-122.3514661), "1000"));
+            }
+        });
 
         //TEXT BOX EVENTS
         SearchView locationSearch = (SearchView) findViewById(R.id.searchView);
@@ -230,6 +241,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (Objects.requireNonNull(CoordinateHelper.textToCoordinatesAndAddress(query))[0] != null) {
+                    RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
+                    defaultSearchView.setVisibility(View.INVISIBLE);
+                    RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
+                    newSearchView.setVisibility(View.VISIBLE);
+                    SearchView fromView = (SearchView) findViewById(R.id.searchView2);
+                    SearchView toView = (SearchView) findViewById(R.id.searchView3);
+                    CharSequence fromText = "CURRENT LOCATION";
+                    CharSequence toText = query;
+                    fromView.setQuery(fromText, true);
+                    toView.setQuery(toText, true);
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location");
                 }
