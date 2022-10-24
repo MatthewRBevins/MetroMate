@@ -10,10 +10,12 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 public class LocalSave {
-    static Context context;
-    public LocalSave(Context c) {
-        this.context = c;
+
+    private static Context context;
+    public LocalSave(Context context){
+        this.context=context;
     }
+
     public static void saveBoolean(String key, boolean bool) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPreferences", MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -33,16 +35,17 @@ public class LocalSave {
     }
 
     public static ArrayList<String[]> loadSavedLocations() throws JSONException {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPreferences", MODE_PRIVATE);
-        String dataString = sharedPreferences.getString("savedLocations", null);
-        JSONArray data = new JSONArray(dataString);
-        ArrayList<String[]> list = new ArrayList<>();
-        for (int i = 0; i < data.length(); i++){
-            ArrayList location = (ArrayList) data.get(i);
-            String[] stringLocation = {(String) location.get(0), (String) location.get(1), (String) location.get(2)};
-            list.add(stringLocation);
-        }
-        return list;
+        try {
+            SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+            String dataString = sharedPreferences.getString("savedLocations", null);
+            JSONArray data = new JSONArray(dataString);
+            ArrayList<String[]> list = new ArrayList<>();
+            for (int i = 0; i < data.length(); i++){
+                ArrayList location = (ArrayList) data.get(i);
+                String[] stringLocation = {(String) location.get(0), (String) location.get(1), (String) location.get(2)};
+                list.add(stringLocation);
+            }
+            return list;
+        } catch (NullPointerException e) { return null; }
     }
-
 }
