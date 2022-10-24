@@ -345,13 +345,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
     public void settingsButtonClicked(View view) {
         ToggleButton button = (ToggleButton) view.findViewById(view.getId());
-        SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
         boolean isChecked = button.isChecked();
-        myEdit.putBoolean(String.valueOf(view.getId()), isChecked);
-        myEdit.commit();
+        LocalSave.saveBoolean(String.valueOf(view.getId()), isChecked);
     }
 }
