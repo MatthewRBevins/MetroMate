@@ -180,6 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
+
         //IINITIALIZE GOOGLE MAP
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
@@ -271,6 +272,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         SearchView locationSearch = (SearchView) findViewById(R.id.searchView);
+        SearchView fromView = (SearchView) findViewById(R.id.searchView2);
+        SearchView toView = (SearchView) findViewById(R.id.searchView3);
+
+        Button submitDirections = (Button) findViewById(R.id.submitDirections);
+        Routing finalR = r;
+        submitDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //finalR.genRoute();
+            }
+        });
 
         Button saveButton = (Button) findViewById(R.id.saveLocation);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -291,6 +303,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        /*Button submitDirections = (Button) findViewById(R.id.submitDirections);
+        submitDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });*/
+
+
+
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                locationSearch.clearFocus();
+            }
+        });
+
         //TEXT BOX EVENTS
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -300,8 +330,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     defaultSearchView.setVisibility(View.INVISIBLE);
                     RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
                     newSearchView.setVisibility(View.VISIBLE);
-                    SearchView fromView = (SearchView) findViewById(R.id.searchView2);
-                    SearchView toView = (SearchView) findViewById(R.id.searchView3);
                     CharSequence fromText = "CURRENT LOCATION";
                     CharSequence toText = query;
                     fromView.setQuery(fromText, true);
