@@ -21,10 +21,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.ToggleButton;
@@ -41,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.busapp.databinding.ActivityMapsBinding;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -204,6 +203,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println(isChecked);
                 button.setChecked(isChecked);
             } catch (NullPointerException e) {}
+        }
+
+        //SETUP SAVED PLACES MENU
+        try {
+            ArrayList<String[]> savedPlaces = LocalSave.loadSavedLocations();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
