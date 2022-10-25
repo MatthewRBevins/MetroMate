@@ -133,16 +133,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             JSONArray locations = (JSONArray) o.get(ii.toString());
             Iterator<JSONObject> i = locations.iterator();
             PolylineOptions polyline = new PolylineOptions();
-            int index = 0;
-            String[] hi = new String[1000];
-            String[] hi2 = new String[1000];
             while (i.hasNext()) {
                 JSONObject currentObject = i.next();
-                hi[index] = (String) currentObject.get("latitude");
-                hi2[index] = (String) currentObject.get("longitude");
                 LatLng hii = new LatLng(Double.valueOf((String) currentObject.get("latitude")), Double.valueOf((String) currentObject.get("longitude")));
                 polyline.add(hii);
-                index++;
             }
             mMap.addPolyline(polyline);
         }
@@ -206,11 +200,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         //SETUP SAVED PLACES MENU
-        try {
+        /*try {
             ArrayList<String[]> savedPlaces = LocalSave.loadSavedLocations();
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
         mBottomNavigationView.setOnItemSelectedListener(item -> {
@@ -309,13 +303,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        /*Button submitDirections = (Button) findViewById(R.id.submitDirections);
+        Button submitDirections = (Button) findViewById(R.id.submitDirections);
         submitDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String from = fromView.getQuery().toString();
+                String to = toView.getQuery();
             }
-        });*/
+        });
 
 
 
@@ -324,6 +319,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 locationSearch.clearFocus();
+            }
+        });
+
+        final String[] amogus = {"2"};
+
+        Routing finalR1 = r;
+        fromView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                ArrayList<Object[]> route = finalR1.genRoute(new LatLng(47.617111, -122.143067), "67014");
+                JSONObject stops = null;
+                try {
+                    stops = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < route.size(); i++) {
+                    JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
+                    createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1));
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
+        toView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
             }
         });
 
@@ -354,6 +391,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void settingsButtonClicked(View view) {
         ToggleButton button = (ToggleButton) view.findViewById(view.getId());
         boolean isChecked = button.isChecked();
-        LocalSave.saveBoolean(String.valueOf(view.getId()), isChecked);
+        //LocalSave.saveBoolean(String.valueOf(view.getId()), isChecked);
     }
 }

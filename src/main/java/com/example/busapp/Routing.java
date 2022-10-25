@@ -30,14 +30,13 @@ public class Routing {
     public ArrayList<Object[]> genRoute(LatLng endPos, String startStopStr) {
         JSONObject startStop = (JSONObject) stops.get(startStopStr);
         assert startStop != null;
-        ArrayList<Object[]> route = findRoute(startStop, 200, true, "1000", endPos);
-        if (Double.parseDouble(route.get(route.size()-1)[0].toString()) >= 0.05) {
-            ArrayList<Object[]> route2 = findRoute((JSONObject) Objects.requireNonNull(stops.get(route.get(route.size() - 2)[0].toString())), Double.parseDouble(route.get(route.size() - 1)[0].toString()), false, route.get(route.size() - 2)[0].toString(), endPos);
-            route.remove(route.size()-1);
+        ArrayList<Object[]> route = findRoute(startStop, 200, true, startStopStr, endPos);
+        String finalStop = route.get(route.size()-1)[0].toString();
+        JSONObject finalStopObj = (JSONObject) stops.get(finalStop);
+        LatLng finalStopLatLng = new LatLng(Double.parseDouble(finalStopObj.get("latitude").toString()), Double.parseDouble(finalStopObj.get("longitude").toString()));
+        if (distance(finalStopLatLng, endPos) >= 0.01) {
+            ArrayList<Object[]> route2 = findRoute(finalStopObj, distance(finalStopLatLng, endPos), false, finalStop, endPos);
             route.addAll(route2);
-        }
-        else {
-            route.remove(route.size()-1);
         }
         return route;
     }
@@ -54,7 +53,9 @@ public class Routing {
                     String currentStopId = i.toString();
                     String prevStop = "";
                     ArrayList<Object[]> tripPlan = new ArrayList();
-                    tripPlan.add(new Object[]{startStopID});
+                    if (latDisMethod) {
+                        tripPlan.add(new Object[]{startStopID});
+                    }
                     tripPlan.add(new Object[]{i.toString(),j});
                     double bestDis = 200;
                     String bestStop = "";
@@ -95,7 +96,10 @@ public class Routing {
                             }
                         }
                         if (canAdd) {
-                            tripPlan.add(new Object[]{bestStop, bestRoute});
+                            if (bestRoute.equals(tripPlan.get(tripPlan.size()-1)[1].toString())) {
+                                tripPlan.remove(tripPlan.size()-1);
+                                tripPlan.add(new Object[]{bestStop, bestRoute});
+                            }
                         }
                         if (bestStop.equals(prevStop)) {
                             break;
@@ -112,7 +116,6 @@ public class Routing {
                 }
             }
         }
-        bestTripPlan.add(new Object[]{absBestDis});
         return bestTripPlan;
     }
     public double distance(LatLng pos1, LatLng pos2) {

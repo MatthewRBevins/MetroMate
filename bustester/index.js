@@ -7,17 +7,16 @@ class LatLng {
     }
 }
 
-let startStop = stops["1000"];
-const endPos = new LatLng(47.6205099,-122.3514661);
-var route = findRoute(startStop, 200, latDistance, "1000");
-let dd = new LatLng(stops[route[1]].latitude, stops[route[1]].longitude);
+let startStop = stops["67014"];
+const endPos = new LatLng(47.617111, -122.143067);
+var route = findRoute(startStop, 200, distance, "1000");
+/*let dd = new LatLng(stops[route[1]].latitude, stops[route[1]].longitude);
 var route2 = findRoute(stops[route[1]], distance(dd,endPos), distance, route[1]);
 for (let i in route2[2]) {
     route[2].push(route2[2][i]);
-}
+}*/
 console.log(route[2]);
 console.log(route[1])
-console.log(route2[0]);
 
 
 function distance(pos1, pos2) {
