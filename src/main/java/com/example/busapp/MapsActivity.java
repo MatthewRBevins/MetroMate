@@ -66,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        getLocationPermissions();
         //Initialize app
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -146,22 +146,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public boolean getLocationPermissions() {
-        Activity a = this;
-        String[] permission = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(a, permission, 1);
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
+    public boolean checkLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return false;
         }
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(a, permission, 1);
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
+            return false;
         }
         return true;
+    }
+
+    public void getLocationPermissions() {
+        Activity a = this;
+        String[] permission = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        ActivityCompat.requestPermissions(a, permission, 1);
     }
 
     @Override
@@ -177,8 +175,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
-        final LatLng[] currentDestination = new LatLng[1];
-        final LatLng[] currentStartingPoint = new LatLng[1];
+        final LatLng[] currentDestination = {new LatLng(47.606471, -122.334604)};
+        final LatLng[] currentStartingPoint = {new LatLng(47.606471, -122.334604)};
 
 
         //IINITIALIZE GOOGLE MAP
@@ -272,6 +270,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         closeDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mMap.clear();
                 RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
                 defaultSearchView.setVisibility(View.VISIBLE);
                 RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
@@ -283,22 +282,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SearchView toView = (SearchView) findViewById(R.id.searchView3);
 
 
-        Button saveButton = (Button) findViewById(R.id.saveLocation);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        Button showDirections = (Button) findViewById(R.id.showDirections);
+        showDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getLocationPermissions()) {
-                    fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            System.out.println(task.getResult().getLatitude());
-                            System.out.println(task.getResult().getLongitude());
-                        }
-                        //override methods
-                    });
-                }
-                Map<String, Object> coordsToSave = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(locationSearch.getQuery().toString())[0];
-                System.out.println("ROUTE TO SAVE: " + coordsToSave.get("latitude") + " , " + coordsToSave.get("longitude"));
+                RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
+                directionLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        Button DirectionsExit = (Button) findViewById(R.id.DirectionsExit);
+        DirectionsExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
+                directionLayout.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -308,8 +305,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
-                System.out.println("NEAREST: " + ch.findNearestBusStop(47.580521, -122.150297));
-                ArrayList<Object[]> route = finalR.genRoute(currentDestination[0], "79878");
+                String nearestBusStop = ch.findNearestBusStop(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
+                System.out.println("NEAR: " + nearestBusStop);
+                ArrayList<Object[]> route = finalR.genRoute(currentDestination[0], nearestBusStop);
                 JSONObject stops = null;
                 PolylineOptions po = new PolylineOptions();
                 try {
@@ -353,15 +351,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onFocusChange(View view, boolean b) {
                 System.out.println("CCCCC");
-                saveButton.setVisibility(View.INVISIBLE);
+                showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
             }
         });
 
-        fromView.setOnSearchClickListener(new View.OnClickListener() {
+        fromView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-                saveButton.setVisibility(View.INVISIBLE);
+            public void onFocusChange(View view, boolean b) {
+                System.out.println("CCCCC");
+                showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
             }
         });
@@ -370,14 +369,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (Objects.requireNonNull(CoordinateHelper.textToCoordinatesAndAddress(query))[0] != null) {
-                    saveButton.setVisibility(View.VISIBLE);
-                    submitDirections.setVisibility(View.VISIBLE);
+                if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                     mMap.clear();
-                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location", "#09f904");
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#09f904");
                 }
+                createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104");
+                showDirections.setVisibility(View.VISIBLE);
+                submitDirections.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -391,7 +391,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                saveButton.setVisibility(View.VISIBLE);
+                if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    currentStartingPoint[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                    mMap.clear();
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Start", "#f91104");
+                }
+                else if (query.isEmpty()) {
+                    if (checkLocationPermissions()) {
+                        fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Location> task) {
+                                currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                            }
+                        });
+                    }
+                    else {
+                        currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                    }
+                    mMap.clear();
+                    createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104");
+                }
+                createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#09f904");
+                showDirections.setVisibility(View.VISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
                 return false;
             }
@@ -406,7 +428,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (Objects.requireNonNull(CoordinateHelper.textToCoordinatesAndAddress(query))[0] != null) {
+                if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
                     RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
                     defaultSearchView.setVisibility(View.INVISIBLE);
                     RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
@@ -416,8 +438,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     fromView.setQuery(fromText, true);
                     toView.setQuery(toText, true);
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    if (checkLocationPermissions()) {
+                        fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Location> task) {
+                                currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                            }
+                            //override methods
+                        });
+                    }
+                    else {
+                        currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                    }
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
-                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location", "#f90404");
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#f90404");
                 }
                 return false;
             }

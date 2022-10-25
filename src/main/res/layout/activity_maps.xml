@@ -228,8 +228,8 @@
         android:visibility="visible" />
     </RelativeLayout>
     <RelativeLayout
-        android:background="#ffffff"
-        android:layout_height="wrap_content"
+        android:background="#00ffffff"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:id="@+id/newSearchLayout"
         android:visibility="invisible"
@@ -248,7 +248,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:queryHint="FROM: "
+            android:queryHint="FROM [BLANK FOR CURRENT LOCATION]"
             android:searchIcon="@drawable/home"
             android:iconifiedByDefault="false"
             android:layout_below="@id/closeDirections"
@@ -258,7 +258,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:queryHint="TO: "
+            android:queryHint="TO"
             android:iconifiedByDefault="false"
             android:searchIcon="@drawable/location"
             android:orientation="vertical"
@@ -274,14 +274,33 @@
             android:textColor="#ffffff"
             android:text="Show Route" />
         <Button
-            android:id="@+id/saveLocation"
+            android:id="@+id/showDirections"
             android:layout_width="match_parent"
             android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_below="@id/submitDirections"
-            android:background="#1d28f7"
+            android:background="#848484"
             android:textColor="#ffffff"
-            android:text="Save Route" />
+            android:text="Show Directions" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/directionLayout"
+            android:background="#ffffff"
+            android:visibility="invisible"
+            android:layout_below="@id/showDirections">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="hi" />
+            <Button
+                android:id="@+id/DirectionsExit"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="x" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
