@@ -66,23 +66,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        ArrayList<String[]> list = new ArrayList<String[]>();
-        list.add(new String[]{"1", "2", "3"});
-        list.add(new String[]{"4", "5", "6"});
-
-        LocalSave.saveSavedLocations(list, MapsActivity.this);
-        try {
-            ArrayList<String[]> data = LocalSave.loadSavedLocations(MapsActivity.this);
-            for (String[] a : data) {
-                for (String b : a) {
-                    System.out.println(b);
-                }
-            }
-            System.out.println(data);
-            System.out.println("AAAZZDWFGFWAFJFYUWAUKGYDUGKAWUKYGDUYKAWGKUYDUYGK");
-        } catch (JSONException e) { e.printStackTrace(); }
-
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermissions();
         //Initialize app
@@ -464,7 +447,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             public void onComplete(@NonNull Task<Location> task) {
                                 try {
                                     currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                                } catch (NullPointerException _) { LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView()); }
+                                } catch (NullPointerException e) {
+                                    System.out.println(e);
+                                    LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
+                                }
                             }
                             //override methods
                         });

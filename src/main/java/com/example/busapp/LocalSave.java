@@ -26,33 +26,42 @@ public class LocalSave {
 
     // {name, latitude, longitude}
 
-    public static void saveSavedLocations(ArrayList<String[]> list, Context context) {
+    public static void saveSavedLocations(ArrayList<String> names, ArrayList<String> addresses, Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPreferences", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        JSONArray data = new JSONArray(list);
-        String dataString = data.toString();
-        myEdit.putString("savedLocations", dataString);
-        myEdit.apply();
-    }
+        SharedPreferences.Editor edit = sharedPreferences.edit();
 
-    public static ArrayList<String[]> loadSavedLocations(Context context) throws JSONException {
+        JSONArray namesData = new JSONArray(names);
+        String namesString = namesData.toString();
+        System.out.println(namesString + " before");
+        edit.putString("savedNames", namesString);
+
+        JSONArray addressesData = new JSONArray(addresses);
+        String addressesString = addressesData.toString();
+        System.out.println(addressesString + " before");
+        edit.putString("savedAddresses", addressesString);
+
+        edit.apply();
+    }
+    // returns savedNames[], savedAddresses[]
+    public static ArrayList<String>[] loadSavedLocations(Context context) throws JSONException {
         try {
             SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPreferences", MODE_PRIVATE);
-            String dataString = sharedPreferences.getString("savedLocations", null);
-            JSONArray data = new JSONArray(dataString);
-            ArrayList<String[]> list = new ArrayList<>();
-            for (int i = 0; i < data.length(); i++){
-                JSONArray locJSON = (JSONArray) data.get(i);
-                ArrayList location = new ArrayList();
-                if (locJSON != null) {
-                    for (int j = 0; j < locJSON.length(); j++){
-                        location.add(locJSON.getString(i));
-                    }
-                }
-                String[] stringLocation = {(String) location.get(0), (String) location.get(1), (String) location.get(2)};
-                list.add(stringLocation);
+
+            String namesString = sharedPreferences.getString("savedNames", null);
+            JSONArray namesData = new JSONArray(namesString);
+            ArrayList<String> namesList = new ArrayList<>();
+            for (int i = 0; i < namesData.length(); i++){
+                namesList.add((String) namesData.get(i));
             }
-            return list;
+
+            String addressesString = sharedPreferences.getString("savedAddresses", null);
+            JSONArray addressesData = new JSONArray(addressesString);
+            ArrayList<String> addressesList = new ArrayList<>();
+            for (int i = 0; i < addressesData.length(); i++){
+                addressesList.add((String) addressesData.get(i));
+            }
+
+            return new ArrayList[] {namesList, addressesList};
         } catch (NullPointerException e) { return null; }
     }
 
