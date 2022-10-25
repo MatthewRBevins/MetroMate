@@ -93,7 +93,7 @@ public class CoordinateHelper {
         }
     }
 
-    public static String findNearestBusStop(double currentLat, double currentLng) {
+    public String findNearestBusStop(double currentLat, double currentLng) {
         try {
             JSONObject json = Web.readJSON(new InputStreamReader(context.getAssets().open("stops.json")));
             double distance = Double.POSITIVE_INFINITY;

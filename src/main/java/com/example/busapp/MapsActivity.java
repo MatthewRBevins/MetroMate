@@ -18,6 +18,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -78,11 +80,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
-    public MarkerOptions createMapMarker(Double latitude, Double longitude, String title) {
+    public MarkerOptions createMapMarker(Double latitude, Double longitude, String title, String color) {
         LatLng pos = new LatLng(latitude, longitude);
         MarkerOptions marker = new MarkerOptions();
         marker.position(pos);
-        //BusMarker.icon(BitmapDescriptorFactory.defaultMarker(new Random().nextInt(360)));
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        marker.icon(BitmapDescriptorFactory.defaultMarker(hsv[0]));
         marker.title(title);
         mMap.addMarker(marker);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
@@ -173,6 +177,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
+        final LatLng[] currentDestination = new LatLng[1];
+        final LatLng[] currentStartingPoint = new LatLng[1];
+
 
         //IINITIALIZE GOOGLE MAP
         mMap = googleMap;
@@ -236,7 +243,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             else {
                                 for (int i = 0; i < positions.size(); i++) {
                                     LatLng pos = positions.get(i);
-                                    createMapMarker(pos.latitude, pos.longitude, "");
+                                    createMapMarker(pos.latitude, pos.longitude, "","#f91504");
                                 }
                             }
                         } else if (name.equals("Routes")) {
@@ -275,14 +282,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SearchView fromView = (SearchView) findViewById(R.id.searchView2);
         SearchView toView = (SearchView) findViewById(R.id.searchView3);
 
-        Button submitDirections = (Button) findViewById(R.id.submitDirections);
-        Routing finalR = r;
-        submitDirections.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //finalR.genRoute();
-            }
-        });
 
         Button saveButton = (Button) findViewById(R.id.saveLocation);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -304,11 +303,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         Button submitDirections = (Button) findViewById(R.id.submitDirections);
+        Routing finalR = r;
         submitDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String from = fromView.getQuery().toString();
-                String to = toView.getQuery();
+                CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
+                System.out.println("NEAREST: " + ch.findNearestBusStop(47.580521, -122.150297));
+                ArrayList<Object[]> route = finalR.genRoute(currentDestination[0], "79878");
+                JSONObject stops = null;
+                PolylineOptions po = new PolylineOptions();
+                try {
+                    stops = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                for (int i = 0; i < route.size(); i++) {
+                    System.out.println(Arrays.toString(route.get(i)));
+                    JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
+                    if (i == 0) {
+                        createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1), "#f91504");
+                    }
+                    else {
+                        createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i + 1), "#0409f9");
+                    }
+                    po.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
+                }
+                mMap.addPolyline(po);
             }
         });
 
@@ -325,22 +348,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final String[] amogus = {"2"};
 
         Routing finalR1 = r;
-        fromView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+        toView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                System.out.println("CCCCC");
+                saveButton.setVisibility(View.INVISIBLE);
+                submitDirections.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        fromView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveButton.setVisibility(View.INVISIBLE);
+                submitDirections.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        toView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                ArrayList<Object[]> route = finalR1.genRoute(new LatLng(47.617111, -122.143067), "67014");
-                JSONObject stops = null;
-                try {
-                    stops = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                for (int i = 0; i < route.size(); i++) {
-                    JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
-                    createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1));
+            public boolean onQueryTextSubmit(String query) {
+                if (Objects.requireNonNull(CoordinateHelper.textToCoordinatesAndAddress(query))[0] != null) {
+                    saveButton.setVisibility(View.VISIBLE);
+                    submitDirections.setVisibility(View.VISIBLE);
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                    mMap.clear();
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location", "#09f904");
                 }
                 return false;
             }
@@ -351,10 +387,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        toView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        fromView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
-            public boolean onQueryTextSubmit(String s) {
+            public boolean onQueryTextSubmit(String query) {
+                saveButton.setVisibility(View.VISIBLE);
+                submitDirections.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -378,7 +416,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     fromView.setQuery(fromText, true);
                     toView.setQuery(toText, true);
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
-                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location");
+                    currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Selected Location", "#f90404");
                 }
                 return false;
             }

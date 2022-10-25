@@ -8,7 +8,7 @@ class LatLng {
 }
 
 let startStop = stops["67014"];
-const endPos = new LatLng(47.617111, -122.143067);
+const endPos = new LatLng(47.619726, -122.348919);
 var route = findRoute(startStop, 200, distance, "1000");
 /*let dd = new LatLng(stops[route[1]].latitude, stops[route[1]].longitude);
 var route2 = findRoute(stops[route[1]], distance(dd,endPos), distance, route[1]);
