@@ -1,12 +1,9 @@
 package com.example.busapp;
 import static android.content.Context.MODE_PRIVATE;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +12,7 @@ import java.util.ArrayList;
 public class LocalSave {
 
     private static Context context;
-    public LocalSave(){
+    public LocalSave(Context context){
         this.context=context;
     }
 
@@ -49,15 +46,6 @@ public class LocalSave {
                 list.add(stringLocation);
             }
             return list;
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
-
-    public void makeSnackBar(String text) {
-        View view = view.findViewById().getRootView();
-        //View view = ((Activity) context).findViewById(R.id.coordinatorLayout);
-        Snackbar mySnackbar = Snackbar.make(view, text, 1500);
-        mySnackbar.show();
+        } catch (NullPointerException e) { return null; }
     }
 }

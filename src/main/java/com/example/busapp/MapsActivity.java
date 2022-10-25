@@ -1,7 +1,5 @@
 package com.example.busapp;
 
-import static com.example.busapp.LocalSave.saveBoolean;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,6 +14,8 @@ import java.util.Objects;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -45,7 +45,6 @@ import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -56,7 +55,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -464,8 +462,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
     public void settingsButtonClicked(View view) {
-        ToggleButton button = view.findViewById(view.getId());
+        ToggleButton button = (ToggleButton) view.findViewById(view.getId());
         boolean isChecked = button.isChecked();
-        saveBoolean(String.valueOf(view.findViewById(view.getId())), isChecked);
+        //LocalSave.saveBoolean(String.valueOf(view.getId()), isChecked);
     }
 }
