@@ -65,6 +65,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        list.add(new String[]{"1", "2", "3"});
+        list.add(new String[]{"4", "5", "6"});
+
+        LocalSave.saveSavedLocations(list, MapsActivity.this);
+        try {
+            ArrayList<String[]> data = LocalSave.loadSavedLocations(MapsActivity.this);
+            for (String[] a : data) {
+                for (String b : a) {
+                    System.out.println(b);
+                }
+            }
+            System.out.println(data);
+            System.out.println("AAAZZDWFGFWAFJFYUWAUKGYDUGKAWUKYGDUYKAWGKUYDUYGK");
+        } catch (JSONException e) { e.printStackTrace(); }
+
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermissions();
         //Initialize app
@@ -127,22 +145,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return null;
     }
 
-    public void showRouteMap(String routeID) throws IOException, ParseException {
-        JSONObject r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
-        JSONObject item = (JSONObject) r.get(routeID);
-        JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
-        Object[] shapeIDs = shapeIDss.toArray();
-        for (Object ii : shapeIDs) {
-            JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
-            JSONArray locations = (JSONArray) o.get(ii.toString());
-            Iterator<JSONObject> i = locations.iterator();
-            PolylineOptions polyline = new PolylineOptions();
-            while (i.hasNext()) {
-                JSONObject currentObject = i.next();
-                LatLng hii = new LatLng(Double.valueOf((String) currentObject.get("latitude")), Double.valueOf((String) currentObject.get("longitude")));
-                polyline.add(hii);
+    public void showRouteMap(String routeID, String routeShortName) throws IOException, ParseException {
+        try {
+            JSONObject r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
+            JSONObject item = (JSONObject) r.get(routeID);
+            JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
+            Object[] shapeIDs = shapeIDss.toArray();
+            for (Object ii : shapeIDs) {
+                JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+                JSONArray locations = (JSONArray) o.get(ii.toString());
+                Iterator<JSONObject> i = locations.iterator();
+                PolylineOptions polyline = new PolylineOptions();
+                while (i.hasNext()) {
+                    JSONObject currentObject = i.next();
+                    LatLng hii = new LatLng(Double.valueOf((String) currentObject.get("latitude")), Double.valueOf((String) currentObject.get("longitude")));
+                    polyline.add(hii);
+                }
+                mMap.addPolyline(polyline);
             }
-            mMap.addPolyline(polyline);
+        } catch (NullPointerException _) {
+            LocalSave.makeSnackBar("Unable to find route with ID " + routeShortName, getWindow().getDecorView().getRootView());
         }
     }
 
@@ -236,7 +258,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (name.equals("Buses")) {
                             ArrayList<LatLng> positions = getBusLocation(query);
                             if (positions == null || positions.size() == 0) {
-                                System.out.println("No running buses with id " + query);
+                                LocalSave.makeSnackBar("No running buses with id " + query, getWindow().getDecorView().getRootView());
                             }
                             else {
                                 for (int i = 0; i < positions.size(); i++) {
@@ -248,10 +270,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             try {
                                 JSONObject obj = Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
                                 String routeID = (String) obj.get(query);
-                                showRouteMap(routeID);
-                            } catch (IOException e) {
-                            } catch (ParseException e) {
-                            }
+                                showRouteMap(routeID, query);
+                            } catch (IOException | ParseException _) {}
                         }
                         return false;
                     }
@@ -442,7 +462,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
-                                currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                                try {
+                                    currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                                } catch (NullPointerException _) { LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView()); }
                             }
                             //override methods
                         });
@@ -464,6 +486,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void settingsButtonClicked(View view) {
         ToggleButton button = (ToggleButton) view.findViewById(view.getId());
         boolean isChecked = button.isChecked();
-        //LocalSave.saveBoolean(String.valueOf(view.getId()), isChecked);
+        System.out.println(isChecked);
+        LocalSave.saveBoolean(String.valueOf(view.getId()), isChecked, MapsActivity.this);
     }
 }

@@ -1,306 +1,310 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapsActivity" />
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        app:labelVisibilityMode="labeled"/>
-
-    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/coordinatorLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:id="@+id/BusesMenu"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textColor="#000000"
-            android:id="@+id/busText"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:text="SHOW BUS LOCATION"/>
-        <SearchView
-            android:id="@+id/BusesSearchBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/busText"
-            android:gravity="center"
-            android:allowClickWhenDisabled="false"
-            android:queryHint="Enter Bus Route (e.g. 989)"
-            android:iconifiedByDefault="false"
-            android:inputType="number" />
-        <Button
-            android:id="@+id/BusesExit"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="x" />
-    </RelativeLayout>
-
-    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:id="@+id/RoutesMenu"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textColor="#000000"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:id="@+id/routeText"
-            android:text="SHOW ROUTE MAP"/>
-        <SearchView
-            android:id="@+id/RoutesSearchBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_below="@id/routeText"
-            android:allowClickWhenDisabled="false"
-            android:queryHint="Enter Bus Route (e.g. 989)"
-            android:iconifiedByDefault="false"
-            android:inputType="number" />
-        <Button
-            android:id="@+id/RoutesExit"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="x" />
-    </RelativeLayout>
-
-    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:id="@+id/ResourcesMenu"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textColor="#000000"
-            android:id="@+id/resourcesText"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:text="RESOURCES"/>
-        <Button
-            android:id="@+id/ResourcesExit"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="x" />
-    </RelativeLayout>
-
-    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:id="@+id/SavedMenu"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textColor="#000000"
-            android:id="@+id/savedText"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:text="SAVED"/>
-        <Button
-            android:id="@+id/SavedExit"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="x" />
-    </RelativeLayout>
-
-    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="275dp"
-        android:id="@+id/SettingsMenu"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:id="@+id/settingsText"
-            android:text="SETTINGS"/>
-        <Button
-            android:id="@+id/SettingsExit"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:text="x" />
-        <ToggleButton
-            android:id="@+id/setting1"
-            android:onClick="settingsButtonClicked"
-            android:layout_marginTop="50dp"
-            android:textOff="Setting 1: OFF"
-            android:textOn="Setting 1: ON"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <ToggleButton
-            android:id="@+id/setting2"
-            android:onClick="settingsButtonClicked"
-            android:layout_marginTop="100dp"
-            android:textOff="Setting 2: OFF"
-            android:textOn="Setting 2: ON"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <ToggleButton
-            android:id="@+id/setting3"
-            android:onClick="settingsButtonClicked"
-            android:layout_marginTop="150dp"
-            android:textOff="Setting 3: OFF"
-            android:textOn="Setting 3: ON"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:layout_width="match_parent"
-        android:id="@+id/defaultSearchLayout"
-        android:visibility="visible"
-        >
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_background"
-        android:queryHint="Search for a destination..."
-        android:iconifiedByDefault="false"
-        android:layout_alignParentTop="true"
-        android:visibility="visible" />
-    </RelativeLayout>
-    <RelativeLayout
-        android:background="#00ffffff"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="match_parent"
+        android:orientation="vertical">
+    
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:id="@+id/newSearchLayout"
-        android:visibility="invisible"
-        >
-        <Button
-            android:id="@+id/closeDirections"
-            android:layout_width="match_parent"
-            android:gravity="center"
+        android:layout_height="match_parent"
+        tools:context=".MapsActivity" />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="#fc2529"
-            android:textColor="#ffffff"
-            android:text="Close Route" />
-        <SearchView
-            android:id="@+id/searchView2"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/bottom_nav_menu"
+            app:labelVisibilityMode="labeled"/>
+    
+        <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:queryHint="FROM [BLANK FOR CURRENT LOCATION]"
-            android:searchIcon="@drawable/home"
-            android:iconifiedByDefault="false"
-            android:layout_below="@id/closeDirections"
-            android:visibility="visible" />
-        <SearchView
-            android:id="@+id/searchView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:queryHint="TO"
-            android:iconifiedByDefault="false"
-            android:searchIcon="@drawable/location"
+            android:layout_height="140dp"
+            android:id="@+id/BusesMenu"
             android:orientation="vertical"
-            android:layout_below="@id/searchView2"
-            android:visibility="visible" />
-        <Button
-            android:id="@+id/submitDirections"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/searchView3"
-            android:background="#359c5e"
-            android:textColor="#ffffff"
-            android:text="Show Route" />
-        <Button
-            android:id="@+id/showDirections"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/submitDirections"
-            android:background="#848484"
-            android:textColor="#ffffff"
-            android:text="Show Directions" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/directionLayout"
-            android:background="#ffffff"
             android:visibility="invisible"
-            android:layout_below="@id/showDirections">
+            android:background="#ffffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="hi" />
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:id="@+id/busText"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:text="SHOW BUS LOCATION"/>
+            <SearchView
+                android:id="@+id/BusesSearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/busText"
+                android:gravity="center"
+                android:allowClickWhenDisabled="false"
+                android:queryHint="Enter Bus Route (e.g. 989)"
+                android:iconifiedByDefault="false"
+                android:inputType="number" />
             <Button
-                android:id="@+id/DirectionsExit"
+                android:id="@+id/BusesExit"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:text="x" />
         </RelativeLayout>
-    </RelativeLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    
+        <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:id="@+id/RoutesMenu"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:background="#ffffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:id="@+id/routeText"
+                android:text="SHOW ROUTE MAP"/>
+            <SearchView
+                android:id="@+id/RoutesSearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@id/routeText"
+                android:allowClickWhenDisabled="false"
+                android:queryHint="Enter Bus Route (e.g. 989)"
+                android:iconifiedByDefault="false"
+                android:inputType="number" />
+            <Button
+                android:id="@+id/RoutesExit"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="x" />
+        </RelativeLayout>
+    
+        <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:id="@+id/ResourcesMenu"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:background="#ffffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:id="@+id/resourcesText"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:text="RESOURCES"/>
+            <Button
+                android:id="@+id/ResourcesExit"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="x" />
+        </RelativeLayout>
+    
+        <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:id="@+id/SavedMenu"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:background="#ffffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:id="@+id/savedText"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:text="SAVED"/>
+            <Button
+                android:id="@+id/SavedExit"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="x" />
+        </RelativeLayout>
+    
+        <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="275dp"
+            android:id="@+id/SettingsMenu"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:background="#ffffff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:id="@+id/settingsText"
+                android:text="SETTINGS"/>
+            <Button
+                android:id="@+id/SettingsExit"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:text="x" />
+            <ToggleButton
+                android:id="@+id/setting1"
+                android:onClick="settingsButtonClicked"
+                android:layout_marginTop="50dp"
+                android:textOff="Setting 1: OFF"
+                android:textOn="Setting 1: ON"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <ToggleButton
+                android:id="@+id/setting2"
+                android:onClick="settingsButtonClicked"
+                android:layout_marginTop="100dp"
+                android:textOff="Setting 2: OFF"
+                android:textOn="Setting 2: ON"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <ToggleButton
+                android:id="@+id/setting3"
+                android:onClick="settingsButtonClicked"
+                android:layout_marginTop="150dp"
+                android:textOff="Setting 3: OFF"
+                android:textOn="Setting 3: ON"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:id="@+id/defaultSearchLayout"
+            android:visibility="visible"
+            >
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_background"
+            android:queryHint="Search for a destination..."
+            android:iconifiedByDefault="false"
+            android:layout_alignParentTop="true"
+            android:visibility="visible" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:background="#00ffffff"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/newSearchLayout"
+            android:visibility="invisible"
+            >
+            <Button
+                android:id="@+id/closeDirections"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="#fc2529"
+                android:textColor="#ffffff"
+                android:text="Close Route" />
+            <SearchView
+                android:id="@+id/searchView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:queryHint="FROM [BLANK FOR CURRENT LOCATION]"
+                android:searchIcon="@drawable/home"
+                android:iconifiedByDefault="false"
+                android:layout_below="@id/closeDirections"
+                android:visibility="visible" />
+            <SearchView
+                android:id="@+id/searchView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:queryHint="TO"
+                android:iconifiedByDefault="false"
+                android:searchIcon="@drawable/location"
+                android:orientation="vertical"
+                android:layout_below="@id/searchView2"
+                android:visibility="visible" />
+            <Button
+                android:id="@+id/submitDirections"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/searchView3"
+                android:background="#359c5e"
+                android:textColor="#ffffff"
+                android:text="Show Route" />
+            <Button
+                android:id="@+id/showDirections"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/submitDirections"
+                android:background="#848484"
+                android:textColor="#ffffff"
+                android:text="Show Directions" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/directionLayout"
+                android:background="#ffffff"
+                android:visibility="invisible"
+                android:layout_below="@id/showDirections">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="hi" />
+                <Button
+                    android:id="@+id/DirectionsExit"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:text="x" />
+            </RelativeLayout>
+        </RelativeLayout>
+    
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
