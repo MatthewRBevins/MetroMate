@@ -24,8 +24,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -220,6 +223,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 menu[0].setVisibility(View.INVISIBLE);
             }
             String name = item.toString();
+            if (name.equals("Resources")) {
+                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
+                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
+                resourceSelector.setVisibility(View.VISIBLE);
+                resourceViewer.setVisibility(View.INVISIBLE);
+            }
             menu[0] = (RelativeLayout) findViewById(getResources().getIdentifier(name + "Menu", "id", getPackageName()));
             menu[0].setVisibility(View.VISIBLE);
             item.setCheckable(true);
@@ -386,11 +395,199 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        Button resourceFood = (Button) findViewById(R.id.resourceFood);
+        resourceFood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("food bank");
+                int oi = 0;
+                LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
+                resourceViewerLayout.removeAllViews();
+                for (Object o : places) {
+                    oi++;
+                    Map<String, Object> map = (Map<String, Object>) o;
+                    Button currentB = new Button(getApplicationContext());
+                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    currentB.setLayoutParams(llp);
+                    currentB.setText(map.get("name").toString());
+
+
+
+
+
+
+                    currentB.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
+                            defaultSearchView.setVisibility(View.INVISIBLE);
+                            RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
+                            newSearchView.setVisibility(View.VISIBLE);
+                            CharSequence fromText = "CURRENT LOCATION";
+                            CharSequence toText = map.get("name").toString();
+                            fromView.setQuery(fromText, false);
+                            toView.setQuery(toText, false);
+                            if (checkLocationPermissions()) {
+                                fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Location> task) {
+                                        System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
+                                        System.out.println(task.getResult());
+                                        try {
+                                            System.out.println("CHANGE CURRENT START");
+                                            System.out.println("CHANGE4");
+                                            currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                                        } catch (NullPointerException e) {
+                                            System.out.println(e);
+                                            LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
+                                        }
+                                    }
+                                    //override methods
+                                });
+                            }
+                            else {
+                                System.out.println("CHANGE5");
+                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                            }
+                            currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                        }
+                    });
+
+                    resourceViewerLayout.addView(currentB);
+                }
+                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
+                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
+                resourceSelector.setVisibility(View.INVISIBLE);
+                resourceViewer.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button resourceShelter = (Button) findViewById(R.id.resourceShelter);
+        resourceShelter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("shelter");
+                int oi = 0;
+                LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
+                resourceViewerLayout.removeAllViews();
+                for (Object o : places) {
+                    oi++;
+                    Map<String, Object> map = (Map<String, Object>) o;
+                    Button currentB = new Button(getApplicationContext());
+                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    currentB.setLayoutParams(llp);
+                    currentB.setText(map.get("name").toString());
+                    currentB.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
+                            defaultSearchView.setVisibility(View.INVISIBLE);
+                            RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
+                            newSearchView.setVisibility(View.VISIBLE);
+                            CharSequence fromText = "CURRENT LOCATION";
+                            CharSequence toText = map.get("name").toString();
+                            fromView.setQuery(fromText, false);
+                            toView.setQuery(toText, false);
+                            if (checkLocationPermissions()) {
+                                fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Location> task) {
+                                        System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
+                                        System.out.println(task.getResult());
+                                        try {
+                                            System.out.println("CHANGE CURRENT START");
+                                            System.out.println("CHANGE4");
+                                            currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                                        } catch (NullPointerException e) {
+                                            System.out.println(e);
+                                            LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
+                                        }
+                                    }
+                                    //override methods
+                                });
+                            }
+                            else {
+                                System.out.println("CHANGE5");
+                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                            }
+                            currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                        }
+                    });
+                    resourceViewerLayout.addView(currentB);
+                }
+                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
+                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
+                resourceSelector.setVisibility(View.INVISIBLE);
+                resourceViewer.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button resourcePolice = (Button) findViewById(R.id.resourcePolice);
+        resourcePolice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("police station");
+                int oi = 0;
+                LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
+                resourceViewerLayout.removeAllViews();
+                for (Object o : places) {
+                    oi++;
+                    Map<String, Object> map = (Map<String, Object>) o;
+                    Button currentB = new Button(getApplicationContext());
+                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    currentB.setLayoutParams(llp);
+                    currentB.setText(map.get("name").toString());
+                    currentB.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
+                            defaultSearchView.setVisibility(View.INVISIBLE);
+                            RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
+                            newSearchView.setVisibility(View.VISIBLE);
+                            CharSequence fromText = "CURRENT LOCATION";
+                            CharSequence toText = map.get("name").toString();
+                            fromView.setQuery(fromText, false);
+                            toView.setQuery(toText, false);
+                            if (checkLocationPermissions()) {
+                                fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Location> task) {
+                                        System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
+                                        System.out.println(task.getResult());
+                                        try {
+                                            System.out.println("CHANGE CURRENT START");
+                                            System.out.println("CHANGE4");
+                                            currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                                        } catch (NullPointerException e) {
+                                            System.out.println(e);
+                                            LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
+                                        }
+                                    }
+                                    //override methods
+                                });
+                            }
+                            else {
+                                System.out.println("CHANGE5");
+                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                            }
+                            currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                        }
+                    });
+                    resourceViewerLayout.addView(currentB);
+                }
+                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
+                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
+                resourceSelector.setVisibility(View.INVISIBLE);
+                resourceViewer.setVisibility(View.VISIBLE);
+            }
+        });
+
         Button submitDirections = (Button) findViewById(R.id.submitDirections);
         Routing finalR = r;
         submitDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showDirections.setVisibility(View.VISIBLE);
                 CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
                 String nearestBusStop = ch.findNearestBusStop(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
                 System.out.println("NEAR: " + nearestBusStop);
@@ -405,18 +602,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
                 RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
+                directionLayout.removeViews(1,directionLayout.getChildCount()-1);
                 for (int i = 0; i < route.size(); i++) {
                     TextView tv = new TextView(getApplicationContext());
-                    tv.setText("AMOGUS");
-                    directionLayout.addView(tv);
+                    RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    llp.setMargins(0,(i+1)*80,0,0);
+                    tv.setLayoutParams(llp);
                     System.out.println(Arrays.toString(route.get(i)));
                     JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
                     if (i == 0) {
+                        try {
+                            tv.setText("START AT " + ch.getStopAddr(route.get(i)[0].toString()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1), "#f91504");
                     }
                     else {
+                        try {
+                            tv.setText("TAKE ROUTE " + ch.getRouteNum(route.get(i)[1].toString()) + " TO " + ch.getStopAddr(route.get(i)[0].toString()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i + 1), "#0409f9");
                     }
+                    directionLayout.addView(tv);
                     po.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
                 }
                 mMap.addPolyline(po);
@@ -443,6 +657,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("CCCCC");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
+                saveDestination.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -452,6 +667,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("CCCCC");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
+                saveDestination.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -465,9 +681,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.clear();
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#09f904");
                 }
+                System.out.println("S1");
+                System.out.println(currentStartingPoint[0]);
                 createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104");
-                showDirections.setVisibility(View.VISIBLE);
+                showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
+                saveDestination.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -481,10 +700,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                System.out.println(Arrays.toString(CoordinateHelper.textToCoordinatesAndAddress(query)));
                 if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
+                    System.out.println("CHANGE1");
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     currentStartingPoint[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                     mMap.clear();
+                    System.out.println("S2");
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Start", "#f91104");
                 }
                 else if (query.isEmpty()) {
@@ -492,19 +714,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
+                                System.out.println("LOCATIONTNION");
+                                System.out.println("CHANGE2");
                                 currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                             }
                         });
                     }
                     else {
+                        System.out.println("CHANGE3");
                         currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                     }
                     mMap.clear();
+                    System.out.println("S3");
                     createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104");
                 }
                 createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#09f904");
-                showDirections.setVisibility(View.VISIBLE);
+                showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
+                saveDestination.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -525,15 +752,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     newSearchView.setVisibility(View.VISIBLE);
                     CharSequence fromText = "CURRENT LOCATION";
                     CharSequence toText = query;
-                    fromView.setQuery(fromText, true);
-                    toView.setQuery(toText, true);
+                    fromView.setQuery(fromText, false);
+                    toView.setQuery(toText, false);
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     if (checkLocationPermissions()) {
                         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
+                                System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
                                 System.out.println(task.getResult());
                                 try {
+                                    System.out.println("CHANGE CURRENT START");
+                                    System.out.println("CHANGE4");
                                     currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                                 } catch (NullPointerException e) {
                                     System.out.println(e);
@@ -544,10 +774,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         });
                     }
                     else {
+                        System.out.println("CHANGE5");
                         currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                     }
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
-                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#f90404");
                 }
                 return false;
             }
