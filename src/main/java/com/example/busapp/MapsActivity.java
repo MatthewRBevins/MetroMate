@@ -301,7 +301,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             closeSaveButton.setText("X");
                             newLL.addView(button);
                             newLL.addView(closeSaveButton);
-                            button.setText(savedLocations[0].get(i).substring(0,41));
+                            String buttonText = savedLocations[0].get(i);
+                            if (buttonText.length() > 41) {
+                                buttonText = buttonText.substring(0,41);
+                            }
+                            button.setText(buttonText);
                             int finalI = i;
                             closeSaveButton.setOnClickListener(view -> {
                                 ArrayList<String>[] previousSave = new ArrayList[0];
@@ -312,16 +316,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                                 ArrayList<String> previousNames = previousSave[0];
                                 ArrayList<String> previousAddresses = previousSave[1];
-                                int cNamei = 0;
-                                for (String cName : previousNames) {
-                                    if (cName.equals(savedLocations[0].get(finalI))) {
-                                        previousNames.remove(cNamei);
-                                        previousAddresses.remove(cNamei);
-                                        LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
-                                        relativeLayout.removeViews(finalI,1);
-                                    }
-                                    cNamei++;
-                                }
+                                relativeLayout.removeViews(previousNames.indexOf(savedLocations[0].get(finalI)),1);
+                                previousAddresses.remove(previousNames.indexOf(savedLocations[0].get(finalI)));
+                                previousNames.remove(previousNames.indexOf(savedLocations[0].get(finalI)));
+                                LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
                             });
                             button.setOnClickListener(view -> {
                                 String coordinates = button.getText().toString().split(": ")[1];
