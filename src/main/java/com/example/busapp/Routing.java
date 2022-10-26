@@ -44,11 +44,11 @@ public class Routing {
                 ArrayList<Object[]> route2 = findRoute(finalStopObj, distance(finalStopLatLng, endPos), false, finalStop, endPos, true);
                 route.addAll(route2);
             }
-            for (int i = 0; i < route.size(); i++) {
-                if (route.get(i).length > 1 && i > 1) {
-                    if (route.get(i)[1].equals(route.get(i - 1)[1])) {
-                        route.remove(i - 1);
-                    }
+        }
+        for (int i = 0; i < route.size(); i++) {
+            if (route.get(i).length > 1 && i > 1) {
+                if (route.get(i)[1].equals(route.get(i - 1)[1])) {
+                    route.remove(i - 1);
                 }
             }
         }
