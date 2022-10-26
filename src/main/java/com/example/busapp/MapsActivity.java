@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -320,8 +321,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
+                RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
                 for (int i = 0; i < route.size(); i++) {
+                    TextView tv = new TextView(getApplicationContext());
+                    tv.setText("AMOGUS");
+                    directionLayout.addView(tv);
                     System.out.println(Arrays.toString(route.get(i)));
                     JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
                     if (i == 0) {
@@ -445,6 +449,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
+                                System.out.println(task.getResult());
                                 try {
                                     currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                                 } catch (NullPointerException e) {

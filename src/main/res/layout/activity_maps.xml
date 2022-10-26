@@ -132,6 +132,13 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:text="x" />
+            <Button
+                android:id="@+id/ResourcesExit"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@draw" />
         </RelativeLayout>
     
         <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
@@ -295,7 +302,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="hi" />
+                    android:text="Take route {ROUTE} to stop {STOP ID} {STOP ADDRESS}" />
                 <Button
                     android:id="@+id/DirectionsExit"
                     android:layout_width="50dp"

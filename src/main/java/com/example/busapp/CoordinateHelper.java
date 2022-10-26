@@ -35,12 +35,14 @@ public class CoordinateHelper {
         }
         return null;
     }
-
     public static Object[] textToCoordinatesAndAddress(String text) {
         String addressURLFormatted = text.replace(" ","+");
-        String URL = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                + addressURLFormatted
-                + "&key=" + BuildConfig.MAPS_API_KEY;
+        String URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                "location=47.571811,-122.141054" +
+                "&radius=100000" +
+                "&keyword=" + text +
+                "&key=AIzaSyBqVEGyYI0c1i49h9bv8LT7riQ1dg6vCNE";
+        System.out.println(URL);
         try {
             String data = Web.readFromWeb(URL);
             JSONObject json = Web.readJSON(new StringReader(data));
