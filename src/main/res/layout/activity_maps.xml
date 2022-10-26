@@ -254,8 +254,9 @@
                 android:id="@+id/setting1"
                 android:onClick="settingsButtonClicked"
                 android:layout_marginTop="50dp"
-                android:textOff="Setting 1: OFF"
-                android:textOn="Setting 1: ON"
+                android:enabled="true"
+                android:textOff="Enable Location: OFF"
+                android:textOn="Enable Location: ON"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <ToggleButton
