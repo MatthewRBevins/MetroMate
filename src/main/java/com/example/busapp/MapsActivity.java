@@ -303,6 +303,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        Button saveDestination = (Button) findViewById(R.id.saveDestination);
+        saveDestination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
+
         Button submitDirections = (Button) findViewById(R.id.submitDirections);
         Routing finalR = r;
         submitDirections.setOnClickListener(new View.OnClickListener() {
