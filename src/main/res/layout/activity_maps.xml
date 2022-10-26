@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent">
@@ -182,13 +182,14 @@
     
         <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="300dp"
             android:id="@+id/SavedMenu"
             android:orientation="vertical"
             android:visibility="invisible"
             android:background="#ffffff"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
+            android:focusable="true"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent" >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -206,6 +207,20 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:text="x" />
+            <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="50dp"
+                android:scrollbars="none"
+                tools:ignore="NotSibling">
+                <TableLayout
+                    android:id="@+id/savedTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:stretchColumns="*">
+                </TableLayout>
+            </ScrollView>
         </RelativeLayout>
     
         <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"

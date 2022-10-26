@@ -32,12 +32,10 @@ public class LocalSave {
 
         JSONArray namesData = new JSONArray(names);
         String namesString = namesData.toString();
-        System.out.println(namesString + " before");
         edit.putString("savedNames", namesString);
 
         JSONArray addressesData = new JSONArray(addresses);
         String addressesString = addressesData.toString();
-        System.out.println(addressesString + " before");
         edit.putString("savedAddresses", addressesString);
 
         edit.apply();
@@ -57,11 +55,20 @@ public class LocalSave {
             String addressesString = sharedPreferences.getString("savedAddresses", null);
             JSONArray addressesData = new JSONArray(addressesString);
             ArrayList<String> addressesList = new ArrayList<>();
-            for (int i = 0; i < addressesData.length(); i++){
+            System.out.println(addressesData.length());
+            System.out.println(addressesData.get(0));
+            for (int i = 0; i < addressesData.length(); i++) {
+                if (addressesData.get(i).equals(null)) {
+                    System.out.println("returned null");
+                    return null;
+                }
                 addressesList.add((String) addressesData.get(i));
             }
-
-            return new ArrayList[] {namesList, addressesList};
+            if (namesList.size() > 0) {
+                return new ArrayList[] {namesList, addressesList};
+            } else {
+                return null;
+            }
         } catch (NullPointerException e) { return null; }
     }
 
