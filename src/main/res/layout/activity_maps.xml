@@ -215,12 +215,13 @@
                 android:layout_width="match_parent"
                 android:visibility="visible"
                 android:layout_height="200dp">
-                <LinearLayout
+                <RelativeLayout
+                    android:gravity="center"
                     android:id="@+id/SavedLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-                </LinearLayout>
+                </RelativeLayout>
             </ScrollView>
         </RelativeLayout>
     
@@ -263,16 +264,16 @@
                 android:id="@+id/setting2"
                 android:onClick="settingsButtonClicked"
                 android:layout_marginTop="100dp"
-                android:textOff="Setting 2: OFF"
-                android:textOn="Setting 2: ON"
+                android:textOff="Auto-Show Route Map: OFF"
+                android:textOn="Auto-Show Route Map: ON"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <ToggleButton
                 android:id="@+id/setting3"
                 android:onClick="settingsButtonClicked"
                 android:layout_marginTop="150dp"
-                android:textOff="Setting 3: OFF"
-                android:textOn="Setting 3: ON"
+                android:textOff="Auto-Save Destination: OFF"
+                android:textOn="Auto-Save Destination: ON"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </RelativeLayout>

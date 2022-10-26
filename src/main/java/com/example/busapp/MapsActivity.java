@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -196,6 +197,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
 
+        SearchView locationSearch = (SearchView) findViewById(R.id.searchView);
+        SearchView fromView = (SearchView) findViewById(R.id.searchView2);
+        SearchView toView = (SearchView) findViewById(R.id.searchView3);
+
         //BOTTOM NAVIGATION VIEW STYLES
         final RelativeLayout[] menu = {null};
         BottomNavigationView mBottomNavigationView=(BottomNavigationView)findViewById(R.id.nav_view);
@@ -206,11 +211,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 getResources().getIdentifier("setting2", "id", getPackageName()),
                 getResources().getIdentifier("setting3", "id", getPackageName())
         };
+        final boolean[] defaultVals = {true,false,false};
+        int bi = -1;
         for (int buttonID : BUTTONS) {
+            bi++;
             try {
                 SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
                 System.out.println(buttonID);
                 ToggleButton button = findViewById(buttonID);
+                if (! sharedPreferences.contains(String.valueOf(buttonID))) {
+                    LocalSave.saveBoolean(String.valueOf(buttonID), defaultVals[bi], MapsActivity.this);
+                }
                 boolean isChecked = sharedPreferences.getBoolean(String.valueOf(buttonID), false);
                 System.out.println(isChecked);
                 button.setChecked(isChecked);
@@ -273,7 +284,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             } else if (name.equals("Saved")) {
                 System.out.println("saved menu");
-                LinearLayout linearLayout = findViewById(R.id.SavedLayout);
+                RelativeLayout linearLayout = findViewById(R.id.SavedLayout);
                 linearLayout.removeAllViews();
 
                 try {
@@ -282,16 +293,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         for (int i = 0; i < savedLocations[0].size(); i++) {
                             System.out.println(i);
                             Button button = new Button(this);
+                            RelativeLayout.LayoutParams bLLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            bLLP.setMargins(0,i*150,0,0);
+                            RelativeLayout.LayoutParams cbLLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            cbLLP.setMargins(150,i*150,0,0);
+                            Button closeSaveButton = new Button(this);
+                            closeSaveButton.setText("X");
+                            button.setLayoutParams(bLLP);
+                            closeSaveButton.setLayoutParams(cbLLP);
                             button.setText(savedLocations[0].get(i) + ": " + savedLocations[1].get(i));
+                            int finalI = i;
                             button.setOnClickListener(view -> {
                                 String coordinates = button.getText().toString().split(": ")[1];
                                 double lat = Double.parseDouble(coordinates.split(", ")[0]);
                                 double lng = Double.parseDouble(coordinates.split(", ")[1]);
                                 System.out.println("clicked on button with coords: " + lat + ", " + lng);
                                 // TODO search functionality here
+                                RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
+                                defaultSearchView.setVisibility(View.INVISIBLE);
+                                RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
+                                newSearchView.setVisibility(View.VISIBLE);
+                                CharSequence fromText = "CURRENT LOCATION";
+                                CharSequence toText = savedLocations[0].get(finalI);
+                                fromView.setQuery(fromText, false);
+                                toView.setQuery(toText, false);
+                                if (checkLocationPermissions()) {
+                                    fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Location> task) {
+                                            System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
+                                            System.out.println(task.getResult());
+                                            try {
+                                                System.out.println("CHANGE CURRENT START");
+                                                System.out.println("CHANGE4");
+                                                currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                                            } catch (NullPointerException e) {
+                                                System.out.println(e);
+                                                LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
+                                            }
+                                        }
+                                        //override methods
+                                    });
+                                }
+                                else {
+                                    System.out.println("CHANGE5");
+                                    currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                                }
+                                currentDestination[0] = new LatLng(lat,lng);
                             });
                             linearLayout.addView(button);
-
+                            linearLayout.addView(closeSaveButton);
                         }
                     }
                 } catch (JSONException | IndexOutOfBoundsException e) {
@@ -314,9 +365,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 newSearchView.setVisibility(View.INVISIBLE);
             }
         });
-        SearchView locationSearch = (SearchView) findViewById(R.id.searchView);
-        SearchView fromView = (SearchView) findViewById(R.id.searchView2);
-        SearchView toView = (SearchView) findViewById(R.id.searchView3);
 
         Button showDirections = (Button) findViewById(R.id.showDirections);
         showDirections.setOnClickListener(new View.OnClickListener() {
