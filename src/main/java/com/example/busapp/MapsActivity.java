@@ -320,7 +320,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SearchView fromView = (SearchView) findViewById(R.id.searchView2);
         SearchView toView = (SearchView) findViewById(R.id.searchView3);
 
-
         Button showDirections = (Button) findViewById(R.id.showDirections);
         showDirections.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -369,6 +368,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
                     System.out.println("saved locations on top of previous ones");
+
+                    LocalSave.makeSnackBar(query + " has been added to saved places", view);
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException _) {
                     SearchView toView = (SearchView) findViewById(R.id.searchView3);
                     String query = toView.getQuery().toString();
