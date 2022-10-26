@@ -35,6 +35,18 @@ public class CoordinateHelper {
         }
         return null;
     }
+    public String getStopAddr(String stopID) throws IOException, ParseException {
+        JSONObject s = Web.readJSON(new InputStreamReader(context.getAssets().open("newStops.json")));
+        JSONObject ss = (JSONObject) s.get(stopID);
+        if (ss == null) return null;
+        return ss.get("stop_name").toString();
+    }
+    public String getRouteNum(String routeID) throws IOException, ParseException {
+        JSONObject r = Web.readJSON(new InputStreamReader(context.getAssets().open("routes.json")));
+        JSONObject rr = (JSONObject) r.get(routeID);
+        if (rr == null) return null;
+        return rr.get("short_name").toString();
+    }
     public static Object[] textToCoordinatesAndAddress(String text) {
         String textFormatted = text.replace(" ","+");
         String URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +

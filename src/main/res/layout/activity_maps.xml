@@ -108,7 +108,7 @@
     
         <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="175dp"
+            android:layout_height="225dp"
             android:id="@+id/ResourcesMenu"
             android:orientation="vertical"
             android:visibility="invisible"
@@ -137,28 +137,33 @@
                     android:padding="5dp"
                     android:textStyle="bold"
                     android:text="RESOURCES"/>
-                <Button
-                    android:id="@+id/resourceFood"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_below="@id/resourcesText"
-                    android:background="@drawable/food" />
-                <Button
-                    android:id="@+id/resourceShelter"
-                    android:layout_alignLeft="@id/resourceFood"
-                    android:layout_below="@id/resourcesText"
-                    android:layout_marginLeft="50dp"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/shelter" />
-                <Button
-                    android:id="@+id/resourcePolice"
-                    android:layout_width="50dp"
-                    android:layout_alignLeft="@id/resourceShelter"
-                    android:layout_marginLeft="50dp"
-                    android:layout_below="@id/resourcesText"
-                    android:layout_height="50dp"
-                    android:background="@drawable/police" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="match_parent">
+                    <Button
+                        android:id="@+id/resourceFood"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_below="@id/resourcesText"
+                        android:background="@drawable/food" />
+                    <Button
+                        android:id="@+id/resourceShelter"
+                        android:layout_alignLeft="@id/resourceFood"
+                        android:layout_below="@id/resourcesText"
+                        android:layout_marginLeft="50dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/shelter" />
+                    <Button
+                        android:id="@+id/resourcePolice"
+                        android:layout_width="50dp"
+                        android:layout_alignLeft="@id/resourceShelter"
+                        android:layout_marginLeft="50dp"
+                        android:layout_below="@id/resourcesText"
+                        android:layout_height="50dp"
+                        android:background="@drawable/police" />
+                </RelativeLayout>
             </RelativeLayout>
             <ScrollView
                 android:id="@+id/resourceViewer"
@@ -166,33 +171,11 @@
                 android:visibility="invisible"
                 android:layout_height="match_parent">
                 <LinearLayout
+                    android:id="@+id/resourceViewerLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="zvcxvzcx" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="20px"
-                        android:text="zvcxvzcx" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="40px"
-                        android:text="zvcxvzcx" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="80px"
-                        android:text="zvcxvzcx" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="100px"
-                        android:text="zvcxvzcx" />
+
                 </LinearLayout>
             </ScrollView>-->
         </RelativeLayout>
@@ -314,7 +297,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:queryHint="FROM [BLANK FOR CURRENT LOCATION]"
+                android:queryHint="FROM"
                 android:searchIcon="@drawable/home"
                 android:iconifiedByDefault="false"
                 android:layout_below="@id/closeDirections"
@@ -365,9 +348,6 @@
                 android:background="#ffffff"
                 android:visibility="invisible"
                 android:layout_below="@id/showDirections">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
                 <Button
                     android:id="@+id/DirectionsExit"
                     android:layout_width="50dp"
