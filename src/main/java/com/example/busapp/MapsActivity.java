@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
 import android.Manifest;
@@ -23,12 +24,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SearchView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -171,6 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ActivityCompat.requestPermissions(a, permission, 1);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -213,25 +214,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } catch (NullPointerException e) {}
         }
 
-        //SETUP SAVED PLACES MENU
-        /*try {
-            ArrayList<String[]> savedPlaces = LocalSave.loadSavedLocations();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
         mBottomNavigationView.setOnItemSelectedListener(item -> {
             if (menu[0] != null) {
                 menu[0].setVisibility(View.INVISIBLE);
             }
             String name = item.toString();
-            if (name.equals("Resources")) {
-                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
-                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
-                resourceSelector.setVisibility(View.VISIBLE);
-                resourceViewer.setVisibility(View.INVISIBLE);
-            }
             menu[0] = (RelativeLayout) findViewById(getResources().getIdentifier(name + "Menu", "id", getPackageName()));
             menu[0].setVisibility(View.VISIBLE);
             item.setCheckable(true);
@@ -274,6 +262,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         return false;
                     }
                 });
+            } else if (name.equals("Saved")) {
+                System.out.println("table view");
+                TableLayout tableLayout = menu[0].findViewById(R.id.savedTable);
+                tableLayout.removeAllViews();
+
+                try {
+                    ArrayList<String>[] savedLocations = LocalSave.loadSavedLocations(MapsActivity.this);
+                    if (savedLocations != null) {
+                        for (int i = 0; i < savedLocations.length; i++) {
+                            TableRow tableRow = new TableRow(this);
+                            tableRow.setPadding(10, 20, 10, 20);
+
+                            Button button = new Button(MapsActivity.this);
+                            button.setText(savedLocations[0].get(i) + ": " + savedLocations[1].get(i));
+                            button.setOnClickListener(view -> {
+                                String coordinates = button.getText().toString().split(": ")[1];
+                                double lat = Double.parseDouble(coordinates.split(", ")[0]);
+                                double lng = Double.parseDouble(coordinates.split(", ")[1]);
+                                System.out.println("clicked on button with coords: " + lat + ", " + lng);
+                                // TODO search functionality here
+                            });
+
+                            tableRow.addView(button);
+                            tableLayout.addView(tableRow);
+                        }
+                    }
+                } catch (JSONException | IndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
             }
             return false;
         });
@@ -316,194 +333,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         saveDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-            }
-        });
-
-        Button resourceFood = (Button) findViewById(R.id.resourceFood);
-        resourceFood.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("food bank");
-                int oi = 0;
-                LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
-                resourceViewerLayout.removeAllViews();
-                for (Object o : places) {
-                    oi++;
-                    Map<String, Object> map = (Map<String, Object>) o;
-                    Button currentB = new Button(getApplicationContext());
-                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    currentB.setLayoutParams(llp);
-                    currentB.setText(map.get("name").toString());
-
-
-
-
-
-
-                    currentB.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
-                            defaultSearchView.setVisibility(View.INVISIBLE);
-                            RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
-                            newSearchView.setVisibility(View.VISIBLE);
-                            CharSequence fromText = "CURRENT LOCATION";
-                            CharSequence toText = map.get("name").toString();
-                            fromView.setQuery(fromText, false);
-                            toView.setQuery(toText, false);
-                            if (checkLocationPermissions()) {
-                                fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Location> task) {
-                                        System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
-                                        System.out.println(task.getResult());
-                                        try {
-                                            System.out.println("CHANGE CURRENT START");
-                                            System.out.println("CHANGE4");
-                                            currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                                        } catch (NullPointerException e) {
-                                            System.out.println(e);
-                                            LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
-                                        }
-                                    }
-                                    //override methods
-                                });
-                            }
-                            else {
-                                System.out.println("CHANGE5");
-                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
-                            }
-                            currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
-                        }
-                    });
-
-                    resourceViewerLayout.addView(currentB);
+                // placeholder
+                ArrayList<String>[] previousSave = new ArrayList[0];
+                try {
+                    previousSave = LocalSave.loadSavedLocations(MapsActivity.this);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
-                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
-                resourceSelector.setVisibility(View.INVISIBLE);
-                resourceViewer.setVisibility(View.VISIBLE);
-            }
-        });
+                try {
+                    ArrayList<String> previousNames = previousSave[0];
+                    ArrayList<String> previousAddresses = previousSave[1];
+                    SearchView toView = (SearchView) findViewById(R.id.searchView3);
 
-        Button resourceShelter = (Button) findViewById(R.id.resourceShelter);
-        resourceShelter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("shelter");
-                int oi = 0;
-                LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
-                resourceViewerLayout.removeAllViews();
-                for (Object o : places) {
-                    oi++;
-                    Map<String, Object> map = (Map<String, Object>) o;
-                    Button currentB = new Button(getApplicationContext());
-                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    currentB.setLayoutParams(llp);
-                    currentB.setText(map.get("name").toString());
-                    currentB.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
-                            defaultSearchView.setVisibility(View.INVISIBLE);
-                            RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
-                            newSearchView.setVisibility(View.VISIBLE);
-                            CharSequence fromText = "CURRENT LOCATION";
-                            CharSequence toText = map.get("name").toString();
-                            fromView.setQuery(fromText, false);
-                            toView.setQuery(toText, false);
-                            if (checkLocationPermissions()) {
-                                fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Location> task) {
-                                        System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
-                                        System.out.println(task.getResult());
-                                        try {
-                                            System.out.println("CHANGE CURRENT START");
-                                            System.out.println("CHANGE4");
-                                            currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                                        } catch (NullPointerException e) {
-                                            System.out.println(e);
-                                            LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
-                                        }
-                                    }
-                                    //override methods
-                                });
-                            }
-                            else {
-                                System.out.println("CHANGE5");
-                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
-                            }
-                            currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
-                        }
-                    });
-                    resourceViewerLayout.addView(currentB);
-                }
-                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
-                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
-                resourceSelector.setVisibility(View.INVISIBLE);
-                resourceViewer.setVisibility(View.VISIBLE);
-            }
-        });
+                    String query = toView.getQuery().toString();
 
-        Button resourcePolice = (Button) findViewById(R.id.resourcePolice);
-        resourcePolice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("police station");
-                int oi = 0;
-                LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
-                resourceViewerLayout.removeAllViews();
-                for (Object o : places) {
-                    oi++;
-                    Map<String, Object> map = (Map<String, Object>) o;
-                    Button currentB = new Button(getApplicationContext());
-                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    currentB.setLayoutParams(llp);
-                    currentB.setText(map.get("name").toString());
-                    currentB.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
-                            defaultSearchView.setVisibility(View.INVISIBLE);
-                            RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
-                            newSearchView.setVisibility(View.VISIBLE);
-                            CharSequence fromText = "CURRENT LOCATION";
-                            CharSequence toText = map.get("name").toString();
-                            fromView.setQuery(fromText, false);
-                            toView.setQuery(toText, false);
-                            if (checkLocationPermissions()) {
-                                fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Location> task) {
-                                        System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
-                                        System.out.println(task.getResult());
-                                        try {
-                                            System.out.println("CHANGE CURRENT START");
-                                            System.out.println("CHANGE4");
-                                            currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                                        } catch (NullPointerException e) {
-                                            System.out.println(e);
-                                            LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
-                                        }
-                                    }
-                                    //override methods
-                                });
-                            }
-                            else {
-                                System.out.println("CHANGE5");
-                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
-                            }
-                            currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
-                        }
-                    });
-                    resourceViewerLayout.addView(currentB);
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    String lat = String.valueOf(map.get("latitude"));
+                    String lng = String.valueOf(map.get("longitude"));
+                    String latlng = lat + ", " + lng;
+
+                    previousNames.add(query);
+                    previousAddresses.add(latlng);
+
+                    System.out.println("query: " + query);
+                    System.out.println("coords: " + latlng);
+
+                    LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
+                    System.out.println("saved locations on top of previous ones");
+                } catch (NullPointerException | ArrayIndexOutOfBoundsException _) {
+                    SearchView toView = (SearchView) findViewById(R.id.searchView3);
+                    String query = toView.getQuery().toString();
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    String lat = String.valueOf(map.get("latitude"));
+                    String lng = String.valueOf(map.get("longitude"));
+                    String latlng = lat + ", " + lng;
+
+                    System.out.println("query: " + query);
+                    System.out.println("coords: " + latlng);
+
+                    ArrayList<String> names = new ArrayList<>();
+                    names.add(query);
+                    ArrayList<String> addresses = new ArrayList<>();
+                    addresses.add(latlng);
+                    LocalSave.saveSavedLocations(names, addresses, MapsActivity.this);
+                    System.out.println("saved locations fresh");
+                    try {
+                        System.out.println(LocalSave.loadSavedLocations(MapsActivity.this)[0]);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-                RelativeLayout resourceSelector = (RelativeLayout) findViewById(R.id.resourceSelector);
-                ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
-                resourceSelector.setVisibility(View.INVISIBLE);
-                resourceViewer.setVisibility(View.VISIBLE);
             }
         });
 
@@ -512,7 +391,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         submitDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDirections.setVisibility(View.VISIBLE);
                 CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
                 String nearestBusStop = ch.findNearestBusStop(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
                 System.out.println("NEAR: " + nearestBusStop);
@@ -527,35 +405,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
                 RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
-                directionLayout.removeViews(1,directionLayout.getChildCount()-1);
                 for (int i = 0; i < route.size(); i++) {
                     TextView tv = new TextView(getApplicationContext());
-                    RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    llp.setMargins(0,(i+1)*80,0,0);
-                    tv.setLayoutParams(llp);
+                    tv.setText("AMOGUS");
+                    directionLayout.addView(tv);
                     System.out.println(Arrays.toString(route.get(i)));
                     JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
                     if (i == 0) {
-                        try {
-                            tv.setText("START AT STOP " + ch.getStopAddr(route.get(i)[0].toString()));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
                         createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1), "#f91504");
                     }
                     else {
-                        try {
-                            tv.setText("TAKE ROUTE " + ch.getRouteNum(route.get(i)[1].toString()) + " TO STOP " + ch.getStopAddr(route.get(i)[0].toString()));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
                         createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i + 1), "#0409f9");
                     }
-                    directionLayout.addView(tv);
                     po.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
                 }
                 mMap.addPolyline(po);
@@ -576,14 +437,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Routing finalR1 = r;
 
-
         toView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 System.out.println("CCCCC");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
-                saveDestination.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -593,7 +452,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("CCCCC");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
-                saveDestination.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -607,12 +465,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.clear();
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#09f904");
                 }
-                System.out.println("S1");
-                System.out.println(currentStartingPoint[0]);
                 createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104");
-                showDirections.setVisibility(View.INVISIBLE);
+                showDirections.setVisibility(View.VISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
-                saveDestination.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -626,13 +481,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                System.out.println(Arrays.toString(CoordinateHelper.textToCoordinatesAndAddress(query)));
                 if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
-                    System.out.println("CHANGE1");
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     currentStartingPoint[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                     mMap.clear();
-                    System.out.println("S2");
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Start", "#f91104");
                 }
                 else if (query.isEmpty()) {
@@ -640,24 +492,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
-                                System.out.println("LOCATIONTNION");
-                                System.out.println("CHANGE2");
                                 currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                             }
                         });
                     }
                     else {
-                        System.out.println("CHANGE3");
                         currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                     }
                     mMap.clear();
-                    System.out.println("S3");
                     createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104");
                 }
                 createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#09f904");
-                showDirections.setVisibility(View.INVISIBLE);
+                showDirections.setVisibility(View.VISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
-                saveDestination.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -678,18 +525,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     newSearchView.setVisibility(View.VISIBLE);
                     CharSequence fromText = "CURRENT LOCATION";
                     CharSequence toText = query;
-                    fromView.setQuery(fromText, false);
-                    toView.setQuery(toText, false);
+                    fromView.setQuery(fromText, true);
+                    toView.setQuery(toText, true);
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     if (checkLocationPermissions()) {
                         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
-                                System.out.println("FJIEOOIJEWFJIOFEWJIOIOP");
                                 System.out.println(task.getResult());
                                 try {
-                                    System.out.println("CHANGE CURRENT START");
-                                    System.out.println("CHANGE4");
                                     currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                                 } catch (NullPointerException e) {
                                     System.out.println(e);
@@ -700,10 +544,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         });
                     }
                     else {
-                        System.out.println("CHANGE5");
                         currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                     }
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#f90404");
                 }
                 return false;
             }
