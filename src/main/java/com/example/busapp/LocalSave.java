@@ -55,13 +55,12 @@ public class LocalSave {
             String addressesString = sharedPreferences.getString("savedAddresses", null);
             JSONArray addressesData = new JSONArray(addressesString);
             ArrayList<String> addressesList = new ArrayList<>();
-            System.out.println(addressesData.length());
-            System.out.println(addressesData.get(0));
             for (int i = 0; i < addressesData.length(); i++) {
                 if (addressesData.get(i).equals(null)) {
                     System.out.println("returned null");
                     return null;
                 }
+                System.out.println((String) addressesData.get(i));
                 addressesList.add((String) addressesData.get(i));
             }
             if (namesList.size() > 0) {

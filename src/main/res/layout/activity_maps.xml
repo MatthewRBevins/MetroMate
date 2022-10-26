@@ -2,7 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent"
+    android:layout_width="match_parent" >
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -162,7 +163,8 @@
                         android:layout_marginLeft="50dp"
                         android:layout_below="@id/resourcesText"
                         android:layout_height="50dp"
-                        android:background="@drawable/police" />
+                        android:background="@drawable/police"
+                        tools:ignore="NotSibling" />
                 </RelativeLayout>
             </RelativeLayout>
             <ScrollView
@@ -208,18 +210,17 @@
                 android:layout_alignParentTop="true"
                 android:text="x" />
             <ScrollView
-                android:layout_width="fill_parent"
-                android:layout_height="200dp"
-                android:layout_alignParentTop="true"
+                android:id="@+id/SavedScroll"
                 android:layout_marginTop="50dp"
-                android:scrollbars="none"
-                tools:ignore="NotSibling">
-                <TableLayout
-                    android:id="@+id/savedTable"
+                android:layout_width="match_parent"
+                android:visibility="visible"
+                android:layout_height="200dp">
+                <LinearLayout
+                    android:id="@+id/SavedLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:stretchColumns="*">
-                </TableLayout>
+                    android:orientation="vertical">
+                </LinearLayout>
             </ScrollView>
         </RelativeLayout>
     

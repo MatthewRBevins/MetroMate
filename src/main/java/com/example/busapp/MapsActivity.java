@@ -272,18 +272,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
             } else if (name.equals("Saved")) {
-                System.out.println("table view");
-                TableLayout tableLayout = menu[0].findViewById(R.id.savedTable);
-                tableLayout.removeAllViews();
+                System.out.println("saved menu");
+                LinearLayout linearLayout = findViewById(R.id.SavedLayout);
+                linearLayout.removeAllViews();
 
                 try {
                     ArrayList<String>[] savedLocations = LocalSave.loadSavedLocations(MapsActivity.this);
                     if (savedLocations != null) {
-                        for (int i = 0; i < savedLocations.length; i++) {
-                            TableRow tableRow = new TableRow(this);
-                            tableRow.setPadding(10, 20, 10, 20);
-
-                            Button button = new Button(MapsActivity.this);
+                        for (int i = 0; i < savedLocations[0].size(); i++) {
+                            System.out.println(i);
+                            Button button = new Button(this);
                             button.setText(savedLocations[0].get(i) + ": " + savedLocations[1].get(i));
                             button.setOnClickListener(view -> {
                                 String coordinates = button.getText().toString().split(": ")[1];
@@ -292,13 +290,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 System.out.println("clicked on button with coords: " + lat + ", " + lng);
                                 // TODO search functionality here
                             });
+                            linearLayout.addView(button);
 
-                            tableRow.addView(button);
-                            tableLayout.addView(tableRow);
                         }
                     }
                 } catch (JSONException | IndexOutOfBoundsException e) {
                     e.printStackTrace();
+                    System.out.println("saved menu failure");
                 }
             }
             return false;
@@ -360,16 +358,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     String lng = String.valueOf(map.get("longitude"));
                     String latlng = lat + ", " + lng;
 
-                    previousNames.add(query);
-                    previousAddresses.add(latlng);
+                    if (!previousAddresses.contains(latlng)) {
 
-                    System.out.println("query: " + query);
-                    System.out.println("coords: " + latlng);
+                        previousNames.add(query);
+                        previousAddresses.add(latlng);
 
-                    LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
-                    System.out.println("saved locations on top of previous ones");
+                        System.out.println("query: " + query);
+                        System.out.println("coords: " + latlng);
 
-                    LocalSave.makeSnackBar(query + " has been added to saved places", view);
+                        LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
+                        System.out.println("saved locations on top of previous ones");
+
+                        LocalSave.makeSnackBar(query + " has been added to saved places", view);
+                    } else {
+                        LocalSave.makeSnackBar("Location is already saved", view);
+                    }
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException _) {
                     SearchView toView = (SearchView) findViewById(R.id.searchView3);
                     String query = toView.getQuery().toString();
@@ -387,11 +390,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     addresses.add(latlng);
                     LocalSave.saveSavedLocations(names, addresses, MapsActivity.this);
                     System.out.println("saved locations fresh");
-                    try {
-                        System.out.println(LocalSave.loadSavedLocations(MapsActivity.this)[0]);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         });
