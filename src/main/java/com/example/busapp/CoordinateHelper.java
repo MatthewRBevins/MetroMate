@@ -36,11 +36,11 @@ public class CoordinateHelper {
         return null;
     }
     public static Object[] textToCoordinatesAndAddress(String text) {
-        String addressURLFormatted = text.replace(" ","+");
+        String textFormatted = text.replace(" ","+");
         String URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "location=47.571811,-122.141054" +
-                "&radius=100000" +
-                "&keyword=" + text +
+                "&radius=50000" +
+                "&keyword=" + textFormatted +
                 "&key=AIzaSyBqVEGyYI0c1i49h9bv8LT7riQ1dg6vCNE";
         System.out.println(URL);
         try {
@@ -56,7 +56,7 @@ public class CoordinateHelper {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("latitude", (double) location.get("lat"));
                     map.put("longitude", (double) location.get("lng"));
-                    map.put("formatted_address", (String) results.get("formatted_address"));
+                    map.put("name", (String) results.get("name"));
                     arr[i] = map;
                 }
                 return arr;
