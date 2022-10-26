@@ -284,25 +284,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             } else if (name.equals("Saved")) {
                 System.out.println("saved menu");
-                RelativeLayout linearLayout = findViewById(R.id.SavedLayout);
-                linearLayout.removeAllViews();
+                RelativeLayout relativeLayout = findViewById(R.id.SavedLayout);
+                relativeLayout.removeAllViews();
 
                 try {
                     ArrayList<String>[] savedLocations = LocalSave.loadSavedLocations(MapsActivity.this);
                     if (savedLocations != null) {
                         for (int i = 0; i < savedLocations[0].size(); i++) {
-                            System.out.println(i);
+                            LinearLayout newLL = new LinearLayout(this);
+                            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            llp.setMargins(0,i*150,0,0);
+                            newLL.setLayoutParams(llp);
+                            newLL.setOrientation(LinearLayout.HORIZONTAL);
                             Button button = new Button(this);
-                            RelativeLayout.LayoutParams bLLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            bLLP.setMargins(0,i*150,0,0);
-                            RelativeLayout.LayoutParams cbLLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            cbLLP.setMargins(150,i*150,0,0);
                             Button closeSaveButton = new Button(this);
                             closeSaveButton.setText("X");
-                            button.setLayoutParams(bLLP);
-                            closeSaveButton.setLayoutParams(cbLLP);
-                            button.setText(savedLocations[0].get(i) + ": " + savedLocations[1].get(i));
+                            newLL.addView(button);
+                            newLL.addView(closeSaveButton);
+                            button.setText(savedLocations[0].get(i).substring(0,41));
                             int finalI = i;
+                            closeSaveButton.setOnClickListener(view -> {
+                                ArrayList<String>[] previousSave = new ArrayList[0];
+                                try {
+                                    previousSave = LocalSave.loadSavedLocations(MapsActivity.this);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                ArrayList<String> previousNames = previousSave[0];
+                                ArrayList<String> previousAddresses = previousSave[1];
+                                int cNamei = 0;
+                                for (String cName : previousNames) {
+                                    if (cName.equals(savedLocations[0].get(finalI))) {
+                                        previousNames.remove(cNamei);
+                                        previousAddresses.remove(cNamei);
+                                        LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
+                                        relativeLayout.removeViews(finalI,1);
+                                    }
+                                    cNamei++;
+                                }
+                            });
                             button.setOnClickListener(view -> {
                                 String coordinates = button.getText().toString().split(": ")[1];
                                 double lat = Double.parseDouble(coordinates.split(", ")[0]);
@@ -341,8 +361,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                                 currentDestination[0] = new LatLng(lat,lng);
                             });
-                            linearLayout.addView(button);
-                            linearLayout.addView(closeSaveButton);
+                            relativeLayout.addView(newLL);
                         }
                     }
                 } catch (JSONException | IndexOutOfBoundsException e) {
