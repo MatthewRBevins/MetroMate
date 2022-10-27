@@ -847,12 +847,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 ToggleButton autoShowRouteMap = findViewById(R.id.setting2);
                 Button showRouteButton = findViewById(R.id.submitDirections);
-                System.out.println(autoShowRouteMap.isChecked());
                 if (autoShowRouteMap.isChecked()) {
                     showRouteButton.performClick();
-                    System.out.println("automatically showed the route");
-                } else {
-                    System.out.println("Did not automatically show the route");
+                }
+
+                ToggleButton autoSaveDestination = findViewById(R.id.setting3);
+                Button saveDestinationButton = findViewById(R.id.saveDestination);
+                if (autoSaveDestination.isChecked()) {
+                    saveDestinationButton.performClick();
                 }
 
                 return false;
