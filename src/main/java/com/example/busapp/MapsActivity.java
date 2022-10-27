@@ -305,7 +305,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (buttonText.length() > 41) {
                                 buttonText = buttonText.substring(0,41);
                             }
-                            button.setText(buttonText);
+                            button.setText(buttonText + ": " + savedLocations[1].get(i));
                             int finalI = i;
                             closeSaveButton.setOnClickListener(view -> {
                                 ArrayList<String>[] previousSave = new ArrayList[0];
