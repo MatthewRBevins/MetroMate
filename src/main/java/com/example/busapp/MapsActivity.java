@@ -809,6 +809,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
                     RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
                     defaultSearchView.setVisibility(View.INVISIBLE);
@@ -843,6 +844,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                 }
+
+                ToggleButton autoShowRouteMap = findViewById(R.id.setting2);
+                Button showRouteButton = findViewById(R.id.submitDirections);
+                System.out.println(autoShowRouteMap.isChecked());
+                if (autoShowRouteMap.isChecked()) {
+                    showRouteButton.performClick();
+                    System.out.println("automatically showed the route");
+                } else {
+                    System.out.println("Did not automatically show the route");
+                }
+
                 return false;
             }
             @Override
