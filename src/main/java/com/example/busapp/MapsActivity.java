@@ -112,8 +112,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             while (iterator.hasNext()) {
                 JSONObject jj = iterator.next();
                 JSONObject vehicle = (JSONObject) jj.get("vehicle");
-                JSONObject v = (JSONObject) vehicle.get("vehicle");
-                if (v.get("id").equals(busID)) {
+                JSONObject t = (JSONObject) vehicle.get("trip");
+                if (t.get("route_id").equals(busID)) {
                     JSONObject pos = (JSONObject) vehicle.get("position");
                     LatLng latlng = new LatLng((double) pos.get("latitude"), (double) pos.get("longitude"));
                     positions.add(latlng);
@@ -258,7 +258,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public boolean onQueryTextSubmit(String query) {
                         if (name.equals("Buses")) {
-                            ArrayList<LatLng> positions = getBusLocation(query);
+                            CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
+                            ArrayList<LatLng> positions = null;
+                            try {
+                                positions = getBusLocation(ch.getRouteID(query));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                             if (positions == null || positions.size() == 0) {
                                 LocalSave.makeSnackBar("No running buses with id " + query, getWindow().getDecorView().getRootView());
                             }
