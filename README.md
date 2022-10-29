@@ -1,2 +1,2 @@
 # MetroMate
- bus
+![MetroMate logo](/metromatelogo.png)
