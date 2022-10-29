@@ -147,7 +147,8 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_below="@id/resourcesText"
-                        android:background="@drawable/food" />
+                        android:background="@drawable/food"
+                        tools:ignore="NotSibling" />
                     <Button
                         android:id="@+id/resourceShelter"
                         android:layout_alignLeft="@id/resourceFood"
@@ -155,7 +156,8 @@
                         android:layout_marginLeft="50dp"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:background="@drawable/shelter" />
+                        android:background="@drawable/shelter"
+                        tools:ignore="NotSibling" />
                     <Button
                         android:id="@+id/resourcePolice"
                         android:layout_width="50dp"
