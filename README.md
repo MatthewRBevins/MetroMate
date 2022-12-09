@@ -10,5 +10,5 @@ The route finder uses an advanced algorithm to determine the optimal route to ge
 ## Resource Search
 The resources menu uses the Google Places API to find a list of food banks, shelters, or police stations that are near the user. It then lists all of these resources as buttons you can press to immediately find a way to get there using buses. The combination of route mapping and resource search makes it very easy and accessible for people to get the help they need.
 
-# <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.FXkOPS-aQJ-V8BFpBQmoBgHaBw%26pid%3DApi&f=1&ipt=0d9611612258d3b0d6a7122e90aca8779e174e40922a030a1a294d5140965736&ipo=images" width="20%" height="20%">
+# <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.FXkOPS-aQJ-V8BFpBQmoBgHaBw%26pid%3DApi&f=1&ipt=0d9611612258d3b0d6a7122e90aca8779e174e40922a030a1a294d5140965736&ipo=images" width="100%" height="100%">
 # Congressional App Challenge 2022 WINNER
