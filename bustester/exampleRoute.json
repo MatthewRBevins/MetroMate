@@ -1,0 +1,17 @@
+{
+    "tripid": {
+        "interregion": [
+            "region1",
+            "region2",
+            "region3"
+        ],
+        "intraregion": {
+            "region1": [
+                {
+                    "time": "12:00:00",
+                    "stop_id": "stopid1"
+                }
+            ]
+        }
+    }
+}

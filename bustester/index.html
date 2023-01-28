@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Locator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/handlebars/4.7.7/handlebars.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+      #gmp-map {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+      }
+    </style>
+    <script>
+      'use strict';
+
+      /** Hide a DOM element. */
+      function hideElement(el) {
+        el.style.display = 'none';
+      }
+
+      /** Show a DOM element that has been hidden. */
+      function showElement(el) {
+        el.style.display = 'block';
+      }
+
+      /** Helper function to generate a Google Maps directions URL */
+      function generateDirectionsURL(origin, destination) {
+        const googleMapsUrlBase = 'https://www.google.com/maps/dir/?';
+        const searchParams = new URLSearchParams('api=1');
+        searchParams.append('origin', origin);
+        const destinationParam = [];
+        // Add title to destinationParam except in cases where Quick Builder set
+        // the title to the first line of the address
+        if (destination.title !== destination.address1) {
+          destinationParam.push(destination.title);
+        }
+        destinationParam.push(destination.address1, destination.address2);
+        searchParams.append('destination', destinationParam.join(','));
+        return googleMapsUrlBase + searchParams.toString();
+      }
+
+      /**
+       * Defines an instance of the Locator+ solution, to be instantiated
+       * when the Maps library is loaded.
+       */
+      function LocatorPlus(configuration) {
+        const locator = this;
+
+        locator.locations = configuration.locations || [];
+        locator.capabilities = configuration.capabilities || {};
+
+        const mapEl = document.getElementById('gmp-map');
+
+        // Initialize the map -------------------------------------------------------
+        locator.map = new google.maps.Map(mapEl, configuration.mapOptions);
+        /*let poss = [[{lat:47.577507,lng:-122.297401},529],[{lat:47.5775909,lng:-122.297127},802],[{lat:47.5776825,lng:-122.297165},297],[{lat:47.7742424,lng:-122.342407},341],[{lat:47.7745056,lng:-122.341988},192],[{lat:47.7745056,lng:-122.3414},27],[{lat:47.7745056,lng:-122.340881},345],[{lat:47.774395,lng:-122.341034},79],[{lat:47.7742348,lng:-122.341301},92],[{lat:47.5196114,lng:-122.336197},326],[{lat:47.3917961,lng:-122.287567},181],[{lat:47.2944527,lng:-122.359009},193],[{lat:47.4809074,lng:-122.20813},115],[{lat:47.4801102,lng:-122.20813},142],[{lat:47.4798775,lng:-122.20813},287],[{lat:47.4800987,lng:-122.207756},66],[{lat:47.4805031,lng:-122.207756},367],[{lat:47.4809685,lng:-122.207756},276],[{lat:47.4807777,lng:-122.208786},17],[{lat:47.4807777,lng:-122.208549},390],[{lat:47.4804993,lng:-122.208717},319],[{lat:47.4804993,lng:-122.208199},225],[{lat:47.469944,lng:-122.337357},226],[{lat:47.469677,lng:-122.337479},15],[{lat:47.4701042,lng:-122.337067},254],[{lat:47.4696922,lng:-122.337288},438],[{lat:47.4697571,lng:-122.337097},560],[{lat:47.4694099,lng:-122.337318},353],[{lat:47.4724579,lng:-122.213127},320],[{lat:47.3062248,lng:-122.232079},44],[{lat:47.3057899,lng:-122.232079},479],[{lat:47.3054886,lng:-122.232079},94],[{lat:47.3052406,lng:-122.232086},95],[{lat:47.3210411,lng:-122.22802},20],[{lat:47.47258,lng:-122.213837},232],[{lat:47.4721756,lng:-122.212746},28],[{lat:47.3610573,lng:-122.166191},104],[{lat:47.5459557,lng:-122.020042},54],[{lat:47.5422783,lng:-122.062302},104],[{lat:47.5455666,lng:-122.019287},123],[{lat:47.5457039,lng:-122.019318},108],[{lat:47.5426216,lng:-122.062263},81],[{lat:47.541584,lng:-122.062302},101],[{lat:47.5418968,lng:-122.062263},108],[{lat:47.5422478,lng:-122.062225},50],[{lat:47.5424728,lng:-122.06221},20],[{lat:47.5805092,lng:-122.152657},581],[{lat:47.5805054,lng:-122.152008},695],[{lat:47.615509,lng:-122.194725},168],[{lat:47.6155052,lng:-122.193909},4],[{lat:47.6155014,lng:-122.194389},125],[{lat:47.6155205,lng:-122.196152},166],[{lat:47.6155052,lng:-122.195358},451],[{lat:47.6155052,lng:-122.195274},6],[{lat:47.6155014,lng:-122.19426},125],[{lat:47.6154938,lng:-122.193909},12],[{lat:47.6153603,lng:-122.19619},235],[{lat:47.615509,lng:-122.195724},268],[{lat:47.633709,lng:-122.137604},297],[{lat:47.6331596,lng:-122.136086},147],[{lat:47.6330452,lng:-122.137802},276],[{lat:47.6765976,lng:-122.123665},142],[{lat:47.6767349,lng:-122.123993},145],[{lat:47.6768913,lng:-122.124428},242],[{lat:47.6767311,lng:-122.12513},461],[{lat:47.6680908,lng:-122.185593},114],[{lat:47.6765938,lng:-122.124939},331],[{lat:47.6763,lng:-122.203323},114],[{lat:47.6768913,lng:-122.203346},441],[{lat:47.6758537,lng:-122.203468},324],[{lat:47.6765175,lng:-122.203552},424],[{lat:47.7143059,lng:-122.17981},195],[{lat:47.7145042,lng:-122.180359},376],[{lat:47.7146454,lng:-122.180496},188],[{lat:47.6438522,lng:-122.196693},751],[{lat:47.7164536,lng:-122.187599},184],[{lat:47.7668228,lng:-122.347359},23],[{lat:47.757122,lng:-122.151436},221],[{lat:47.7567825,lng:-122.151398},219],[{lat:47.7571831,lng:-122.241859},427],[{lat:47.7584076,lng:-122.241295},151],[{lat:47.759201,lng:-122.243057},88],[{lat:47.6736107,lng:-122.10096},581],[{lat:47.7853851,lng:-122.312492},92],[{lat:47.7852707,lng:-122.313011},93],[{lat:47.615593,lng:-122.196411},434],[{lat:47.6765938,lng:-122.12439},164]];
+        for (let i of poss) {
+          new google.maps.Circle({
+            center: i[0],
+            map: locator.map,
+            radius: i[1]
+          })
+        }*/
+        let regions =[
+  [
+    { lat: 47.1891174, lng: -122.506622 },
+    { lat: 47.1891174, lng: -122.3624646 },
+    { lat: 47.32550656, lng: -122.3624646 },
+    { lat: 47.32550656, lng: -122.506622 }
+  ],
+  [
+    { lat: 47.32550656, lng: -122.506622 },
+    { lat: 47.32550656, lng: -122.3624646 },
+    { lat: 47.46189572, lng: -122.3624646 },
+    { lat: 47.46189572, lng: -122.506622 }
+  ],
+  [
+    { lat: 47.46189572, lng: -122.506622 },
+    { lat: 47.46189572, lng: -122.3624646 },
+    { lat: 47.59828488, lng: -122.3624646 },
+    { lat: 47.59828488, lng: -122.506622 }
+  ],
+  [
+    { lat: 47.59828488, lng: -122.506622 },
+    { lat: 47.59828488, lng: -122.3624646 },
+    { lat: 47.73467404, lng: -122.3624646 },
+    { lat: 47.73467404, lng: -122.506622 }
+  ],
+  [
+    { lat: 47.73467404, lng: -122.506622 },
+    { lat: 47.73467404, lng: -122.3624646 },
+    { lat: 47.8710632, lng: -122.3624646 },
+    { lat: 47.8710632, lng: -122.506622 }
+  ],
+  [
+    { lat: 47.1891174, lng: -122.3624646 },
+    { lat: 47.1891174, lng: -122.2183072 },
+    { lat: 47.32550656, lng: -122.2183072 },
+    { lat: 47.32550656, lng: -122.3624646 }
+  ],
+  [
+    { lat: 47.32550656, lng: -122.3624646 },
+    { lat: 47.32550656, lng: -122.2183072 },
+    { lat: 47.46189572, lng: -122.2183072 },
+    { lat: 47.46189572, lng: -122.3624646 }
+  ],
+  [
+    { lat: 47.46189572, lng: -122.3624646 },
+    { lat: 47.46189572, lng: -122.2183072 },
+    { lat: 47.59828488, lng: -122.2183072 },
+    { lat: 47.59828488, lng: -122.3624646 }
+  ],
+  [
+    { lat: 47.59828488, lng: -122.3624646 },
+    { lat: 47.59828488, lng: -122.2183072 },
+    { lat: 47.73467404, lng: -122.2183072 },
+    { lat: 47.73467404, lng: -122.3624646 }
+  ],
+  [
+    { lat: 47.73467404, lng: -122.3624646 },
+    { lat: 47.73467404, lng: -122.2183072 },
+    { lat: 47.8710632, lng: -122.2183072 },
+    { lat: 47.8710632, lng: -122.3624646 }
+  ],
+  [
+    { lat: 47.1891174, lng: -122.2183072 },
+    { lat: 47.1891174, lng: -122.0741498 },
+    { lat: 47.32550656, lng: -122.0741498 },
+    { lat: 47.32550656, lng: -122.2183072 }
+  ],
+  [
+    { lat: 47.32550656, lng: -122.2183072 },
+    { lat: 47.32550656, lng: -122.0741498 },
+    { lat: 47.46189572, lng: -122.0741498 },
+    { lat: 47.46189572, lng: -122.2183072 }
+  ],
+  [
+    { lat: 47.46189572, lng: -122.2183072 },
+    { lat: 47.46189572, lng: -122.0741498 },
+    { lat: 47.59828488, lng: -122.0741498 },
+    { lat: 47.59828488, lng: -122.2183072 }
+  ],
+  [
+    { lat: 47.59828488, lng: -122.2183072 },
+    { lat: 47.59828488, lng: -122.0741498 },
+    { lat: 47.73467404, lng: -122.0741498 },
+    { lat: 47.73467404, lng: -122.2183072 }
+  ],
+  [
+    { lat: 47.73467404, lng: -122.2183072 },
+    { lat: 47.73467404, lng: -122.0741498 },
+    { lat: 47.8710632, lng: -122.0741498 },
+    { lat: 47.8710632, lng: -122.2183072 }
+  ],
+  [
+    { lat: 47.1891174, lng: -122.0741498 },
+    { lat: 47.1891174, lng: -121.9299924 },
+    { lat: 47.32550656, lng: -121.9299924 },
+    { lat: 47.32550656, lng: -122.0741498 }
+  ],
+  [
+    { lat: 47.32550656, lng: -122.0741498 },
+    { lat: 47.32550656, lng: -121.9299924 },
+    { lat: 47.46189572, lng: -121.9299924 },
+    { lat: 47.46189572, lng: -122.0741498 }
+  ],
+  [
+    { lat: 47.46189572, lng: -122.0741498 },
+    { lat: 47.46189572, lng: -121.9299924 },
+    { lat: 47.59828488, lng: -121.9299924 },
+    { lat: 47.59828488, lng: -122.0741498 }
+  ],
+  [
+    { lat: 47.59828488, lng: -122.0741498 },
+    { lat: 47.59828488, lng: -121.9299924 },
+    { lat: 47.73467404, lng: -121.9299924 },
+    { lat: 47.73467404, lng: -122.0741498 }
+  ],
+  [
+    { lat: 47.73467404, lng: -122.0741498 },
+    { lat: 47.73467404, lng: -121.9299924 },
+    { lat: 47.8710632, lng: -121.9299924 },
+    { lat: 47.8710632, lng: -122.0741498 }
+  ],
+  [
+    { lat: 47.1891174, lng: -121.9299924 },
+    { lat: 47.1891174, lng: -121.785835 },
+    { lat: 47.32550656, lng: -121.785835 },
+    { lat: 47.32550656, lng: -121.9299924 }
+  ],
+  [
+    { lat: 47.32550656, lng: -121.9299924 },
+    { lat: 47.32550656, lng: -121.785835 },
+    { lat: 47.46189572, lng: -121.785835 },
+    { lat: 47.46189572, lng: -121.9299924 }
+  ],
+  [
+    { lat: 47.46189572, lng: -121.9299924 },
+    { lat: 47.46189572, lng: -121.785835 },
+    { lat: 47.59828488, lng: -121.785835 },
+    { lat: 47.59828488, lng: -121.9299924 }
+  ],
+  [
+    { lat: 47.59828488, lng: -121.9299924 },
+    { lat: 47.59828488, lng: -121.785835 },
+    { lat: 47.73467404, lng: -121.785835 },
+    { lat: 47.73467404, lng: -121.9299924 }
+  ],
+  [
+    { lat: 47.73467404, lng: -121.9299924 },
+    { lat: 47.73467404, lng: -121.785835 },
+    { lat: 47.8710632, lng: -121.785835 },
+    { lat: 47.8710632, lng: -121.9299924 }
+  ]
+];
+        for (let i of regions) {
+          new google.maps.Polygon({
+            paths: i,
+            map: locator.map
+          })
+        }
+
+        
+        
+      }
+    </script>
+    <script>
+      const CONFIGURATION = { 
+        "mapOptions": {"center":{lat:38.0,lng:-100.0},"fullscreenControl":true,"mapTypeControl":false,"streetViewControl":false,"zoom":4,"zoomControl":true,"maxZoom":17,"mapId":""},
+        "mapsApiKey": "AIzaSyBWewEB2WaDHz7ITuub6f3-HXGiBrdYzMg",
+        "capabilities": {"input":true,"autocomplete":true,"directions":false,"distanceMatrix":true,"details":false,"actions":true}
+      };
+
+      function initMap() {
+        new LocatorPlus(CONFIGURATION);
+      }
+    </script>
+    <script id="locator-result-items-tmpl" type="text/x-handlebars-template">
+      {{#each locations}}
+        <li class="location-result" data-location-index="{{index}}">
+          <button class="select-location">
+            <h2 class="name">{{title}}</h2>
+          </button>
+          <div class="address">{{address1}}<br>{{address2}}</div>
+          <div class="options">
+            {{#each actions}}
+              <div class="option-container {{#if additionalLinks.length}}dropdown-container{{/if}}">
+                <div class="action-button {{#if defaultUrl}}{{#if additionalLinks.length}}split-action-button{{/if}}{{/if}}">
+                  {{#if defaultUrl}}
+                    <a href="{{defaultUrl}}" target="_blank" class="option">
+                      <span>{{label}}</span>
+                      {{#unless additionalLinks.length}}
+                        <img class="open-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/open_in_new/v16/24px.svg" alt="open in new window"/>
+                      {{/unless}}
+                    </a>
+                  {{/if}}
+                  {{#if additionalLinks.length}}
+                    <button class="action-dropdown-toggle option">
+                      {{#unless defaultUrl}}<span>{{label}}</span>{{/unless}}
+                      <img class="dropdown-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/arrow_drop_down/v16/24px.svg" alt="dropdown"/>
+                    </button>
+                  {{/if}}
+                </div>
+                {{#if additionalLinks.length}}
+                  <div class="action-dropdown">
+                    {{#each additionalLinks}}
+                      <a href="{{url}}" target="_blank">
+                        {{#if iconUrl}}
+                          <img src="{{iconUrl}}" alt="icon"/>
+                        {{else}}
+                          <img src="https://fonts.gstatic.com/s/i/googlematerialicons/link/v16/24px.svg" alt="link"/>
+                        {{/if}}
+                        <span>{{name}}</span>
+                      </a>
+                    {{/each}}
+                  </div>
+                {{/if}}
+              </div>
+            {{/each}}
+          </div>
+          {{#if travelDistanceText}}
+            <div class="distance">{{travelDistanceText}}</div>
+          {{/if}}
+          <a class="directions-button" href="" target="_blank" title="Get directions to this location on Google Maps">
+            <svg width="34" height="34" viewBox="0 0 34 34"
+                  fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.5867 9.24375L17.9403 8.8902V8.8902L17.5867 9.24375ZM16.4117 9.24375L16.7653 9.59731L16.7675 9.59502L16.4117 9.24375ZM8.91172 16.7437L8.55817 16.3902L8.91172 16.7437ZM8.91172 17.9229L8.55817 18.2765L8.55826 18.2766L8.91172 17.9229ZM16.4117 25.4187H16.9117V25.2116L16.7652 25.0651L16.4117 25.4187ZM16.4117 25.4229H15.9117V25.63L16.0582 25.7765L16.4117 25.4229ZM25.0909 17.9229L25.4444 18.2765L25.4467 18.2742L25.0909 17.9229ZM25.4403 16.3902L17.9403 8.8902L17.2332 9.5973L24.7332 17.0973L25.4403 16.3902ZM17.9403 8.8902C17.4213 8.3712 16.5737 8.3679 16.0559 8.89248L16.7675 9.59502C16.8914 9.4696 17.1022 9.4663 17.2332 9.5973L17.9403 8.8902ZM16.0582 8.8902L8.55817 16.3902L9.26527 17.0973L16.7653 9.5973L16.0582 8.8902ZM8.55817 16.3902C8.0379 16.9105 8.0379 17.7562 8.55817 18.2765L9.26527 17.5694C9.13553 17.4396 9.13553 17.227 9.26527 17.0973L8.55817 16.3902ZM8.55826 18.2766L16.0583 25.7724L16.7652 25.0651L9.26517 17.5693L8.55826 18.2766ZM15.9117 25.4187V25.4229H16.9117V25.4187H15.9117ZM16.0582 25.7765C16.5784 26.2967 17.4242 26.2967 17.9444 25.7765L17.2373 25.0694C17.1076 25.1991 16.895 25.1991 16.7653 25.0694L16.0582 25.7765ZM17.9444 25.7765L25.4444 18.2765L24.7373 17.5694L17.2373 25.0694L17.9444 25.7765ZM25.4467 18.2742C25.9631 17.7512 25.9663 16.9096 25.438 16.3879L24.7354 17.0995C24.8655 17.2279 24.8687 17.4363 24.7351 17.5716L25.4467 18.2742Z" fill="#1967d2"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M19 19.8333V17.75H15.6667V20.25H14V16.9167C14 16.4542 14.3708 16.0833 14.8333 16.0833H19V14L21.9167 16.9167L19 19.8333Z" fill="#1967d2"/>
+              <circle class="directions-button-background" cx="17" cy="17" r="16.5" stroke="#1967d2"/>
+            </svg>
+          </a>
+        </li>
+      {{/each}}
+    </script>
+  </head>
+  <body>
+      <div id="gmp-map"></div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWewEB2WaDHz7ITuub6f3-HXGiBrdYzMg&callback=initMap&libraries=places,geometry&solution_channel=GMP_QB_locatorplus_v6_cABDF" async defer></script>
+  </body>
+</html> 
