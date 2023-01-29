@@ -1,17 +1,8 @@
 {
-    "tripid": {
-        "interregion": [
-            "region1",
-            "region2",
-            "region3"
-        ],
-        "intraregion": {
-            "region1": [
-                {
-                    "time": "12:00:00",
-                    "stop_id": "stopid1"
-                }
-            ]
+    "routeid": {
+        "regions": {
+            "region1": ["stopid1","stopid2","stopid3"],
+            "region2": ["stopid4","stopid5","stopid6"]
         }
     }
 }

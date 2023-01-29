@@ -1,8 +1,9 @@
 const stops = require('./busdata/stops');
+const fs = require('fs');
 let extremeties = [47.8710632, 47.1891174, -121.785835, -122.506622];
 let latDiff = extremeties[0] - extremeties[1];
 let longDiff = extremeties[2] - extremeties[3];
-let regions = 25;
+let regions = 4489;
 let latB = latDiff / Math.sqrt(regions);
 let longB = longDiff / Math.sqrt(regions);
 
@@ -19,4 +20,4 @@ for (let i = 0; i < Math.sqrt(regions); i++) {
     currentLong += longB;
 }
 
-console.log(polygons);
+fs.writeFileSync('hi.txt',JSON.stringify(polygons))
