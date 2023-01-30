@@ -46,27 +46,25 @@ let pos2 = new LatLng([47.732595, -122.327477])//new LatLng(prompt('Enter to go:
 let region1 = pos1.checkRegion().toString();
 let region2 = pos2.checkRegion().toString();
 
-function getRoute(region1, region2, depth) {
-    if (depth > 4) {
-        return Infinity;
+function getRoute(region1, region2, depth, arr) {
+    if (depth > 2) {
+        return [Infinity, arr];
     }
     if (testRegions[region1].toRegions.includes(region2)) {
-        return depth;
+        return [depth, arr];
     }
     let bestDepth = Infinity;
+    let best = arr;
+    let cur = arr.slice();
     for (let i of testRegions[region1].toRegions) {
-        let thisTry = getRoute(i, region2, depth+1);
+        cur.push(i);
+        let thisTry = getRoute(i, region2, depth+1, cur);
         if (thisTry < bestDepth) {
-            bestDepth = thisTry;
+            bestDepth = thisTry[0];
+            best = thisTry[1];
         }
+        cur = arr.slice();
     }
-    return bestDepth;
+    return [bestDepth, best];
 }
-let arr = [];
-for (let i of Object.keys(testRegions)) {
-    console.log(i);
-    for (let j of Object.keys(testRegions)) {
-        arr.push([i,j,getRoute(i,j,0)])
-    }
-}
-fs.writeFileSync('theListUWant.json',JSON.stringify(arr));
+console.log(getRoute("14","647",0,[]))

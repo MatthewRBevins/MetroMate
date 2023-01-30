@@ -1,15 +1,13 @@
 const testRegions = require('./testRegions.json');
 const testRoutes = require('./testRoutes.json');
-const fs = require('fs');
+const routes = require('./busdata/routes.json');
+const trips = require('./busdata/trips.json');
+var obj = {};
 for (let i of Object.keys(testRegions)) {
-    testRegions[i]["toRegions"] = [];
-    for (let j of testRegions[i].routes) {
-        for (let k of Object.keys(testRoutes[j].regions)) {
-            if (! testRegions[i]["toRegions"].includes(k)) {
-                testRegions[i]["toRegions"].push(k);
-            }
-        }
+    obj[i] = {
+        "short_name":testRoutes[i].short_name,
+        "description":testRoutes[i].description,
+        "url":testRoutes[i].url,
+        "shape_ids": testRoutes[i].shape_ids
     }
 }
-
-fs.writeFileSync('testRegions.json', JSON.stringify(testRegions));
