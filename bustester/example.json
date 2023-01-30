@@ -1,0 +1,25 @@
+{
+    "routeid": {
+        "route": "routeid1",
+        "times_available": [
+            {
+                "from": "0:00",
+                "to": "1:00"
+            }
+        ],
+        "trips": [
+            {
+                "id": "tripid1",
+                "times": {
+                    "from": "0:00",
+                    "to": "1:00"
+                },
+                "regions": [
+                    "regionid1",
+                    "regionid2",
+                    "regionid3"
+                ]
+            }
+        ]
+    }
+}

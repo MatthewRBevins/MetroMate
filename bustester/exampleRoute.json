@@ -1,8 +1,0 @@
-{
-    "routeid": {
-        "regions": {
-            "region1": ["stopid1","stopid2","stopid3"],
-            "region2": ["stopid4","stopid5","stopid6"]
-        }
-    }
-}
