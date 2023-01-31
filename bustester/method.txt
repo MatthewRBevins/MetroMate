@@ -6,6 +6,4 @@ Step 4: Check whether you can get to the next region using two or less transfers
 Step 5: If not, repeat the process with more regions selected
 Step 6: If still unavailable, show closest possible trip.
 
-TO DO: Update routes JSON to match example
-TO DO: Remove "toRoutes" in regions JSON
 TO DO: Add region to stops JSON?

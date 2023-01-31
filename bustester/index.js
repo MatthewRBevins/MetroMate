@@ -2,8 +2,8 @@ const routes = require('./busdata/routes.json');
 const shapes = require('./busdata/shapes.json');
 const stops = require('./busdata/stops.json');
 const trips = require('./busdata/trips.json');
-const testRegions = require('./testRegions.json');
-const testRoutes = require('./testRoutes.json');
+const newRegions = require('./newRegions.json');
+const newRoutes = require('./newRoutes.json');
 const regions = require('./fullRegions.json').regions;
 const fs = require('fs');
 const prompt = require('prompt-sync')();
@@ -37,34 +37,26 @@ function checkRegion(lat, lng) {
 }
 
 
+function isInTimeFrame(time, start, end) {
+    return (parseInt(start.substr(0,2)) == parseInt(time.substr(0,2))) 
+}
 
 //EASTGATE = (47.580883, -122.152551)
 //LAKESIDE = (47.732595, -122.327477)
 
 let pos1 = new LatLng([47.580883, -122.152551])//new LatLng(prompt('Enter position: ').replaceAll("(","").replaceAll(")","").split(","));
 let pos2 = new LatLng([47.732595, -122.327477])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
-let region1 = pos1.checkRegion().toString();
-let region2 = pos2.checkRegion().toString();
-
-function getRoute(region1, region2, depth, arr) {
-    if (depth > 3) {
-        return [Infinity, arr];
-    }
-    if (testRegions[region1].toRegions.includes(region2)) {
-        return [depth, arr];
-    }
-    let bestDepth = Infinity;
-    let best = arr;
-    let cur = arr.slice();
-    for (let i of testRegions[region1].toRegions) {
-        cur.push(i);
-        let thisTry = getRoute(i, region2, depth+1, cur);
-        if (thisTry < bestDepth) {
-            bestDepth = thisTry[0];
-            best = thisTry[1];
+let region1 = pos1.checkRegion()
+let region2 = pos2.checkRegion()
+let time = "15:50:00"
+for (let i of newRegions[region1].routes) {
+    for (let j of newRoutes[i].trips) {
+        if (isInTimeFrame(time, j.times.from, j.times.start)) {
+            for (let k = j.regions.indexOf(region1); k < j.regions.length; k++) {
+                if (j.regions[k] == region2) {
+                    console.log(i)
+                }
+            }
         }
-        cur = arr.slice();
     }
-    return [bestDepth, best];
 }
-console.log(getRoute("14","647",0,[]))
