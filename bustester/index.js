@@ -1,3 +1,15 @@
+//NEXT THING TO DO:
+//CHECK FOR CLOSEST REGIONS FROM REGIONS
+//DEAL WITH VASHON ISLAND
+
+
+
+
+
+
+
+
+
 const routes = require('./busdata/routes.json');
 const shapes = require('./busdata/shapes.json');
 const stops = require('./busdata/stops.json');
@@ -44,19 +56,47 @@ function isInTimeFrame(time, start, end) {
 //EASTGATE = (47.580883, -122.152551)
 //LAKESIDE = (47.732595, -122.327477)
 
+function getPossibleRegions(time, startingRegion) {
+    let arr = [];
+    //Loop through all of the routes that go through starting regions
+    for (let i of newRegions[startingRegion].routes) {
+        //Loop through every trip of current route
+        for (let j of newRoutes[i].trips) {
+            //If the current trip takes place at the current time
+            if (isInTimeFrame(time, j.times.from, j.times.start)) {
+                //Loop through all regions that the trip goes to starting from the current region
+                for (let k = j.regions.indexOf(startingRegion); k < j.regions.length; k++) {
+                    if (! arr.includes(j.regions[k]) && j.regions[k] != null) {
+                        arr.push(j.regions[k]);
+                    }
+                }
+            }
+        }
+    }
+    return arr;
+}
+
 let pos1 = new LatLng([47.580883, -122.152551])//new LatLng(prompt('Enter position: ').replaceAll("(","").replaceAll(")","").split(","));
 let pos2 = new LatLng([47.732595, -122.327477])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
 let region1 = pos1.checkRegion()
 let region2 = pos2.checkRegion()
 let time = "15:50:00"
-for (let i of newRegions[region1].routes) {
-    for (let j of newRoutes[i].trips) {
-        if (isInTimeFrame(time, j.times.from, j.times.start)) {
-            for (let k = j.regions.indexOf(region1); k < j.regions.length; k++) {
-                if (j.regions[k] == region2) {
-                    console.log(i)
+let r = getPossibleRegions(time, region1);
+let rr = r.slice();
+for (let i of rr) {
+    console.log(i);
+    let ii = getPossibleRegions(time, i);
+    for (let j of ii) {
+        if (! r.includes(j) && j != null) {
+            r.push(j);
+        }
+        if (j != null) {
+            for (let k of getPossibleRegions(time, j)) {
+                if (! r.includes(k) && k != null) {
+                    r.push(j);
                 }
             }
         }
     }
 }
+fs.writeFileSync('dataDump.json', JSON.stringify(r));
