@@ -1,7 +1,4 @@
 //NEXT THING TO DO:
-//CHECK FOR CLOSEST REGIONS FROM REGIONS
-//DEAL WITH VASHON ISLAND
-
 
 
 
@@ -19,6 +16,7 @@ const newRoutes = require('./newRoutes.json');
 const regions = require('./fullRegions.json').regions;
 const fs = require('fs');
 const prompt = require('prompt-sync')();
+const regionSide = 67;
 
 class LatLng {
     constructor(arr) {
@@ -35,8 +33,12 @@ class LatLng {
     }
 }
 
-function calcDistance(pos1, pos2) {
-    return Math.sqrt((pos1.lat-pos2.lat)**2 + (pos1.lng-pos2.lng)**2)
+function calcDistance(x1,y1,x2,y2) {
+    return Math.sqrt((x1-x2)**2 + (y1-y2)**2)
+}
+
+function checkRegionDistance(region1, region2) {
+    return calcDistance(Math.ceil(region1/regionSide), region1 - (regionSide*Math.floor(region1/regionSide)), Math.ceil(region2/regionSide), region2 - (regionSide*Math.floor(region2/regionSide)))
 }
 
 function checkRegion(lat, lng) {
@@ -76,27 +78,37 @@ function getPossibleRegions(time, startingRegion) {
     return arr;
 }
 
-let pos1 = new LatLng([47.580883, -122.152551])//new LatLng(prompt('Enter position: ').replaceAll("(","").replaceAll(")","").split(","));
-let pos2 = new LatLng([47.732595, -122.327477])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
+let pos1 = new LatLng([47.732017, -122.326533])//new LatLng(prompt('Enter position: ').replaceAll("(","").replaceAll(")","").split(","));
+let pos2 = new LatLng([47.407566, -122.254934])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
 let region1 = pos1.checkRegion()
 let region2 = pos2.checkRegion()
-let time = "15:50:00"
+let time = "15:00:00"
 let r = getPossibleRegions(time, region1);
 let rr = r.slice();
 for (let i of rr) {
-    console.log(i);
-    let ii = getPossibleRegions(time, i);
-    for (let j of ii) {
-        if (! r.includes(j) && j != null) {
+    if (! r.includes(i)) {
+        r.push(i);
+    }
+}
+for (let i of r) {
+    time = "16:00:00";
+    let amog = getPossibleRegions(time, i);
+    let amo = amog.slice();
+    for (let j of amo) {
+        if (! r.includes(j)) {
             r.push(j);
-        }
-        if (j != null) {
-            for (let k of getPossibleRegions(time, j)) {
-                if (! r.includes(k) && k != null) {
-                    r.push(j);
-                }
-            }
         }
     }
 }
-fs.writeFileSync('dataDump.json', JSON.stringify(r));
+let low = Infinity;
+let l = 'hi';
+for (let i of r) {
+    let cd = checkRegionDistance(i, region2);
+    if (cd < low) {
+        low = cd;
+        l = i;
+    }
+}
+console.log(low);
+console.log(l);
+fs.writeFileSync('dataDump.json',JSON.stringify(r));
