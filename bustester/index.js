@@ -69,7 +69,11 @@ function getPossibleRegions(time, startingRegion) {
                 //Loop through all regions that the trip goes to starting from the current region
                 for (let k = j.regions.indexOf(startingRegion); k < j.regions.length; k++) {
                     if (! arr.includes(j.regions[k]) && j.regions[k] != null) {
-                        arr.push(j.regions[k]);
+                        arr.push({
+                            route: i,
+                            time: "00:00:00",
+                            region: j.regions[k]
+                        });
                     }
                 }
             }
@@ -82,33 +86,24 @@ let pos1 = new LatLng([47.732017, -122.326533])//new LatLng(prompt('Enter positi
 let pos2 = new LatLng([47.407566, -122.254934])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
 let region1 = pos1.checkRegion()
 let region2 = pos2.checkRegion()
-let time = "15:00:00"
+let time = "12:00:00"
 let r = getPossibleRegions(time, region1);
-let rr = r.slice();
-for (let i of rr) {
-    if (! r.includes(i)) {
-        r.push(i);
-    }
-}
-for (let i of r) {
-    time = "16:00:00";
-    let amog = getPossibleRegions(time, i);
-    let amo = amog.slice();
-    for (let j of amo) {
-        if (! r.includes(j)) {
-            r.push(j);
-        }
-    }
-}
+
 let low = Infinity;
 let l = 'hi';
 for (let i of r) {
-    let cd = checkRegionDistance(i, region2);
+    let cd = checkRegionDistance(i.region, region2);
     if (cd < low) {
         low = cd;
-        l = i;
+        l = i.region;
+    }
+    for (let j of getPossibleRegions("15:00:00", i.region)) {
+        let cd = checkRegionDistance(j.region, region2);
+        if (cd < low) {
+            low = cd;
+            l = j.region;
+        }
     }
 }
 console.log(low);
 console.log(l);
-fs.writeFileSync('dataDump.json',JSON.stringify(r));
