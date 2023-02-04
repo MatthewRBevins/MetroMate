@@ -13,10 +13,16 @@ const stops = require('./busdata/stops.json');
 const trips = require('./busdata/trips.json');
 const newRegions = require('./newRegions.json');
 const newRoutes = require('./newRoutes.json');
+const newTrips = require('./newTrips.json');
 const regions = require('./fullRegions.json').regions;
 const fs = require('fs');
 const prompt = require('prompt-sync')();
 const regionSide = 67;
+
+function getFormattedTime() {
+    let d = new Date();
+    return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+}
 
 class LatLng {
     constructor(arr) {
@@ -50,7 +56,6 @@ function checkRegion(lat, lng) {
     return -1;
 }
 
-
 function isInTimeFrame(time, start, end) {
     return (parseInt(start.substr(0,2)) == parseInt(time.substr(0,2))) 
 }
@@ -66,13 +71,20 @@ function getPossibleRegions(time, startingRegion) {
         for (let j of newRoutes[i].trips) {
             //If the current trip takes place at the current time
             if (isInTimeFrame(time, j.times.from, j.times.start)) {
+                let regionsArr = Object.keys(newTrips[j.id]);
+                let startTime = null;
+                if (startingRegion in regionsArr) {
+                    startTime = newTrips[j.id][startingRegion].time;
+                }
                 //Loop through all regions that the trip goes to starting from the current region
-                for (let k = j.regions.indexOf(startingRegion); k < j.regions.length; k++) {
-                    if (! arr.includes(j.regions[k]) && j.regions[k] != null) {
+                for (let k = regionsArr.indexOf(startingRegion); k < regionsArr.length; k++) {
+                    if (! arr.includes(regionsArr[k]) && regionsArr[k] != null) {
                         arr.push({
+                            startTime: startTime,
                             route: i,
-                            time: "00:00:00",
-                            region: j.regions[k]
+                            trip: j.id,
+                            time: newTrips[j.id][regionsArr[k]][0].time,
+                            region: regionsArr[k]
                         });
                     }
                 }
@@ -86,24 +98,27 @@ let pos1 = new LatLng([47.732017, -122.326533])//new LatLng(prompt('Enter positi
 let pos2 = new LatLng([47.407566, -122.254934])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
 let region1 = pos1.checkRegion()
 let region2 = pos2.checkRegion()
-let time = "12:00:00"
+let time = getFormattedTime();
 let r = getPossibleRegions(time, region1);
 
 let low = Infinity;
 let l = 'hi';
+let ll = 'hi';
 for (let i of r) {
-    let cd = checkRegionDistance(i.region, region2);
-    if (cd < low) {
-        low = cd;
-        l = i.region;
+    let dis = checkRegionDistance(region2, i.region);
+    if (dis < low) {
+        low = dis;
+        l = i;
     }
-    for (let j of getPossibleRegions("15:00:00", i.region)) {
-        let cd = checkRegionDistance(j.region, region2);
-        if (cd < low) {
-            low = cd;
-            l = j.region;
+    for (let j of getPossibleRegions(i.time, i.region)) {
+        let dis = checkRegionDistance(j.region, i.region);
+        if (dis < low) {
+            low = dis;
+            ll = i;
+            l = j;
         }
     }
 }
 console.log(low);
+console.log(ll);
 console.log(l);
