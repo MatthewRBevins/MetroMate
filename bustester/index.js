@@ -19,6 +19,18 @@ const fs = require('fs');
 const prompt = require('prompt-sync')();
 const regionSide = 67;
 
+function getClosestRegions(region) {
+    //bottom, top, left, right
+    let boundary = [region % 67 == 0, (region+1) % 67 == 0, region < 68, region > (regions.length-67)];
+    let closest = [[region-1, [0]],[region+1,[1]],[region-67,[2]],[region+67,[3]],[ (region-1)+67,[0,3]],[ (region+1)+67,[1,3]],[ (region-1)-67,[0,2]],[ (region+1)-67,[1,2]]];
+    return closest.filter(val => {
+        for (let i of val[1]) {
+            if (boundary[i]) return false;
+        }
+        return true;
+    }).map(val => val[0].toString());
+}
+
 function getFormattedTime() {
     let d = new Date();
     return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
@@ -57,35 +69,53 @@ function checkRegion(lat, lng) {
 }
 
 function isInTimeFrame(time, start, end) {
-    return (parseInt(start.substr(0,2)) == parseInt(time.substr(0,2))) 
+    return true;//(parseInt(start.substr(0,2)) == parseInt(time.substr(0,2)) || parseInt(start.substr(0,2)) == parseInt(time.substr(0,2)-1)) 
 }
 
 //EASTGATE = (47.580883, -122.152551)
 //LAKESIDE = (47.732595, -122.327477)
 
-function getPossibleRegions(time, startingRegion) {
+function arrIncludesKey(arr, key, val) {
+    for (let i of arr) {
+        if (i[key] == val) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getPossibleRegions(time, startingRegion, closestRegions) {
     let arr = [];
-    //Loop through all of the routes that go through starting regions
-    for (let i of newRegions[startingRegion].routes) {
-        //Loop through every trip of current route
-        for (let j of newRoutes[i].trips) {
-            //If the current trip takes place at the current time
-            if (isInTimeFrame(time, j.times.from, j.times.start)) {
-                let regionsArr = Object.keys(newTrips[j.id]);
-                let startTime = null;
-                if (startingRegion in regionsArr) {
-                    startTime = newTrips[j.id][startingRegion].time;
-                }
-                //Loop through all regions that the trip goes to starting from the current region
-                for (let k = regionsArr.indexOf(startingRegion); k < regionsArr.length; k++) {
-                    if (! arr.includes(regionsArr[k]) && regionsArr[k] != null) {
-                        arr.push({
-                            startTime: startTime,
-                            route: i,
-                            trip: j.id,
-                            time: newTrips[j.id][regionsArr[k]][0].time,
-                            region: regionsArr[k]
-                        });
+    let regionsToCheck = [startingRegion.toString()];
+    if (closestRegions) {
+        regionsToCheck = regionsToCheck.concat(getClosestRegions(parseInt(startingRegion)))
+    }
+    for (let startingRegion of regionsToCheck) {
+        //Loop through all of the routes that go through starting regions
+        if (newRegions[startingRegion] != null) {
+            for (let i of newRegions[startingRegion].routes) {
+                //Loop through every trip of current route
+                for (let j of newRoutes[i].trips) {
+                    //If the current trip takes place at the current time
+                    if (isInTimeFrame(time, j.times.from, j.times.start)) {
+                        let regionsArr = newTrips[j.id].regions
+                        if (regionsArr.includes(parseInt(startingRegion))) {
+                            console.log('jiowaefoi')
+                            //let startTime = newTrips[j.id][startingRegion][0].time;
+                            //Loop through all regions that the trip goes to starting from the current region
+                            for (let k = regionsArr.indexOf(startingRegion); k < regionsArr.length; k++) {
+                                if (! arrIncludesKey(arr, "region", regionsArr[k]) && regionsArr[k] != null) {
+                                    arr.push({
+                                        //TIME BUS REACHES REGION
+                                        startTime: 'idkyet',//startTime,
+                                        route: i,
+                                        trip: j.id,
+                                        time: "idkyet",
+                                        region: regionsArr[k]
+                                    });
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -94,31 +124,36 @@ function getPossibleRegions(time, startingRegion) {
     return arr;
 }
 
-let pos1 = new LatLng([47.732017, -122.326533])//new LatLng(prompt('Enter position: ').replaceAll("(","").replaceAll(")","").split(","));
-let pos2 = new LatLng([47.407566, -122.254934])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
-let region1 = pos1.checkRegion()
+let pos1 = new LatLng([47.580814, -122.153245])//new LatLng(prompt('Enter position: ').replaceAll("(","").replaceAll(")","").split(","));
+let pos2 = new LatLng([47.732234, -122.328510])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
+let region1 = pos1.checkRegion() //1125
 let region2 = pos2.checkRegion()
 let time = getFormattedTime();
-let r = getPossibleRegions(time, region1);
-
+console.log(region1 + " TO " + region2);
+let r = getPossibleRegions(time, region1, false);
+let rs = [];
 let low = Infinity;
-let l = 'hi';
-let ll = 'hi';
+let path = [];
+let bestPath = [];
 for (let i of r) {
-    let dis = checkRegionDistance(region2, i.region);
-    if (dis < low) {
-        low = dis;
-        l = i;
+    //path = [i];
+    /*if (checkRegionDistance(i.region,region2) < low) {
+        low = checkRegionDistance(i.region,region2);
+        //bestPath = path;
+    }*/
+    if (! rs.includes(i.region)) {
+        rs.push(i.region);
     }
-    for (let j of getPossibleRegions(i.time, i.region)) {
-        let dis = checkRegionDistance(j.region, i.region);
-        if (dis < low) {
-            low = dis;
-            ll = i;
-            l = j;
+    //for (let j of getPossibleRegions(time, i.region, true)) {
+        /*path.push(j);
+        if (checkRegionDistance(j.region,region2) < low) {
+            bestPath = path;
+            low = checkRegionDistance(j.region,region2);
         }
-    }
+        path.pop();*/
+        //if (! rs.includes(j.region)) {
+        //    rs.push(j.region);
+        //}
+    //}
 }
-console.log(low);
-console.log(ll);
-console.log(l);
+fs.writeFileSync('dataDump.json', JSON.stringify(rs));
