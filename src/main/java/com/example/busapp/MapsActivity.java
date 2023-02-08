@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +26,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param color Color of marker
      * @return Data of created marker
      */
-    public MarkerOptions createMapMarker(Double latitude, Double longitude, String title, String color) {
+    public void createMapMarker(Double latitude, Double longitude, String title, String color) {
         LatLng pos = new LatLng(latitude, longitude);
         MarkerOptions marker = new MarkerOptions();
         marker.position(pos);
@@ -110,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marker.title(title);
         mMap.addMarker(marker);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-        return marker;
+        //return marker;
     }
 
     /**
@@ -119,10 +122,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @return List of buses running on busID
      */
     public ArrayList<LatLng> getBusLocation(String busID) {
+        long startTime = System.currentTimeMillis();
         try {
             //Open location data for all buses
             String data = Web.readFromWeb("https://s3.amazonaws.com/kcm-alerts-realtime-prod/vehiclepositions_pb.json");
+            System.out.println("got data from web after " + (System.currentTimeMillis() - startTime) + " ms");
             JSONObject o = Web.readJSON(new StringReader(data));
+            System.out.println("parsed data to json after " + (System.currentTimeMillis() - startTime) + " ms");
             JSONArray a = (JSONArray) o.get("entity");
             Iterator<JSONObject> iterator = a.iterator();
             ArrayList<LatLng> positions = new ArrayList<>();
@@ -147,6 +153,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             //Return positions
             if (validPositions.size() > 0) {
+                System.out.println("found valid positions in json after " + (System.currentTimeMillis() - startTime) + " ms");
                 return validPositions;
             }
         } catch (IOException e) {
@@ -235,7 +242,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final LatLng[] currentDestination = {new LatLng(47.606471, -122.334604)};
         final LatLng[] currentStartingPoint = {new LatLng(47.606471, -122.334604)};
 
-
         //Initialize Google map and set camera to Seattle
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
@@ -314,27 +320,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public boolean onQueryTextSubmit(String query) {
                         //When searching for bus locations
                         if (name.equals("Buses")) {
-                            //Get bus locations
-                            CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
-                            ArrayList<LatLng> positions = null;
-                            try {
-                                positions = getBusLocation(ch.getRouteID(query));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            //If no buses with route are running
-                            if (positions == null || positions.size() == 0) {
-                                LocalSave.makeSnackBar("No running buses with id " + query, getWindow().getDecorView().getRootView());
-                            }
-                            //Create map markers for each running bus
-                            else {
-                                for (int i = 0; i < positions.size(); i++) {
-                                    LatLng pos = positions.get(i);
-                                    createMapMarker(pos.latitude, pos.longitude, "","#f91504");
+                            mMap.clear();
+
+                            Handler mapHandler = new Handler();
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run () {
+                                    CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
+                                    ArrayList<LatLng> positions = null;
+                                    try {
+                                        positions = getBusLocation(ch.getRouteID(query));
+                                    } catch (IOException | ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    final ArrayList<LatLng> finalPositions = positions;
+                                    mapHandler.post(() -> {
+                                        if (finalPositions == null || finalPositions.size() == 0) {
+                                            LocalSave.makeSnackBar("No running buses with id " + query, getWindow().getDecorView().getRootView());
+                                        }
+                                        //Create map markers for each running bus
+                                        else {
+                                            for (int i = 0; i < finalPositions.size(); i++) {
+                                                LatLng pos = finalPositions.get(i);
+                                                createMapMarker(pos.latitude, pos.longitude, "","#f91504");
+                                            }
+                                        }
+                                    });
                                 }
-                            }
+                            }).start();
+
                         //When viewing route map
                         } else if (name.equals("Routes")) {
                             try {
