@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +45,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -63,6 +61,7 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -207,12 +206,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     polylineList.add(polyline);
                 }
                 routeMapHandler.post(() -> {
+                    System.out.println(Thread.currentThread().isInterrupted());
                     for (PolylineOptions pl : polylineList) {
                         mMap.addPolyline(pl);
                     }
                 });
             };
             Thread busLocationThread = new Thread(routeMapRunnable);
+            currentThreads.add(busLocationThread);
             busLocationThread.start();
 
         } catch (NullPointerException _) {
@@ -309,6 +310,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Listeners for when item is selected by user
         mBottomNavigationView.setOnItemSelectedListener(item -> {
             stopAllThreads();
+            mMap.clear();
             //Set visibility on current open menu to invisible
             if (menu[0] != null) {
                 menu[0].setVisibility(View.INVISIBLE);
