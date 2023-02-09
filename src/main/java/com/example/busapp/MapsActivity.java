@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -59,6 +61,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -171,26 +174,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void showRouteMap(String routeID, String routeShortName) throws IOException, ParseException {
         try {
-            JSONObject r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
-            JSONObject item = (JSONObject) r.get(routeID);
-            assert item != null;
-            JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
-            assert shapeIDss != null;
-            Object[] shapeIDs = shapeIDss.toArray();
-            //Loop through all shapes in current route
-            for (Object ii : shapeIDs) {
-                JSONObject o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
-                JSONArray locations = (JSONArray) o.get(ii.toString());
-                Iterator<JSONObject> i = locations.iterator();
-                PolylineOptions polyline = new PolylineOptions();
-                //Add position of shape to polyline
-                while (i.hasNext()) {
-                    JSONObject currentObject = i.next();
-                    LatLng hii = new LatLng(Double.parseDouble((String) Objects.requireNonNull(currentObject.get("latitude"))), Double.parseDouble((String) Objects.requireNonNull(currentObject.get("longitude"))));
-                    polyline.add(hii);
+            ArrayList<PolylineOptions> polylineList = new ArrayList<>();
+            Handler routeMapHandler = new Handler();
+            Runnable routeMapRunnable = () -> {
+                JSONObject r = null;
+                try {
+                    r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
+                } catch (ParseException | IOException ignored) {}
+                JSONObject item = (JSONObject) r.get(routeID);
+                assert item != null;
+                JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
+                assert shapeIDss != null;
+                Object[] shapeIDs = shapeIDss.toArray();
+                //Loop through all shapes in current route
+                for (Object ii : shapeIDs) {
+                    JSONObject o = null;
+                    try {
+                        o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+                    } catch (ParseException | IOException ignored) {}
+                    JSONArray locations = (JSONArray) o.get(ii.toString());
+                    Iterator<JSONObject> i = locations.iterator();
+                    PolylineOptions polyline = new PolylineOptions();
+                    //Add position of shape to polyline
+                    while (i.hasNext()) {
+                        JSONObject currentObject = i.next();
+                        LatLng hii = new LatLng(Double.parseDouble((String) Objects.requireNonNull(currentObject.get("latitude"))), Double.parseDouble((String) Objects.requireNonNull(currentObject.get("longitude"))));
+                        polyline.add(hii);
+                        try {
+                            i.next(); i.next();
+                        } catch (NoSuchElementException ignored) {}
+                    }
+                    polylineList.add(polyline);
                 }
-                mMap.addPolyline(polyline);
-            }
+                routeMapHandler.post(() -> {
+                    for (PolylineOptions pl : polylineList) {
+                        mMap.addPolyline(pl);
+                    }
+                });
+            };
+            Thread busLocationThread = new Thread(routeMapRunnable);
+            busLocationThread.start();
+
         } catch (NullPointerException _) {
             LocalSave.makeSnackBar("Unable to find route with ID " + routeShortName, getWindow().getDecorView().getRootView());
         }
@@ -355,12 +379,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         //When viewing route map
                         } else if (name.equals("Routes")) {
+                        mMap.clear();
                             try {
                                 //Get route map of given query
                                 JSONObject obj = Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
                                 String routeID = (String) obj.get(query);
                                 showRouteMap(routeID, query);
-                            } catch (IOException | ParseException _) {}
+                            } catch (IOException | ParseException ignored) {}
                         }
                         return false;
                     }
