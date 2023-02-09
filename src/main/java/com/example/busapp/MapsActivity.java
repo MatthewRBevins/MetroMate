@@ -59,12 +59,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     //Google map object
     private GoogleMap mMap;
-    private ActivityMapsBinding binding;
     //Object for getting user location
     private FusedLocationProviderClient fusedLocationClient;
     private ArrayList<Thread> currentThreads = new ArrayList<>();
@@ -84,7 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        binding = ActivityMapsBinding.inflate(getLayoutInflater());
+        com.example.busapp.databinding.ActivityMapsBinding binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         //Start map
@@ -173,7 +173,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             JSONObject r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
             JSONObject item = (JSONObject) r.get(routeID);
+            assert item != null;
             JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
+            assert shapeIDss != null;
             Object[] shapeIDs = shapeIDss.toArray();
             //Loop through all shapes in current route
             for (Object ii : shapeIDs) {
@@ -184,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Add position of shape to polyline
                 while (i.hasNext()) {
                     JSONObject currentObject = i.next();
-                    LatLng hii = new LatLng(Double.valueOf((String) currentObject.get("latitude")), Double.valueOf((String) currentObject.get("longitude")));
+                    LatLng hii = new LatLng(Double.parseDouble((String) Objects.requireNonNull(currentObject.get("latitude"))), Double.parseDouble((String) Objects.requireNonNull(currentObject.get("longitude"))));
                     polyline.add(hii);
                 }
                 mMap.addPolyline(polyline);
@@ -275,7 +277,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 boolean isChecked = sharedPreferences.getBoolean(String.valueOf(buttonID), false);
                 button.setChecked(isChecked);
-            } catch (NullPointerException e) {}
+            } catch (NullPointerException ignored) {}
         }
 
         //Make sure bottom navigation button is not selected by default
@@ -504,6 +506,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 try {
                     //Add name and address of destination to saved locations
+                    assert previousSave != null;
                     ArrayList<String> previousNames = previousSave[0];
                     ArrayList<String> previousAddresses = previousSave[1];
                     SearchView toView = (SearchView) findViewById(R.id.searchView3);
@@ -573,7 +576,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
                             newSearchView.setVisibility(View.VISIBLE);
                             CharSequence fromText = "CURRENT LOCATION";
-                            CharSequence toText = map.get("name").toString();
+                            CharSequence toText = Objects.requireNonNull(map.get("name")).toString();
                             fromView.setQuery(fromText, false);
                             toView.setQuery(toText, false);
                             if (checkLocationPermissions()) {
