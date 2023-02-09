@@ -282,6 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
         //Listeners for when item is selected by user
         mBottomNavigationView.setOnItemSelectedListener(item -> {
+            stopAllThreads();
             //Set visibility on current open menu to invisible
             if (menu[0] != null) {
                 menu[0].setVisibility(View.INVISIBLE);
