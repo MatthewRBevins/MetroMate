@@ -12,9 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +25,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.StrictMode;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ActivityMapsBinding binding;
     //Object for getting user location
     private FusedLocationProviderClient fusedLocationClient;
+    private ArrayList<Thread> currentThreads = new ArrayList<>();
 
     /**
      * Method to run when app is opened
@@ -310,6 +308,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 menu[0].setVisibility(View.INVISIBLE);
                 mMap.clear();
                 mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
+                stopAllThreads();
             });
 
             //If current menu contains a search view (bus finder or route mapper), set onQueryTextListener
@@ -323,33 +322,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mMap.clear();
 
                             Handler mapHandler = new Handler();
-
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run () {
-                                    CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
-                                    ArrayList<LatLng> positions = null;
-                                    try {
-                                        positions = getBusLocation(ch.getRouteID(query));
-                                    } catch (IOException | ParseException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    final ArrayList<LatLng> finalPositions = positions;
-                                    mapHandler.post(() -> {
-                                        if (finalPositions == null || finalPositions.size() == 0) {
-                                            LocalSave.makeSnackBar("No running buses with id " + query, getWindow().getDecorView().getRootView());
-                                        }
-                                        //Create map markers for each running bus
-                                        else {
-                                            for (int i = 0; i < finalPositions.size(); i++) {
-                                                LatLng pos = finalPositions.get(i);
-                                                createMapMarker(pos.latitude, pos.longitude, "","#f91504");
-                                            }
-                                        }
-                                    });
+                            Runnable busLocationRunnable = () -> {
+                                CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
+                                ArrayList<LatLng> positions = null;
+                                try {
+                                    positions = getBusLocation(ch.getRouteID(query));
+                                } catch (IOException | ParseException e) {
+                                    e.printStackTrace();
                                 }
-                            }).start();
+
+                                final ArrayList<LatLng> finalPositions = positions;
+                                mapHandler.post(() -> {
+                                    if (finalPositions == null || finalPositions.size() == 0) {
+                                        LocalSave.makeSnackBar("Could not find buses with id " + query, getWindow().getDecorView().getRootView());
+                                    }
+                                    //Create map markers for each running bus
+                                    else {
+                                        for (int i = 0; i < finalPositions.size(); i++) {
+                                            LatLng pos = finalPositions.get(i);
+                                            createMapMarker(pos.latitude, pos.longitude, "","#f91504");
+                                        }
+                                    }
+                                });
+                            };
+                            Thread busLocationThread = new Thread(busLocationRunnable);
+                            busLocationThread.start();
+                            currentThreads.add(busLocationThread);
+                            //busLocationThread.interrupt();
 
                         //When viewing route map
                         } else if (name.equals("Routes")) {
@@ -916,5 +915,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ToggleButton button = (ToggleButton) view.findViewById(view.getId());
         boolean isChecked = button.isChecked();
         LocalSave.saveBoolean(String.valueOf(view.getId()), isChecked, MapsActivity.this);
+    }
+
+    public void stopAllThreads() {
+        for (Thread thread : currentThreads) {
+            thread.interrupt();
+        }
+        currentThreads.clear();
     }
 }
