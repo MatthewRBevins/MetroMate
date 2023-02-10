@@ -42,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -109,7 +110,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marker.position(pos);
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
-        marker.icon(BitmapDescriptorFactory.defaultMarker(hsv[0]));
+        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.busicon));
+        System.out.println("put icon on map");
+        //marker.icon(BitmapDescriptorFactory.fromFile("res/drawable/busicon.png"));
         marker.title(title);
         mMap.addMarker(marker);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
