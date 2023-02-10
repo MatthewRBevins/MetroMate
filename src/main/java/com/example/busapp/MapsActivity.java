@@ -254,17 +254,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
 
         //Initialize routing object
         Routing r = null;
         try {
             r = new Routing(getApplicationContext());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | ParseException ignored) {}
 
         //Initialize starting and ending points for use in routing
         final LatLng[] currentDestination = {new LatLng(47.606471, -122.334604)};
@@ -439,11 +435,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+                                assert previousSave != null;
                                 ArrayList<String> previousNames = previousSave[0];
                                 ArrayList<String> previousAddresses = previousSave[1];
                                 relativeLayout.removeViews(previousNames.indexOf(savedLocations[0].get(finalI)),1);
                                 previousAddresses.remove(previousNames.indexOf(savedLocations[0].get(finalI)));
-                                previousNames.remove(previousNames.indexOf(savedLocations[0].get(finalI)));
+                                previousNames.remove(savedLocations[0].get(finalI));
                                 LocalSave.saveSavedLocations(previousNames, previousAddresses, MapsActivity.this);
                             });
                             //Load destination when saved location button pressed
@@ -587,6 +584,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int oi = 0;
                 LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
                 resourceViewerLayout.removeAllViews();
+                assert places != null;
                 for (Object o : places) {
                     //Add current food bank to resource viewer
                     oi++;
@@ -594,7 +592,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Button currentB = new Button(getApplicationContext());
                     LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     currentB.setLayoutParams(llp);
-                    currentB.setText(map.get("name").toString());
+                    currentB.setText(Objects.requireNonNull(map.get("name")).toString());
 
                     //When food bank button pressed
                     currentB.setOnClickListener(new View.OnClickListener() {
@@ -647,13 +645,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int oi = 0;
                 LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
                 resourceViewerLayout.removeAllViews();
+                assert places != null;
                 for (Object o : places) {
                     oi++;
                     Map<String, Object> map = (Map<String, Object>) o;
                     Button currentB = new Button(getApplicationContext());
                     LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     currentB.setLayoutParams(llp);
-                    currentB.setText(map.get("name").toString());
+                    currentB.setText(Objects.requireNonNull(map.get("name")).toString());
                     currentB.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -662,7 +661,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             RelativeLayout newSearchView = (RelativeLayout) findViewById(R.id.newSearchLayout);
                             newSearchView.setVisibility(View.VISIBLE);
                             CharSequence fromText = "CURRENT LOCATION";
-                            CharSequence toText = map.get("name").toString();
+                            CharSequence toText = Objects.requireNonNull(map.get("name")).toString();
                             fromView.setQuery(fromText, false);
                             toView.setQuery(toText, false);
                             if (checkLocationPermissions()) {
@@ -701,13 +700,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int oi = 0;
                 LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
                 resourceViewerLayout.removeAllViews();
+                assert places != null;
                 for (Object o : places) {
                     oi++;
                     Map<String, Object> map = (Map<String, Object>) o;
                     Button currentB = new Button(getApplicationContext());
                     LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     currentB.setLayoutParams(llp);
-                    currentB.setText(map.get("name").toString());
+                    currentB.setText(Objects.requireNonNull(map.get("name")).toString());
                     currentB.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -762,11 +762,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 PolylineOptions po = new PolylineOptions();
                 try {
                     stops = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (ParseException | IOException ignored) {}
                 RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
                 directionLayout.removeViews(1,directionLayout.getChildCount()-1);
                 for (int i = 0; i < route.size(); i++) {
@@ -775,16 +771,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     llp.setMargins(0,(i+1)*80,0,0);
                     tv.setLayoutParams(llp);
+                    assert stops != null;
                     JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
                     if (i == 0) {
                         try {
                             tv.setText("START AT " + ch.getStopAddr(route.get(i)[0].toString()));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1), "#f91504");
+                        } catch (IOException | ParseException ignored) {}
+                        assert currentStop != null;
+                        createMapMarker(Double.parseDouble(Objects.requireNonNull(currentStop.get("latitude")).toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1), "#f91504");
                     }
                     else {
                         try {
