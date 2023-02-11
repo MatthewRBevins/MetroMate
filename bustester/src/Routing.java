@@ -29,17 +29,40 @@ public class Routing {
         this.fullRegions = readJSON("fullRegions.json");
         this.regions = (JSONArray) fullRegions.get("regions");
         System.out.println("DONE LOADING");
+        System.out.println(formatTime("hi"));
     }
     public RouteItem[] getRoute(LocalTime time, LatLng pos1, LatLng pos2) {
         return new RouteItem[]{};
     }
     private RouteItem[] getPossibleRegions(LocalTime time, int startingRegion, boolean closestRegions) {
         List<RouteItem> arr = new ArrayList<>();
-        List<String> regionsToCheck = new ArrayList<>();
+        List<Object> regionsToCheck = new ArrayList<>();
         regionsToCheck.add(String.valueOf(startingRegion));
         if (closestRegions) {
-            arr.addAll(Arrays.asList(getClosestRegions(startingRegion, false)));
+            regionsToCheck.addAll(Arrays.asList(getClosestRegions(startingRegion, false)));
         }
+        for (Object currentRegion : regionsToCheck) {
+            //Loop through all of the routes that go through starting regions
+            if (newRegions.get(currentRegion) != null) {
+                for (Iterator iti = ((JSONArray) ((JSONObject) newRegions.get(startingRegion)).get("routes")).iterator(); iti.hasNext(); ) {
+                    Object i = iti.next();
+                    //Loop through every trip of current route
+                    for (Iterator itj = ((JSONArray) ((JSONObject)newRoutes.get(i)).get("trips")).iterator(); itj.hasNext(); ) {
+                        JSONObject j = (JSONObject) itj.next();
+                        //If the current trip takes place at the current time
+                        /*if (isInTimeFrame(time, )) {
+
+                        }*/
+                    }
+                }
+            }
+        }
+        return new RouteItem[]{};
+    }
+    private LocalTime formatTime(String time) {
+        LocalTime lt = LocalTime.of(29,30,0);
+        System.out.println(lt);
+        return lt;
     }
     private Object[] getClosestRegions(int region, boolean immediateReturn) {
         boolean[] boundary = new boolean[]{region % 67 == 0, (region + 1) % 67 == 0, region < 68, region > (regions.size() - 67)};
@@ -70,6 +93,11 @@ public class Routing {
         return calcDistance(Math.ceil(region1/67), region1 - (67*Math.floor(region1/67)), Math.ceil(region2/67), region2 - (67*Math.floor(region2/67)));
     }
     private boolean isInTimeFrame(LocalTime time, LocalTime start, LocalTime end) {
+        if ((time.getHour() == start.getHour() && start.getMinute() > time.getMinute()) || (start.getHour() == time.getHour()+1)) {
+            if ((end.getHour() == time.getHour() && end.getMinute() > time.getMinute()) || (end.getHour() > time.getHour())) {
+                return true;
+            }
+        }
         return false;
     }
     private JSONObject readJSON(String path) throws IOException, ParseException {
