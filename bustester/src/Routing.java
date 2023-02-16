@@ -29,7 +29,6 @@ public class Routing {
         this.fullRegions = readJSON("fullRegions.json");
         this.regions = (JSONArray) fullRegions.get("regions");
         System.out.println("DONE LOADING");
-        System.out.println(formatTime("hi"));
     }
     public RouteItem[] getRoute(LocalTime time, LatLng pos1, LatLng pos2) {
         return new RouteItem[]{};
@@ -50,9 +49,11 @@ public class Routing {
                     for (Iterator itj = ((JSONArray) ((JSONObject)newRoutes.get(i)).get("trips")).iterator(); itj.hasNext(); ) {
                         JSONObject j = (JSONObject) itj.next();
                         //If the current trip takes place at the current time
-                        /*if (isInTimeFrame(time, )) {
-
-                        }*/
+                        if (isInTimeFrame(time, formatTime((String) ((JSONObject) j.get("times")).get("from")), formatTime((String) ((JSONObject) j.get("times")).get("to")))) {
+                            if (((JSONObject) newTrips.get(j.get("id"))).get("regions")) {
+                                
+                            }
+                        }
                     }
                 }
             }
@@ -60,7 +61,8 @@ public class Routing {
         return new RouteItem[]{};
     }
     private LocalTime formatTime(String time) {
-        LocalTime lt = LocalTime.of(29,30,0);
+        String[] t = time.split(":");
+        LocalTime lt = LocalTime.of(Integer.parseInt(t[0]),Integer.parseInt(t[3]),Integer.parseInt(t[2]));
         System.out.println(lt);
         return lt;
     }
