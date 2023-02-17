@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Routing {
     private JSONObject newRegions;
@@ -29,11 +26,46 @@ public class Routing {
         this.fullRegions = readJSON("fullRegions.json");
         this.regions = (JSONArray) fullRegions.get("regions");
         System.out.println("DONE LOADING");
+        getRoute(LocalTime.now(), new LatLng(47.545130, -122.137246), new LatLng(47.609165, -122.339078));
     }
-    public RouteItem[] getRoute(LocalTime time, LatLng pos1, LatLng pos2) {
-        return new RouteItem[]{};
+    public List<RouteItem> getRoute(LocalTime time, LatLng pos1, LatLng pos2) {
+        System.out.println("STARTING ROUTE GENERATION");
+        int region1 = checkRegion(pos1);
+        System.out.println(region1);
+        int region2 = checkRegion(pos2);
+        double low = 10000;
+        System.out.println(Arrays.toString(getClosestRegions(1125, false)));
+        int times = 0;
+        List<RouteItem> path = new ArrayList<>();
+        List<RouteItem> bestPath = new ArrayList<>();
+        while (low > 5 && times < 3) {
+            path = new ArrayList<>(bestPath);
+            times++;
+            List<RouteItem> r = getPossibleRegions(time, region1, true);
+            low = 10000;
+            for (RouteItem i : r) {
+                path.add(i);
+                if (checkRegionDistance(i.region, region2) <= low) {
+                    low = checkRegionDistance(i.region, region2);
+                    bestPath = new ArrayList<>(path);
+                    region1 = i.region;
+                }
+                for (RouteItem j : getPossibleRegions(i.time, i.region, false)) {
+                    path.add(j);
+                    if (checkRegionDistance(j.region, region2) < low) {
+                        bestPath = new ArrayList<>(path);
+                        region1 = j.region;
+                        low = checkRegionDistance(j.region, region2);
+                    }
+                    path.remove(path.size()-1);
+                }
+                path.remove(path.size()-1);
+            }
+            time = bestPath.get(bestPath.size()-1).time;
+        }
+        return bestPath;
     }
-    private RouteItem[] getPossibleRegions(LocalTime time, int startingRegion, boolean closestRegions) {
+    private List<RouteItem> getPossibleRegions(LocalTime time, int startingRegion, boolean closestRegions) {
         List<RouteItem> arr = new ArrayList<>();
         List<Object> regionsToCheck = new ArrayList<>();
         regionsToCheck.add(String.valueOf(startingRegion));
@@ -42,23 +74,37 @@ public class Routing {
         }
         for (Object currentRegion : regionsToCheck) {
             //Loop through all of the routes that go through starting regions
-            if (newRegions.get(currentRegion) != null) {
-                for (Iterator iti = ((JSONArray) ((JSONObject) newRegions.get(startingRegion)).get("routes")).iterator(); iti.hasNext(); ) {
+            if (newRegions.get(String.valueOf(startingRegion)) != null) {
+                for (Iterator iti = ((JSONArray) ((JSONObject) newRegions.get(String.valueOf(startingRegion))).get("routes")).iterator(); iti.hasNext(); ) {
                     Object i = iti.next();
                     //Loop through every trip of current route
                     for (Iterator itj = ((JSONArray) ((JSONObject)newRoutes.get(i)).get("trips")).iterator(); itj.hasNext(); ) {
                         JSONObject j = (JSONObject) itj.next();
                         //If the current trip takes place at the current time
                         if (isInTimeFrame(time, formatTime((String) ((JSONObject) j.get("times")).get("from")), formatTime((String) ((JSONObject) j.get("times")).get("to")))) {
-                            if (((JSONObject) newTrips.get(j.get("id"))).get("regions")) {
-                                
+                            JSONArray toRegions = (JSONArray) ((JSONObject) newTrips.get(j.get("id"))).get("regions");
+                            if (toRegions.contains(startingRegion)) {
+                                boolean hasReached = false;
+                                LocalTime startingTime = null;
+                                String startingStop = null;
+                                for (Iterator itk = ((JSONArray) ((JSONObject) newTrips.get(j.get("id"))).get("stops")).iterator(); itk.hasNext(); ) {
+                                    JSONObject k = (JSONObject) itk.next();
+                                    if ((int) k.get("region") == startingRegion) {
+                                        startingTime = formatTime((String) k.get("time"));
+                                        startingStop = (String) k.get("stop_id");
+                                        hasReached = true;
+                                    }
+                                    if (hasReached) {
+                                        arr.add(new RouteItem(startingTime, startingStop, i.toString(), j.get("id").toString(), formatTime((String) k.get("time")), (String) k.get("stop_id"), (int) k.get("region")));
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        return new RouteItem[]{};
+        return arr;
     }
     private LocalTime formatTime(String time) {
         String[] t = time.split(":");
@@ -77,13 +123,16 @@ public class Routing {
             }
             return true;
         }).map(x -> String.valueOf(x[0][0])).toArray());
+        arr = new ArrayList<>(arr);
         if (immediateReturn) return Arrays.stream(arr.toArray()).filter(x -> newRegions.get(x) != null).toArray();
         boolean hasClosest = Arrays.stream(arr.toArray()).filter(x -> newRegions.get(x) != null).toArray().length != 0;
         while (!hasClosest) {
+            ArrayList<Object> newClosest = new ArrayList<>();
             for (Object o : arr) {
                 Object[] nextClosest = getClosestRegions(Integer.parseInt(o.toString()), true);
-                arr.addAll(Arrays.asList(nextClosest));
+                newClosest.addAll(Arrays.asList(nextClosest));
             }
+            arr.addAll(newClosest);
             hasClosest = Arrays.stream(arr.toArray()).filter(x -> newRegions.get(x) != null).toArray().length != 0;
         }
         return Arrays.stream(arr.toArray()).filter(x -> newRegions.get(x) != null).toArray();

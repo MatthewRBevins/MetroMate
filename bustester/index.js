@@ -93,6 +93,7 @@ function getPossibleRegions(time, startingRegion, closestRegions) {
     for (let startingRegion of regionsToCheck) {
         //Loop through all of the routes that go through starting regions
         if (newRegions[startingRegion] != null) {
+            console.log(startingRegion);
             for (let i of newRegions[startingRegion].routes) {
                 //Loop through every trip of current route
                 for (let j of newRoutes[i].trips) {
@@ -155,7 +156,7 @@ while (low > 5 && times < 3) {
         if (checkRegionDistance(i.region,region2) <= low) {
             low = checkRegionDistance(i.region,region2)
             bestPath = path.slice()
-            region1 = i.reigion
+            region1 = i.region
         }
         for (let j of getPossibleRegions(i.time, i.region, false)) {
             path.push(j)
