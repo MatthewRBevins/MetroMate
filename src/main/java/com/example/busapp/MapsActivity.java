@@ -12,8 +12,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.Manifest;
@@ -756,7 +758,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
                 String nearestBusStop = ch.findNearestBusStop(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
                 //Generate route between starting and ending position
-                ArrayList<Object[]> route = finalR.genRoute(currentDestination[0], nearestBusStop);
+                List<Routing.RouteItem> route = finalR.genRoute(LocalTime.of(9,0,0), new LatLng(47.545130, -122.137246), new LatLng(47.609165, -122.339078));
                 JSONObject stops = null;
                 //Create polyline to show route on map
                 PolylineOptions po = new PolylineOptions();
@@ -772,17 +774,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     llp.setMargins(0,(i+1)*80,0,0);
                     tv.setLayoutParams(llp);
                     assert stops != null;
-                    JSONObject currentStop = (JSONObject) stops.get(route.get(i)[0].toString());
+                    JSONObject currentStop = (JSONObject) stops.get(route.get(i).stop);
                     if (i == 0) {
                         try {
-                            tv.setText("START AT " + ch.getStopAddr(route.get(i)[0].toString()));
+                            tv.setText("START AT " + ch.getStopAddr(route.get(i).stop));
                         } catch (IOException | ParseException ignored) {}
                         assert currentStop != null;
                         createMapMarker(Double.parseDouble(Objects.requireNonNull(currentStop.get("latitude")).toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1), "#f91504");
                     }
                     else {
                         try {
-                            tv.setText("TAKE ROUTE " + ch.getRouteNum(route.get(i)[1].toString()) + " TO " + ch.getStopAddr(route.get(i)[0].toString()));
+                            tv.setText("TAKE ROUTE " + ch.getRouteNum(route.get(i).route) + " TO " + ch.getStopAddr(route.get(i).stop));
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (ParseException e) {

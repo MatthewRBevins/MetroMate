@@ -24,7 +24,7 @@ function getClosestRegions(region, immediateReturn) {
         }
         hasClosest = arr.filter(val => newRegions[val] != null).length != 0
     }
-    //console.log(arr);
+    ////console.log(arr);
     return arr.filter(val => newRegions[val] != null)
 }
 
@@ -64,7 +64,7 @@ function checkRegion(lat, lng) {
     }
     return -1
 }
-
+let tester = 0;
 function isInTimeFrame(time, start, end) {
     time = time.split(":").map(val => parseInt(val))
     start = start.split(":").map(val => parseInt(val))
@@ -77,6 +77,7 @@ function isInTimeFrame(time, start, end) {
             return true;
         }
     }
+    tester++;
     return false;
 }
 
@@ -93,7 +94,6 @@ function getPossibleRegions(time, startingRegion, closestRegions) {
     for (let startingRegion of regionsToCheck) {
         //Loop through all of the routes that go through starting regions
         if (newRegions[startingRegion] != null) {
-            console.log(startingRegion);
             for (let i of newRegions[startingRegion].routes) {
                 //Loop through every trip of current route
                 for (let j of newRoutes[i].trips) {
@@ -104,7 +104,7 @@ function getPossibleRegions(time, startingRegion, closestRegions) {
                             //Loop through all xregions that the trip goes to starting from the current region
                             let hasReached = false
                             let startingTime = null
-                            let startingStop = null;
+                            let startingStop = null
                             for (let k of newTrips[j.id].stops) {
                                 if (k.region == parseInt(startingRegion)) {
                                     startingTime = k.time
@@ -136,20 +136,22 @@ function getPossibleRegions(time, startingRegion, closestRegions) {
 let pos1 = new LatLng([47.545130, -122.137246])//new LatLng(prompt('Enter position: ').replaceAll("(","").replaceAll(")","").split(","))
 let pos2 = new LatLng([47.609165, -122.339078])//new LatLng(prompt('Enter to go: ').replaceAll("(","").replaceAll(")","").split(","))
 let region1 = pos1.checkRegion() //1125
-console.log(region1);
+//console.log(region1);
 let region2 = pos2.checkRegion()
 let time = getFormattedTime()
 let low = Infinity
-console.log(getClosestRegions(1125, false));
-//console.log(region1 + " TO " + region2)
+////console.log(region1 + " TO " + region2)
 let times = 0
 let path = []
 let bestPath = []
 while (low > 5 && times < 3) {
     path = bestPath.slice()
     times++
-    //console.log('a')
-    let r = getPossibleRegions(time, region1, true)
+    ////console.log('a')
+    let r = getPossibleRegions("9:00:00", region1, true)
+    console.log(r.length);
+    //console.log("***" + tester)
+    //console.log(r.map(x=>x.region).length);
     low = Infinity
     for (let i of r) {
         path.push(i)
@@ -172,4 +174,4 @@ while (low > 5 && times < 3) {
     time = bestPath[bestPath.length-1].time;
 }
 console.log(bestPath)
-//console.log(low)
+////console.log(low)

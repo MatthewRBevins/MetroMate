@@ -17,7 +17,10 @@ public class Routing {
     private JSONObject newTrips;
     private JSONObject fullRegions;
     private JSONArray regions;
+
+    private int tester;
     public Routing() throws IOException, ParseException {
+        tester = 0;
         System.out.println("LOADING JSON FILES...");
         this.newRegions = readJSON("newRegions.json");
         this.newRoutes = readJSON("newRoutes.json");
@@ -26,15 +29,18 @@ public class Routing {
         this.fullRegions = readJSON("fullRegions.json");
         this.regions = (JSONArray) fullRegions.get("regions");
         System.out.println("DONE LOADING");
-        getRoute(LocalTime.now(), new LatLng(47.545130, -122.137246), new LatLng(47.609165, -122.339078));
+        List<RouteItem> theRoute = getRoute(LocalTime.of(9,0,0), new LatLng(47.545130, -122.137246), new LatLng(47.609165, -122.339078));
+        for (RouteItem ri : theRoute) {
+            System.out.println(ri.format());
+        }
     }
     public List<RouteItem> getRoute(LocalTime time, LatLng pos1, LatLng pos2) {
         System.out.println("STARTING ROUTE GENERATION");
         int region1 = checkRegion(pos1);
-        System.out.println(region1);
+        //System.outprintln(region1);
         int region2 = checkRegion(pos2);
         double low = 10000;
-        System.out.println(Arrays.toString(getClosestRegions(1125, false)));
+        //System.outprintln(Arrays.toString(getClosestRegions(1125, false)));
         int times = 0;
         List<RouteItem> path = new ArrayList<>();
         List<RouteItem> bestPath = new ArrayList<>();
@@ -42,7 +48,9 @@ public class Routing {
             path = new ArrayList<>(bestPath);
             times++;
             List<RouteItem> r = getPossibleRegions(time, region1, true);
+            //System.outprintln(rr.size());
             low = 10000;
+            System.out.println(r.size());
             for (RouteItem i : r) {
                 path.add(i);
                 if (checkRegionDistance(i.region, region2) <= low) {
@@ -73,9 +81,9 @@ public class Routing {
             regionsToCheck.addAll(Arrays.asList(getClosestRegions(startingRegion, false)));
         }
         for (Object currentRegion : regionsToCheck) {
-            //Loop through all of the routes that go through starting regions
-            if (newRegions.get(String.valueOf(startingRegion)) != null) {
-                for (Iterator iti = ((JSONArray) ((JSONObject) newRegions.get(String.valueOf(startingRegion))).get("routes")).iterator(); iti.hasNext(); ) {
+            //Loop through all the routes that go through starting regions
+            if (newRegions.get(String.valueOf(currentRegion)) != null) {
+                for (Iterator iti = ((JSONArray) ((JSONObject) newRegions.get(String.valueOf(currentRegion))).get("routes")).iterator(); iti.hasNext(); ) {
                     Object i = iti.next();
                     //Loop through every trip of current route
                     for (Iterator itj = ((JSONArray) ((JSONObject)newRoutes.get(i)).get("trips")).iterator(); itj.hasNext(); ) {
@@ -83,19 +91,20 @@ public class Routing {
                         //If the current trip takes place at the current time
                         if (isInTimeFrame(time, formatTime((String) ((JSONObject) j.get("times")).get("from")), formatTime((String) ((JSONObject) j.get("times")).get("to")))) {
                             JSONArray toRegions = (JSONArray) ((JSONObject) newTrips.get(j.get("id"))).get("regions");
-                            if (toRegions.contains(startingRegion)) {
+                            if (toRegions.toString().contains(currentRegion.toString())) {
                                 boolean hasReached = false;
                                 LocalTime startingTime = null;
                                 String startingStop = null;
                                 for (Iterator itk = ((JSONArray) ((JSONObject) newTrips.get(j.get("id"))).get("stops")).iterator(); itk.hasNext(); ) {
                                     JSONObject k = (JSONObject) itk.next();
-                                    if ((int) k.get("region") == startingRegion) {
+                                    //System.out.println(k);
+                                    if (Integer.parseInt(k.get("region").toString()) == Integer.parseInt(currentRegion.toString())) {
                                         startingTime = formatTime((String) k.get("time"));
-                                        startingStop = (String) k.get("stop_id");
+                                        startingStop = k.get("stop_id").toString();
                                         hasReached = true;
                                     }
                                     if (hasReached) {
-                                        arr.add(new RouteItem(startingTime, startingStop, i.toString(), j.get("id").toString(), formatTime((String) k.get("time")), (String) k.get("stop_id"), (int) k.get("region")));
+                                        arr.add(new RouteItem(startingTime, startingStop, i.toString(), j.get("id").toString(), formatTime((String) k.get("time")), (String) k.get("stop_id"), Integer.parseInt(k.get("region").toString())));
                                     }
                                 }
                             }
@@ -108,8 +117,10 @@ public class Routing {
     }
     private LocalTime formatTime(String time) {
         String[] t = time.split(":");
-        LocalTime lt = LocalTime.of(Integer.parseInt(t[0]),Integer.parseInt(t[3]),Integer.parseInt(t[2]));
-        System.out.println(lt);
+        if (Integer.parseInt(t[0]) > 23) {
+            t[0] = String.valueOf(Integer.parseInt(t[0])-24);
+        }
+        LocalTime lt = LocalTime.of(Integer.parseInt(t[0]),Integer.parseInt(t[1]),Integer.parseInt(t[2]));
         return lt;
     }
     private Object[] getClosestRegions(int region, boolean immediateReturn) {
@@ -149,6 +160,7 @@ public class Routing {
                 return true;
             }
         }
+        tester++;
         return false;
     }
     private JSONObject readJSON(String path) throws IOException, ParseException {
@@ -180,6 +192,17 @@ public class Routing {
             this.time = time;
             this.stop = stop;
             this.region = region;
+        }
+        public String format() {
+            return "{" +
+                    "startTime: " + startTime +
+                    "startStop: " + startStop +
+                    "route: " + route +
+                    "trip: " + trip +
+                    "time: " + time +
+                    "stop: " + stop +
+                    "region: " + region +
+                    "}";
         }
     }
     public class LatLng {
