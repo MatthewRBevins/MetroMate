@@ -10,6 +10,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import java.io.FileReader;
@@ -28,11 +29,15 @@ public class Routing {
     public Routing(Context c) throws IOException, ParseException {
         this.c = c;
         System.out.println("LOADING JSON FILES...");
-        this.newRegions = readJSON("newRegions.json");
-        this.newRoutes = readJSON("newRoutes.json");
-        this.newStops = readJSON("newStops.json");
-        this.newTrips = readJSON("newTrips.json");
-        this.fullRegions = readJSON("fullRegions.json");
+        this.newRegions = Web.readJSON(new InputStreamReader(c.getAssets().open("newRegions.json")));
+        System.out.println("DONE 1");
+        this.newRoutes = Web.readJSON(new InputStreamReader(c.getAssets().open("newRoutes.json")));
+        System.out.println("DONE 2");
+        this.newStops = Web.readJSON(new InputStreamReader(c.getAssets().open("newStops.json")));
+        System.out.println("DONE 3");
+        this.newTrips = Web.readJSON(new InputStreamReader(c.getAssets().open("newTrips.json")));
+        System.out.println("DONE 4");
+        this.fullRegions = Web.readJSON(new InputStreamReader(c.getAssets().open("fullRegions.json")));
         this.regions = (JSONArray) fullRegions.get("regions");
         System.out.println("DONE LOADING");
     }
@@ -163,10 +168,6 @@ public class Routing {
             }
         }
         return false;
-    }
-    private JSONObject readJSON(String path) throws IOException, ParseException {
-        JSONParser p = new JSONParser();
-        return (JSONObject) p.parse(new FileReader(path));
     }
     private int checkRegion(LatLng pos) {
         int j = 0;

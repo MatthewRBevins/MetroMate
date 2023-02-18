@@ -73,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Object for getting user location
     private FusedLocationProviderClient fusedLocationClient;
     private ArrayList<Thread> currentThreads = new ArrayList<>();
+    Routing r = null;
 
     /**
      * Method to run when app is opened
@@ -183,8 +184,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Runnable routeMapRunnable = () -> {
                 JSONObject r = null;
                 try {
-                    r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
-                } catch (ParseException | IOException ignored) {}
+                    r = null; //Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
+                } catch (Exception e){}///*ParseException | IOException ignored*/) {}
                 JSONObject item = (JSONObject) r.get(routeID);
                 assert item != null;
                 JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
@@ -194,7 +195,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (Object ii : shapeIDs) {
                     JSONObject o = null;
                     try {
-                        o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+                        o = null; Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
                     } catch (ParseException | IOException ignored) {}
                     JSONArray locations = (JSONArray) o.get(ii.toString());
                     Iterator<JSONObject> i = locations.iterator();
@@ -257,12 +258,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-
-        //Initialize routing object
-        Routing r = null;
-        try {
-            r = new Routing(getApplicationContext());
-        } catch (IOException | ParseException ignored) {}
 
         //Initialize starting and ending points for use in routing
         final LatLng[] currentDestination = {new LatLng(47.606471, -122.334604)};
@@ -385,7 +380,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.clear();
                             try {
                                 //Get route map of given query
-                                JSONObject obj = Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
+                                JSONObject obj = null; //Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
                                 String routeID = (String) obj.get(query);
                                 showRouteMap(routeID, query);
                             } catch (IOException | ParseException ignored) {}
@@ -750,7 +745,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //When "Show Route" button is pressed
         Button submitDirections = (Button) findViewById(R.id.submitDirections);
+        //Initialize routing object
+        try {
+            r = new Routing(getApplicationContext());
+            System.out.println(r);
+        } catch (IOException | ParseException i) {
+            System.out.println(i);
+        }
         Routing finalR = r;
+        System.out.println("!@#$%^&*(*&^%$#$%^&*()(*&^%");
+        System.out.println(r);
         submitDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -763,8 +767,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Create polyline to show route on map
                 PolylineOptions po = new PolylineOptions();
                 try {
-                    stops = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
-                } catch (ParseException | IOException ignored) {}
+                    stops = null; //Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
+                } catch (Exception e){}//ParseException | IOException ignored) {}
                 RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
                 directionLayout.removeViews(1,directionLayout.getChildCount()-1);
                 for (int i = 0; i < route.size(); i++) {
