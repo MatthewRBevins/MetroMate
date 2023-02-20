@@ -26,19 +26,20 @@ public class Routing {
     private JSONArray regions;
     private Context c;
 
-    public Routing(Context c) throws IOException, ParseException {
+    public Routing(Context c, JSONObject newRegions, JSONObject newRoutes, JSONObject newStops, JSONObject newTrips, JSONObject fullRegions) throws IOException, ParseException {
         this.c = c;
         System.out.println("LOADING JSON FILES...");
-        this.newRegions = Web.readJSON(new InputStreamReader(c.getAssets().open("newRegions.json")));
-        System.out.println("DONE 1");
-        this.newRoutes = Web.readJSON(new InputStreamReader(c.getAssets().open("newRoutes.json")));
-        System.out.println("DONE 2");
-        this.newStops = Web.readJSON(new InputStreamReader(c.getAssets().open("newStops.json")));
-        System.out.println("DONE 3");
-        this.newTrips = Web.readJSON(new InputStreamReader(c.getAssets().open("newTrips.json")));
-        System.out.println("DONE 4");
-        this.fullRegions = Web.readJSON(new InputStreamReader(c.getAssets().open("fullRegions.json")));
-        this.regions = (JSONArray) fullRegions.get("regions");
+        this.newRegions = newRegions;//Web.readJSON(new InputStreamReader(c.getAssets().open("newRegions.json")));
+        //System.out.println("DONE 1");
+        this.newRoutes = newRoutes;//Web.readJSON(new InputStreamReader(c.getAssets().open("newRoutes.json")));
+        //System.out.println("DONE 2");
+        this.newStops = newStops;//Web.readJSON(new InputStreamReader(c.getAssets().open("newStops.json")));
+        //System.out.println("DONE 3");
+        this.newTrips = newTrips;//Web.readJSON(new InputStreamReader(c.getAssets().open("newTrips.json")));
+        //System.out.println("DONE 4");
+        this.fullRegions = fullRegions;//Web.readJSON(new InputStreamReader(c.getAssets().open("fullRegions.json")));
+        System.out.println(this.fullRegions);
+        this.regions = (JSONArray) this.fullRegions.get("regions");
         System.out.println("DONE LOADING");
     }
     public List<RouteItem> genRoute(LocalTime time, LatLng pos1, LatLng pos2) {
@@ -57,7 +58,7 @@ public class Routing {
             List<RouteItem> r = getPossibleRegions(time, region1, true);
             //System.outprintln(rr.size());
             low = 10000;
-            System.out.println(r.size());
+            System.out.println("SIZE:" + r.size());
             for (RouteItem i : r) {
                 path.add(i);
                 if (checkRegionDistance(i.region, region2) <= low) {
@@ -66,6 +67,7 @@ public class Routing {
                     region1 = i.region;
                 }
                 for (RouteItem j : getPossibleRegions(i.time, i.region, false)) {
+                    System.out.println("AMOG");
                     path.add(j);
                     if (checkRegionDistance(j.region, region2) < low) {
                         bestPath = new ArrayList<>(path);
@@ -97,22 +99,32 @@ public class Routing {
                         JSONObject j = (JSONObject) itj.next();
                         //If the current trip takes place at the current time
                         if (isInTimeFrame(time, formatTime((String) ((JSONObject) j.get("times")).get("from")), formatTime((String) ((JSONObject) j.get("times")).get("to")))) {
-                            JSONArray toRegions = (JSONArray) ((JSONObject) newTrips.get(j.get("id"))).get("regions");
+                            JSONArray toRegions = (JSONArray) ((JSONArray) newTrips.get(j.get("id"))).get(0);
                             if (toRegions.toString().contains(currentRegion.toString())) {
                                 boolean hasReached = false;
                                 LocalTime startingTime = null;
                                 String startingStop = null;
-                                for (Iterator itk = ((JSONArray) ((JSONObject) newTrips.get(j.get("id"))).get("stops")).iterator(); itk.hasNext(); ) {
-                                    JSONObject k = (JSONObject) itk.next();
-                                    //System.out.println(k);
-                                    if (Integer.parseInt(k.get("region").toString()) == Integer.parseInt(currentRegion.toString())) {
-                                        startingTime = formatTime((String) k.get("time"));
-                                        startingStop = k.get("stop_id").toString();
-                                        hasReached = true;
+                                int kk = 0;
+                                //stop, time
+                                long[] curVal = new long[2];
+                                for (Iterator itk = ((JSONArray) ((JSONArray) newTrips.get(j.get("id"))).get(1)).iterator(); itk.hasNext(); ) {
+                                    if (kk % 2 == 0) {
+                                        curVal[0] = (long) itk.next();
                                     }
-                                    if (hasReached) {
-                                        arr.add(new RouteItem(startingTime, startingStop, i.toString(), j.get("id").toString(), formatTime((String) k.get("time")), (String) k.get("stop_id"), Integer.parseInt(k.get("region").toString())));
+                                    else {
+                                        curVal[1] = (long) itk.next();
+                                        String region = String.valueOf(((JSONObject) newStops.get(String.valueOf(curVal[0]))).get("region"));
+                                        //System.out.println(k);
+                                        if (Integer.parseInt(region) == Integer.parseInt(currentRegion.toString())) {
+                                            startingTime = formatTime(intToStrTime(curVal[1]));
+                                            startingStop = String.valueOf(curVal[0]);
+                                            hasReached = true;
+                                        }
+                                        if (hasReached) {
+                                            arr.add(new RouteItem(startingTime, startingStop, i.toString(), j.get("id").toString(), formatTime(intToStrTime(curVal[1])), String.valueOf(curVal[0]), Integer.parseInt(region)));
+                                        }
                                     }
+                                    kk++;
                                 }
                             }
                         }
@@ -121,6 +133,16 @@ public class Routing {
             }
         }
         return arr;
+    }
+    private String intToStrTime(long time) {
+        String st = String.valueOf(time);
+        if (st.length() == 3) {
+            st = "0" + st.charAt(0) + ":" + st.charAt(1) + st.charAt(2) + ":00";
+        }
+        else {
+            st = st.charAt(0) +""+ st.charAt(1) + ":" + st.charAt(2) + st.charAt(3) + ":00";
+        }
+        return st;
     }
     private LocalTime formatTime(String time) {
         String[] t = time.split(":");

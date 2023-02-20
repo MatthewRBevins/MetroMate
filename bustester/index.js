@@ -83,9 +83,11 @@ function isInTimeFrame(time, start, end) {
 
 //EASTGATE = (47.580883, -122.152551)
 //LAKESIDE = (47.732595, -122.327477)
-
+var timees = 0;
 
 function getPossibleRegions(time, startingRegion, closestRegions) {
+    timees++;
+    console.log(timees);
     let arr = []
     let regionsToCheck = [startingRegion.toString()]
     if (closestRegions) {

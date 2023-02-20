@@ -99,6 +99,7 @@ public class CoordinateHelper {
                 "&radius=50000" +
                 "&keyword=" + textFormatted +
                 "&key=" + BuildConfig.PLACES_API_KEY;
+        System.out.println(URL);
         try {
             //Fetch data from URL
             String data = Web.readFromWeb(URL);

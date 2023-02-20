@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationClient;
     private ArrayList<Thread> currentThreads = new ArrayList<>();
     Routing r = null;
+    JSONObject mshapes;
+    JSONObject mdisplayNameToRouteID;
+    JSONObject mfullRegions;
+    JSONObject mnewRegions;
+    JSONObject mnewRoutes;
+    JSONObject mnewStops;
+    JSONObject mroutes;
+    JSONObject mnewTrips;
 
     /**
      * Method to run when app is opened
@@ -82,6 +91,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try {
+            System.out.println("OPENING JSON FILES...");
+            mshapes = Web.readJSON(new InputStreamReader(getAssets().open("shit.json")));
+            mdisplayNameToRouteID = Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
+            mfullRegions = Web.readJSON(new InputStreamReader(getAssets().open("fullRegions.json")));
+            mnewRegions = Web.readJSON(new InputStreamReader(getAssets().open("newRegions.json")));
+            mnewRoutes = Web.readJSON(new InputStreamReader(getAssets().open("newRoutes.json")));
+            mnewStops = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
+            mroutes = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
+            mnewTrips = Web.readJSON(new InputStreamReader(getAssets().open("ass.json")));
+            System.out.println("OPENED JSON FILES");
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //Get location permissions
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermissions();
@@ -133,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //Open location data for all buses
             String data = Web.readFromWeb("https://s3.amazonaws.com/kcm-alerts-realtime-prod/vehiclepositions_pb.json");
             System.out.println("got data from web after " + (System.currentTimeMillis() - startTime) + " ms");
-            JSONObject o = Web.readJSON(new StringReader(data));
+            JSONObject o = null;//Web.readJSON(new StringReader(data));
             System.out.println("parsed data to json after " + (System.currentTimeMillis() - startTime) + " ms");
             JSONArray a = (JSONArray) o.get("entity");
             Iterator<JSONObject> iterator = a.iterator();
@@ -164,7 +190,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -195,8 +221,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (Object ii : shapeIDs) {
                     JSONObject o = null;
                     try {
-                        o = null; Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
-                    } catch (ParseException | IOException ignored) {}
+                        o = null;//Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+                    } catch (Exception e) {}
                     JSONArray locations = (JSONArray) o.get(ii.toString());
                     Iterator<JSONObject> i = locations.iterator();
                     PolylineOptions polyline = new PolylineOptions();
@@ -747,7 +773,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Button submitDirections = (Button) findViewById(R.id.submitDirections);
         //Initialize routing object
         try {
-            r = new Routing(getApplicationContext());
+            r = new Routing(getApplicationContext(), mnewRegions, mnewRoutes, mnewStops, mnewTrips, mfullRegions);
             System.out.println(r);
         } catch (IOException | ParseException i) {
             System.out.println(i);
@@ -887,8 +913,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                System.out.println("*******START");
+                System.out.println(query);
+                System.out.println(Arrays.toString(CoordinateHelper.textToCoordinatesAndAddress(query)));
                 if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
+                    System.out.println("*******YES");
                     //Show route generation UI
                     RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
                     defaultSearchView.setVisibility(View.INVISIBLE);
