@@ -290,7 +290,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-
+        Button saveDestination = (Button) findViewById(R.id.saveDestination);
+        //When "Show Route" button is pressed
+        Button submitDirections = (Button) findViewById(R.id.submitDirections);
         //Initialize starting and ending points for use in routing
         final LatLng[] currentDestination = {new LatLng(47.606471, -122.334604)};
         final LatLng[] currentStartingPoint = {new LatLng(47.606471, -122.334604)};
@@ -336,6 +338,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Make sure bottom navigation button is not selected by default
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
         //Listeners for when item is selected by user
+        Button finalSaveDestination = saveDestination;
         mBottomNavigationView.setOnItemSelectedListener(item -> {
             mMap.clear();
             //Set visibility on current open menu to invisible
@@ -363,6 +366,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             closeButton.setOnClickListener(view -> {
                 System.out.println("AAAAAAAAAAAAAAAAAA CLOSE THE THING");
                 Button showDirections = (Button) findViewById(R.id.showDirections);
+                System.out.println("--HIDE1");
                 showDirections.setVisibility(View.INVISIBLE);
                 stopAllThreads();
                 menu[0].setVisibility(View.INVISIBLE);
@@ -511,6 +515,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                                 }
                                 currentDestination[0] = new LatLng(lat,lng);
+                                finalSaveDestination.setVisibility(View.VISIBLE);
+                                submitDirections.setVisibility(View.VISIBLE);
+                                createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
+                                createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
                             });
                             relativeLayout.addView(newLL);
                         }
@@ -528,6 +536,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 stopAllThreads();
+                Button showDirections = (Button) findViewById(R.id.showDirections);
+                showDirections.setVisibility(View.INVISIBLE);
+                System.out.println("--HIDE7");
 
                 mMap.clear();
                 //Remove all UI for directions
@@ -559,7 +570,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //Save current destination
-        Button saveDestination = (Button) findViewById(R.id.saveDestination);
+        saveDestination = (Button) findViewById(R.id.saveDestination);
         saveDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -615,6 +626,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Display all food banks
         Button resourceFood = (Button) findViewById(R.id.resourceFood);
+        Button finalSaveDestination1 = saveDestination;
         resourceFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -663,6 +675,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                             }
                             currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                            finalSaveDestination1.setVisibility(View.VISIBLE);
+                            submitDirections.setVisibility(View.VISIBLE);
+                            createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
+                            createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
                         }
                     });
 
@@ -677,6 +693,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Same as food bank viewer but for shelters
         Button resourceShelter = (Button) findViewById(R.id.resourceShelter);
+        Button finalSaveDestination2 = saveDestination;
         resourceShelter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -720,6 +737,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                             }
                             currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                            finalSaveDestination2.setVisibility(View.VISIBLE);
+                            submitDirections.setVisibility(View.VISIBLE);
+                            createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
+                            createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
                         }
                     });
                     resourceViewerLayout.addView(currentB);
@@ -728,11 +749,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ScrollView resourceViewer = (ScrollView) findViewById(R.id.resourceViewer);
                 resourceSelector.setVisibility(View.INVISIBLE);
                 resourceViewer.setVisibility(View.VISIBLE);
-            }
+                }
         });
 
         //Same as food bank viewer but for police stations
         Button resourcePolice = (Button) findViewById(R.id.resourcePolice);
+        Button finalSaveDestination3 = saveDestination;
         resourcePolice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -775,6 +797,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
                             }
                             currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
+                            finalSaveDestination3.setVisibility(View.VISIBLE);
+                            submitDirections.setVisibility(View.VISIBLE);
+                            createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
+                            createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
                         }
                     });
                     resourceViewerLayout.addView(currentB);
@@ -786,8 +812,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        //When "Show Route" button is pressed
-        Button submitDirections = (Button) findViewById(R.id.submitDirections);
         //Initialize routing object
         r = new Routing();
         Routing finalR = r;
@@ -821,6 +845,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     routeHandler.post(() -> {
                         loadingSnackbar.dismiss();
                         if (! Thread.currentThread().isInterrupted()) {
+                            System.out.println("--SHOW2");
                             showDirections.setVisibility(View.VISIBLE);
                             //Create polyline to show route on map
                             RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
@@ -828,39 +853,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             PolylineOptions walk = new PolylineOptions();
                             List<PatternItem> pattern = Arrays.<PatternItem>asList(new Dot(), new Gap(20), new Dash(30), new Gap(20));
                             walk.pattern(pattern);
-                            for (int i = 0; i < finalRoute.size(); i++) {
-                                JSONObject prevStop = (JSONObject) stops[0].get(finalRoute.get(i).startStop);
-                                if (walk.getPoints().size() != 0) {
-                                    System.out.println("WALK");
-                                    walk.add(new LatLng(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString())));
-                                    mMap.addPolyline(walk);
-                                    walk = new PolylineOptions();
-                                    walk.pattern(pattern);
-                                }
-                                //Generate directions list and add to directions layout
-                                TextView tv = new TextView(getApplicationContext());
-                                RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                                llp.setMargins(0, (i + 1) * 80, 0, 0);
-                                tv.setLayoutParams(llp);
-                                assert stops[0] != null;
-                                System.out.println("SSSSSTOP:" + finalRoute.get(i).stop);
-                                try {
-                                tv.setText("AT " + finalRoute.get(i).startTime +" TAKE ROUTE " + ch.getRouteNum(finalRoute.get(i).route) + " FROM " + ch.getStopAddr(finalRoute.get(i).startStop) + " TO " + ch.getStopAddr(finalRoute.get(i).stop));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
+                            if (finalRoute == null || finalRoute.size() == 0) {
+                                LocalSave.makeSnackBar("Could Not Find Route", getWindow().getDecorView().getRootView());
+                            }
+                            else {
+                                for (int i = 0; i < finalRoute.size(); i++) {
+                                    JSONObject prevStop = (JSONObject) stops[0].get(finalRoute.get(i).startStop);
+                                    if (walk.getPoints().size() != 0) {
+                                        System.out.println("WALK");
+                                        walk.add(new LatLng(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString())));
+                                        mMap.addPolyline(walk);
+                                        walk = new PolylineOptions();
+                                        walk.pattern(pattern);
+                                    }
+                                    //Generate directions list and add to directions layout
+                                    TextView tv = new TextView(getApplicationContext());
+                                    RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                                    llp.setMargins(0, (i + 1) * 80, 0, 0);
+                                    tv.setLayoutParams(llp);
+                                    assert stops[0] != null;
+                                    System.out.println("SSSSSTOP:" + finalRoute.get(i).stop);
+                                    try {
+                                        tv.setText("AT " + finalRoute.get(i).startTime + " TAKE ROUTE " + ch.getRouteNum(finalRoute.get(i).route) + " FROM " + ch.getStopAddr(finalRoute.get(i).startStop) + " TO " + ch.getStopAddr(finalRoute.get(i).stop));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
 
-                                PolylineOptions po = new PolylineOptions();
-                                JSONObject currentStop = (JSONObject) stops[0].get(finalRoute.get(i).stop);
-                                createMapMarker(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString()), "Stop", "#0409f9", "bus");
-                                createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop", "#0409f9", "bus");
-                                directionLayout.addView(tv);
-                                po.add(new LatLng(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString())));
-                                po.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
-                                mMap.addPolyline(po);
-                                walk.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
+                                    PolylineOptions po = new PolylineOptions();
+                                    JSONObject currentStop = (JSONObject) stops[0].get(finalRoute.get(i).stop);
+                                    createMapMarker(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString()), "Stop", "#0409f9", "bus");
+                                    createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop", "#0409f9", "bus");
+                                    directionLayout.addView(tv);
+                                    po.add(new LatLng(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString())));
+                                    po.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
+                                    mMap.addPolyline(po);
+                                    walk.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
+                                }
                             }
                         }
                     });
@@ -881,26 +911,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //If typing in new destination, remove buttons
+        Button finalSaveDestination4 = saveDestination;
         toView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
+                System.out.println("--HIDE3");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
-                saveDestination.setVisibility(View.INVISIBLE);
+                finalSaveDestination4.setVisibility(View.INVISIBLE);
             }
         });
 
         //If typing in new starting point, remove buttons
+        Button finalSaveDestination5 = saveDestination;
         fromView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
+                System.out.println("--HIDE4");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.INVISIBLE);
-                saveDestination.setVisibility(View.INVISIBLE);
+                finalSaveDestination5.setVisibility(View.INVISIBLE);
             }
         });
 
         //When new destination is entered by user
+        Button finalSaveDestination6 = saveDestination;
         toView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -915,9 +950,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Create map marker for destination
                 createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                 createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
+                System.out.println("--HIDE5");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
-                saveDestination.setVisibility(View.VISIBLE);
+                finalSaveDestination6.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -928,6 +964,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //When new starting point is entered by user
+        Button finalSaveDestination7 = saveDestination;
         fromView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -941,9 +978,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 //Create map marker for starting point
                 createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#09f904", "");
+                System.out.println("--HIDE6");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
-                saveDestination.setVisibility(View.VISIBLE);
+                finalSaveDestination7.setVisibility(View.VISIBLE);
                 return false;
             }
 
@@ -954,12 +992,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //When default search view is submitted
+        Button finalSaveDestination8 = saveDestination;
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                saveDestination.setVisibility(View.VISIBLE);
+                finalSaveDestination8.setVisibility(View.VISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
                 System.out.println("*******START");
                 System.out.println(query);
@@ -1002,6 +1041,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else {
                     LocalSave.makeSnackBar("Could Not Find Location", getWindow().getDecorView().getRootView());
                 }
+                //createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                 createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
 
                 //If auto show route map setting is on, immediately show route map

@@ -99,7 +99,7 @@ public class CoordinateHelper {
         //Make API call to find locations in the Seattle area
         String URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "location=47.571811,-122.141054" +
-                "&radius=50000" +
+                "&radius=25000" +   //meters
                 "&keyword=" + textFormatted +
                 "&key=" + BuildConfig.PLACES_API_KEY;
         System.out.println(URL);
