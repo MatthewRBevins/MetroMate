@@ -92,6 +92,9 @@ public class CoordinateHelper {
      * @return Information about locations found
      */
     public static Object[] textToCoordinatesAndAddress(String text) {
+        if (Thread.currentThread().isInterrupted()) {
+            Thread.currentThread().start();
+        }
         String textFormatted = text.replace(" ","+");
         //Make API call to find locations in the Seattle area
         String URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
@@ -138,15 +141,15 @@ public class CoordinateHelper {
      */
     public String findNearestBusStop(double currentLat, double currentLng) {
         try {
-            JSONObject json = Web.readJSON(new InputStreamReader(context.getAssets().open("stops.json")));
+            JSONObject json = Web.readJSON(new InputStreamReader(context.getAssets().open("newStops.json")));
             double distance = Double.POSITIVE_INFINITY;
             String stopID = "";
             //Loop through all stops
             for (Object key: json.keySet()) {
                 //Check distance between current location and stop location
                 Map<String, Object> data = (Map<String, Object>) json.get(key);
-                double lat = Double.valueOf((String) data.get("latitude"));
-                double lng = Double.valueOf((String) data.get("longitude"));
+                double lat = Double.valueOf(data.get("latitude").toString());
+                double lng = Double.valueOf(data.get("longitude").toString());
                 double d = distance(lat, lng, currentLat, currentLng);
                 //If stop is closer than previous best, set previous best to current stop
                 if (d < distance) {
@@ -157,6 +160,7 @@ public class CoordinateHelper {
             //Return closest stop ID
             return stopID;
         } catch (IOException | ParseException e) {
+            e.printStackTrace();
             return null;
         }
     }

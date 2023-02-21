@@ -47,12 +47,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.simple.JSONArray;
@@ -75,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationClient;
     private ArrayList<Thread> currentThreads = new ArrayList<>();
     Routing r = null;
+    private Snackbar loadingSnackbar;
 
     /**
      * Method to run when app is opened
@@ -108,15 +114,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param color Color of marker
      * @return Data of created marker
      */
-    public void createMapMarker(Double latitude, Double longitude, String title, String color) {
+    public void createMapMarker(Double latitude, Double longitude, String title, String color, String type) {
         LatLng pos = new LatLng(latitude, longitude);
         MarkerOptions marker = new MarkerOptions();
         marker.position(pos);
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
-        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.busicon));
+        switch(type) {
+            case "bus":
+                System.out.println("BUS");
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.busicon));
+                break;
+            case "home":
+                System.out.println("HOME");
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.house));
+                break;
+            default:
+                System.out.println("DEFAULT");
+                marker.icon(BitmapDescriptorFactory.defaultMarker());
+                break;
+        }
         System.out.println("put icon on map");
-        //marker.icon(BitmapDescriptorFactory.fromFile("res/drawable/busicon.png"));
         marker.title(title);
         mMap.addMarker(marker);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
@@ -183,41 +201,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ArrayList<PolylineOptions> polylineList = new ArrayList<>();
             Handler routeMapHandler = new Handler();
             Runnable routeMapRunnable = () -> {
+                loadingSnackbar = Snackbar.make(getWindow().getDecorView().getRootView(), "Loading Route Map...", 1000000);
+                loadingSnackbar.show();
                 JSONObject r = null;
                 try {
                     r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
                 } catch (Exception e){}///*ParseException | IOException ignored*/) {}
                 JSONObject item = (JSONObject) r.get(routeID);
-                assert item != null;
-                JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
-                assert shapeIDss != null;
-                Object[] shapeIDs = shapeIDss.toArray();
-                //Loop through all shapes in current route
-                for (Object ii : shapeIDs) {
-                    JSONObject o = null;
-                    try {
-                        o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
-                    } catch (Exception e) {}
-                    JSONArray locations = (JSONArray) o.get(ii.toString());
-                    Iterator<JSONObject> i = locations.iterator();
-                    PolylineOptions polyline = new PolylineOptions();
-                    //Add position of shape to polyline
-                    while (i.hasNext()) {
-                        JSONObject currentObject = i.next();
-                        LatLng hii = new LatLng(Double.parseDouble((String) Objects.requireNonNull(currentObject.get("latitude"))), Double.parseDouble((String) Objects.requireNonNull(currentObject.get("longitude"))));
-                        polyline.add(hii);
-                        try {
-                            i.next(); i.next();
-                        } catch (NoSuchElementException ignored) {}
-                    }
-                    polylineList.add(polyline);
+                if (item == null) {
+                    loadingSnackbar.dismiss();
+                    Snackbar ns = Snackbar.make(getWindow().getDecorView().getRootView(), "Route " + routeID + " does not exist", 1500);
+                    ns.show();
                 }
-                routeMapHandler.post(() -> {
-                    System.out.println(Thread.currentThread().isInterrupted());
-                    for (PolylineOptions pl : polylineList) {
-                        mMap.addPolyline(pl);
+                else {
+                    JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
+                    assert shapeIDss != null;
+                    Object[] shapeIDs = shapeIDss.toArray();
+                    //Loop through all shapes in current route
+                    for (Object ii : shapeIDs) {
+                        JSONObject o = null;
+                        try {
+                            o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+                        } catch (Exception e) {
+                        }
+                        JSONArray locations = (JSONArray) o.get(ii.toString());
+                        Iterator<JSONObject> i = locations.iterator();
+                        PolylineOptions polyline = new PolylineOptions();
+                        //Add position of shape to polyline
+                        while (i.hasNext()) {
+                            JSONObject currentObject = i.next();
+                            LatLng hii = new LatLng(Double.parseDouble((String) Objects.requireNonNull(currentObject.get("la"))), Double.parseDouble((String) Objects.requireNonNull(currentObject.get("lo"))));
+                            polyline.add(hii);
+                            try {
+                                i.next();
+                                i.next();
+                            } catch (NoSuchElementException ignored) {
+                            }
+                        }
+                        polylineList.add(polyline);
                     }
-                });
+                    routeMapHandler.post(() -> {
+                        loadingSnackbar.dismiss();
+                        if (! Thread.currentThread().isInterrupted()) {
+                            for (PolylineOptions pl : polylineList) {
+                                mMap.addPolyline(pl);
+                            }
+                        }
+                    });
+                }
             };
             Thread busLocationThread = new Thread(routeMapRunnable);
             currentThreads.add(busLocationThread);
@@ -306,7 +337,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
         //Listeners for when item is selected by user
         mBottomNavigationView.setOnItemSelectedListener(item -> {
-            stopAllThreads();
             mMap.clear();
             //Set visibility on current open menu to invisible
             if (menu[0] != null) {
@@ -331,10 +361,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Button closeButton = (Button) menu[0].findViewById(getResources().getIdentifier(name + "Exit", "id", getPackageName()));
             //Close currently open menu when close button is pressed
             closeButton.setOnClickListener(view -> {
+                System.out.println("AAAAAAAAAAAAAAAAAA CLOSE THE THING");
+                Button showDirections = (Button) findViewById(R.id.showDirections);
+                showDirections.setVisibility(View.INVISIBLE);
+                stopAllThreads();
                 menu[0].setVisibility(View.INVISIBLE);
                 mMap.clear();
                 mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
-                stopAllThreads();
             });
 
             //If current menu contains a search view (bus finder or route mapper), set onQueryTextListener
@@ -349,6 +382,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             Handler mapHandler = new Handler();
                             Runnable busLocationRunnable = () -> {
+                                loadingSnackbar = Snackbar.make(getWindow().getDecorView().getRootView(), "Loading Bus Locations...", 1000000);
+                                loadingSnackbar.show();
                                 CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
                                 ArrayList<LatLng> positions = null;
                                 try {
@@ -356,17 +391,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 } catch (IOException | ParseException e) {
                                     e.printStackTrace();
                                 }
-
+                                System.out.println("MATOOIE BEVOOIE");
+                                System.out.println(positions);
                                 final ArrayList<LatLng> finalPositions = positions;
                                 mapHandler.post(() -> {
-                                    if (finalPositions == null || finalPositions.size() == 0) {
-                                        LocalSave.makeSnackBar("Could not find buses with id " + query, getWindow().getDecorView().getRootView());
-                                    }
-                                    //Create map markers for each running bus
-                                    else {
-                                        for (int i = 0; i < finalPositions.size(); i++) {
-                                            LatLng pos = finalPositions.get(i);
-                                            createMapMarker(pos.latitude, pos.longitude, "","#f91504");
+                                    loadingSnackbar.dismiss();
+                                    if (! Thread.currentThread().isInterrupted()) {
+                                        if (finalPositions == null || finalPositions.size() == 0) {
+                                            LocalSave.makeSnackBar("No Active Buses of Route " + query, getWindow().getDecorView().getRootView());
+                                        }
+                                        //Create map markers for each running bus
+                                        else {
+                                            for (int i = 0; i < finalPositions.size(); i++) {
+                                                LatLng pos = finalPositions.get(i);
+                                                createMapMarker(pos.latitude, pos.longitude, "", "#f91504", "bus");
+                                            }
                                         }
                                     }
                                 });
@@ -488,6 +527,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         closeDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopAllThreads();
+
                 mMap.clear();
                 //Remove all UI for directions
                 RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
@@ -640,6 +681,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Object[] places = CoordinateHelper.textToCoordinatesAndAddress("shelter");
+                System.out.println(places);
                 int oi = 0;
                 LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
                 resourceViewerLayout.removeAllViews();
@@ -754,53 +796,79 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         submitDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDirections.setVisibility(View.VISIBLE);
-                CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
-                String nearestBusStop = ch.findNearestBusStop(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
-                //Generate route between starting and ending position
-                List<Routing.RouteItem> route = null;
-                try {
-                    route = finalR.genRoute(LocalTime.of(9,0,0), new LatLng(47.545130, -122.137246), new LatLng(47.609165, -122.339078));
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
-                }
-                JSONObject stops = null;
-                //Create polyline to show route on map
-                PolylineOptions po = new PolylineOptions();
-                try {
-                    stops = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
-                } catch (Exception e){}//ParseException | IOException ignored) {}
-                RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
-                directionLayout.removeViews(1,directionLayout.getChildCount()-1);
-                for (int i = 0; i < route.size(); i++) {
-                    //Generate directions list and add to directions layout
-                    TextView tv = new TextView(getApplicationContext());
-                    RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    llp.setMargins(0,(i+1)*80,0,0);
-                    tv.setLayoutParams(llp);
-                    assert stops != null;
-                    JSONObject currentStop = (JSONObject) stops.get(route.get(i).stop);
-                    System.out.println("SSSSSTOP:" + route.get(i).stop);
-                    if (i == 0) {
-                        try {
-                            tv.setText("START AT " + ch.getStopAddr(route.get(i).stop));
-                        } catch (IOException | ParseException ignored) {}
-                        createMapMarker(Double.parseDouble(Objects.requireNonNull(currentStop.get("latitude")).toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i+1), "#f91504");
+                Handler routeHandler = new Handler();
+                Runnable routeRunnable = () -> {
+                    loadingSnackbar = Snackbar.make(getWindow().getDecorView().getRootView(), "Loading Route...", 1000000);
+                    loadingSnackbar.show();
+                    CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
+                    String nearestBusStop = ch.findNearestBusStop(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
+                    System.out.println("YOUR DESTINATION:");
+                    System.out.println(currentDestination[0]);
+                    final JSONObject[] stops = {null};
+                    try {
+                        stops[0] = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
+                    } catch (Exception e){}//ParseException | IOException ignored) {}
+                    System.out.println("NEAREST STOP: " + nearestBusStop);
+                    LatLng nearestStop = new LatLng(Double.parseDouble(((JSONObject) stops[0].get(nearestBusStop)).get("latitude").toString()), Double.parseDouble(((JSONObject) stops[0].get(nearestBusStop)).get("longitude").toString()));
+                    //Generate route between starting and ending position
+                    List<Routing.RouteItem> route = null;
+                    try {
+                        route = finalR.genRoute(LocalTime.now(), nearestStop, currentDestination[0]);
+                    } catch (IOException | ParseException e) {
+                        e.printStackTrace();
                     }
-                    else {
-                        try {
-                            tv.setText("TAKE ROUTE " + ch.getRouteNum(route.get(i).route) + " TO " + ch.getStopAddr(route.get(i).stop));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                    List<Routing.RouteItem> finalRoute = route;
+                    routeHandler.post(() -> {
+                        loadingSnackbar.dismiss();
+                        if (! Thread.currentThread().isInterrupted()) {
+                            showDirections.setVisibility(View.VISIBLE);
+                            //Create polyline to show route on map
+                            RelativeLayout directionLayout = (RelativeLayout) findViewById(R.id.directionLayout);
+                            directionLayout.removeViews(1, directionLayout.getChildCount() - 1);
+                            PolylineOptions walk = new PolylineOptions();
+                            List<PatternItem> pattern = Arrays.<PatternItem>asList(new Dot(), new Gap(20), new Dash(30), new Gap(20));
+                            walk.pattern(pattern);
+                            for (int i = 0; i < finalRoute.size(); i++) {
+                                JSONObject prevStop = (JSONObject) stops[0].get(finalRoute.get(i).startStop);
+                                if (walk.getPoints().size() != 0) {
+                                    System.out.println("WALK");
+                                    walk.add(new LatLng(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString())));
+                                    mMap.addPolyline(walk);
+                                    walk = new PolylineOptions();
+                                    walk.pattern(pattern);
+                                }
+                                //Generate directions list and add to directions layout
+                                TextView tv = new TextView(getApplicationContext());
+                                RelativeLayout.LayoutParams llp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                                llp.setMargins(0, (i + 1) * 80, 0, 0);
+                                tv.setLayoutParams(llp);
+                                assert stops[0] != null;
+                                System.out.println("SSSSSTOP:" + finalRoute.get(i).stop);
+                                try {
+                                tv.setText("AT " + finalRoute.get(i).startTime +" TAKE ROUTE " + ch.getRouteNum(finalRoute.get(i).route) + " FROM " + ch.getStopAddr(finalRoute.get(i).startStop) + " TO " + ch.getStopAddr(finalRoute.get(i).stop));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                PolylineOptions po = new PolylineOptions();
+                                JSONObject currentStop = (JSONObject) stops[0].get(finalRoute.get(i).stop);
+                                createMapMarker(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString()), "Stop", "#0409f9", "bus");
+                                createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop", "#0409f9", "bus");
+                                directionLayout.addView(tv);
+                                po.add(new LatLng(Double.parseDouble(prevStop.get("latitude").toString()), Double.parseDouble(prevStop.get("longitude").toString())));
+                                po.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
+                                mMap.addPolyline(po);
+                                walk.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
+                            }
                         }
-                        createMapMarker(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString()), "Stop " + (i + 1), "#0409f9");
-                    }
-                    directionLayout.addView(tv);
-                    po.add(new LatLng(Double.parseDouble(currentStop.get("latitude").toString()), Double.parseDouble(currentStop.get("longitude").toString())));
-                }
-                mMap.addPolyline(po);
+                    });
+                };
+                System.out.println(routeRunnable);
+                Thread routeThread = new Thread(routeRunnable);
+                routeThread.start();
+                currentThreads.add(routeThread);
             }
         });
 
@@ -842,10 +910,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                     mMap.clear();
-                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#09f904");
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#09f904", "");
                 }
                 //Create map marker for destination
-                createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104");
+                createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
+                createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
                 saveDestination.setVisibility(View.VISIBLE);
@@ -868,10 +937,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     currentStartingPoint[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                     mMap.clear();
-                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Start", "#f91104");
+                    createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Start", "#f91104", "home");
                 }
                 //Create map marker for starting point
-                createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#09f904");
+                createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#09f904", "");
                 showDirections.setVisibility(View.INVISIBLE);
                 submitDirections.setVisibility(View.VISIBLE);
                 saveDestination.setVisibility(View.VISIBLE);
@@ -886,8 +955,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //When default search view is submitted
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+
             @Override
             public boolean onQueryTextSubmit(String query) {
+                saveDestination.setVisibility(View.VISIBLE);
+                submitDirections.setVisibility(View.VISIBLE);
                 System.out.println("*******START");
                 System.out.println(query);
                 System.out.println(Arrays.toString(CoordinateHelper.textToCoordinatesAndAddress(query)));
@@ -905,22 +978,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
                     //Set starting point to user location if possible
                     if (checkLocationPermissions()) {
+                        System.out.println("CHECK LOCATION PREMREIOERJP");
                         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                             @Override
                             public void onComplete(@NonNull Task<Location> task) {
                                 try {
                                     currentStartingPoint[0] = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                                    createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                                 } catch (NullPointerException e) {
                                     LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
+                                    currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                                    createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                                 }
                             }
                         });
                     }
                     else {
                         currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                        createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                     }
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                 }
+                else {
+                    LocalSave.makeSnackBar("Could Not Find Location", getWindow().getDecorView().getRootView());
+                }
+                createMapMarker(currentDestination[0].latitude, currentDestination[0].longitude, "Destination", "#f91104", "");
 
                 //If auto show route map setting is on, immediately show route map
                 ToggleButton autoShowRouteMap = findViewById(R.id.setting2);
@@ -956,9 +1038,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void stopAllThreads() {
-        for (Thread thread : currentThreads) {
-            thread.interrupt();
+        System.out.println("STOP ALL THREADS");
+        if (loadingSnackbar != null) {
+            loadingSnackbar.dismiss();
         }
-        currentThreads.clear();
+        //Thread.currentThread().interrupt();
     }
 }
