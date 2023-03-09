@@ -1,8 +1,6 @@
 # <img src="/metromatelogo.png" width="20%" height="20%">
 # MetroMate
 *The travel companion app that allows everyone to take full advantage of King County's metro service.*
-## Demonstration Video
-https://www.youtube.com/watch?v=7jES6sLCU0k
 ## Overview
 MetroMate is a travel companion app that allows you to take full advantage of King County’s metro system. It provides access to many features which are useful when riding public transport, like directional assistance and route finding and mapping, location visibility for all buses, and location saving. It also includes other features, such as several settings to customize your experience and a resources finder that allows people of lower-income status to easily access food, shelter, and other various resources.
 ## Route Finder
