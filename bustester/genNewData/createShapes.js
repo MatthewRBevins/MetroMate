@@ -1,5 +1,7 @@
 const fs = require('fs');
-const shapes = fs.readFileSync('shapes.txt').toString();
+const prompt = require('prompt-sync')()
+let folder = prompt('Folder: ')
+const shapes = fs.readFileSync('./' + folder + '-Raw/shapes.txt').toString();
 let obj = {};
 let str = "";
 for (let i of shapes) {
@@ -23,5 +25,5 @@ for (let i of shapes) {
         str += i;
     }
 }
-fs.writeFileSync('shapes.json', JSON.stringify(obj))
+fs.writeFileSync(folder + '-Output/shapes.json', JSON.stringify(obj))
 //shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled

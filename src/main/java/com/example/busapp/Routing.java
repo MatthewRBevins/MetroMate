@@ -26,8 +26,7 @@ public class Routing {
 
     public List<RouteItem> genRoute(LocalTime time, LatLng pos1, LatLng pos2) throws IOException, ParseException {
         List<RouteItem> l = new ArrayList<RouteItem>();
-        System.out.println("AAAAAAAAAAAAAAAAAA");
-        String data = Web.readFromWeb("https://whispering-fjord-61879.herokuapp.com/?time=" + deformatTime(time) + "&pos1=" + pos1.latitude + "," + pos1.longitude + "&pos2=" + pos2.latitude + "," + pos2.longitude);//Web.readFromWeb("https://whispering-fjord-61879.herokuapp.com/?time=09:00:00&pos1=47.545130,-122.137246&pos2=47.609165,-122.339078");
+        String data = Web.readFromWeb("https://matthewrbevins.com/metromate/?time=" + deformatTime(time) + "&pos1=" + pos1.latitude + "," + pos1.longitude + "&pos2=" + pos2.latitude + "," + pos2.longitude);//Web.readFromWeb("https://matthewrbevins.com/metromate/?time=09:00:00&pos1=47.545130,-122.137246&pos2=47.609165,-122.339078");
         System.out.println("DONE GETTING DATA");
         JSONObject o = Web.readJSON(new StringReader(data));
         System.out.println(o);

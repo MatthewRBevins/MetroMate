@@ -1,4 +1,6 @@
 const fs = require('fs');
+const prompt = require('prompt-sync')()
+let folder = prompt('Folder: ')
 const trips = require('./trips.json')
 const stop_times = fs.readFileSync('stop_times.txt').toString();
 

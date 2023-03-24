@@ -1,0 +1,2 @@
+feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version,feed_contact_email,feed_contact_url
+WMATA,http://www.wmata.com,en,20230305,20230624,S1000177,gtfs-support@wmata.com,https://wmata.custhelp.com/app/home/
