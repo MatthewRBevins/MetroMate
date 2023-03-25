@@ -1,0 +1,18 @@
+{
+    "folder": "Portland",
+    "ROUTE_ID": 0,
+    "SHORT_NAME": 2,
+    "DESCRIPTION": 3,
+    "SHAPE_ID": 0,
+    "SHAPE_LAT": 1,
+    "SHAPE_LNG": 2,
+    "STOP_NAME": 2,
+    "STOP_ID": 0,
+    "STOP_LAT": 5,
+    "STOP_LNG": 6,
+    "TRIP_ID": 2,
+    "STOP_TIMES_TRIP_ID": 0,
+    "TRIP_ROUTE_ID": 0,
+    "TRIP_STOP_ID": 3,
+    "TRIP_TIME": 1
+}

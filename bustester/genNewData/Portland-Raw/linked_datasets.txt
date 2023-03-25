@@ -1,0 +1,4 @@
+url,trip_updates,vehicle_positions,service_alerts,authentication_type,authentication_info_url,api_key_parameter_name
+http://developer.trimet.org/ws/V1/TripUpdate/,1,0,0,2,https://developer.trimet.org/GTFS.shtml,appID
+http://developer.trimet.org/ws/V1/VehiclePositions/,0,1,0,2,https://developer.trimet.org/GTFS.shtml,appID
+http://developer.trimet.org/ws/V1/FeedSpecAlerts/,0,0,1,2,https://developer.trimet.org/GTFS.shtml,appID

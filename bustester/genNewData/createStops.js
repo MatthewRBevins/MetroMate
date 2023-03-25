@@ -1,23 +1,24 @@
-const fs = require('fs');
-const prompt = require('prompt-sync')()
-let folder = prompt('Folder: ')
-const trips = fs.readFileSync('./' + folder + '-Raw/stops.txt').toString();
+const fs = require('fs')
+let folder = require('./folder.json').folder
+let fData = require('./folder.json')
+const stops = fs.readFileSync('./' + folder + '-Raw/stops.txt').toString().split("\n");
 let str = "";
 let obj = {};
-for (let i of trips) {
-    if (i == "\n") {
-        let o = str.split(",");
-        if (o[2] != "stop_name") {
-            str = "";
-            obj[o[0]] = {
-                stop_name: o[2],
-                latitude: o[4],
-                longitude: o[5]
-            }
+let ii = 0;
+for (let i of stops) {
+    let o = i.split(",");
+    ii++
+    if (o[fData.STOP_NAME] != "stop_name") {
+        str = "";
+        let latIn = fData.STOP_LAT
+        while (parseFloat(o[latIn]) != o[latIn]) {
+            latIn++
         }
-    }
-    else {
-        str += i;
+        obj[o[fData.STOP_ID]] = {
+            stop_name: o[fData.STOP_NAME],
+            latitude: o[latIn],
+            longitude: o[latIn+1]
+        }
     }
 }
 fs.writeFileSync(folder + '-Output/stops.json', JSON.stringify(obj))

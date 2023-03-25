@@ -1,3 +1,8 @@
 1. createStops.js
-2. createFullRegions.js
-3. addRegionsToStops.js
+2. createGeoguessrMap.js
+3. createFullRegions.js
+4. createTrips.js
+5. createNewTrips.js
+6. createRoutes.js
+7. createNewRoutes.js
+8. createNewRegions.js

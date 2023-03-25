@@ -1,0 +1,2 @@
+agency_phone,agency_url,agency_id,agency_name,agency_timezone,agency_lang
++505 255-2189,http://www.managua.gob.ni/,NI-IRTRAMMA,Instituto Regulador del Transporte del Municipio de Managua,America/Managua,es

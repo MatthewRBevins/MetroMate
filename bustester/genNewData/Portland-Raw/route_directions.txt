@@ -1,0 +1,183 @@
+route_id,direction_id,direction_name
+1,0,To Vermont & Shattuck and Maplewood
+1,1,To Portland City Center
+2,0,To Gresham
+2,1,To Portland City Center
+4,0,To St Johns
+4,1,To Portland City Center
+6,0,To Jantzen Beach
+6,1,To Portland City Center
+8,0,To Marquam Hill
+8,1,To NE M L King Jr Blvd & Lombard
+9,1,To Portland City Center
+9,0,To Powell & 92nd or Gresham Central Transit Center
+10,0,To Foster & 94th
+10,1,To Portland City Center
+11,0,To Vancouver Way & Middlefield
+11,1,To St Johns
+12,0,To Tigard Transit Center
+12,1,To Parkrose/Sumner Transit Center
+14,1,To Portland City Center
+14,0,To Foster & 94th
+15,0,"To City Ctr, NW 23rd, Montgomery Pk or Yeon & 44th"
+15,1,To Gateway Transit Center
+16,0,To St Johns and Sauvie Island
+16,1,To Portland
+17,0,To Holgate & 134th
+17,1,To Saratoga & 27th
+18,0,To Hillside and Providence Park
+19,0,To Mt. Scott & 112th
+19,1,To Gateway Transit Center
+20,0,To Beaverton Transit Center
+20,1,To Gresham Central Transit Center
+21,1,To Gresham Central Transit Center
+21,0,To Parkrose/Sumner Transit Center
+22,0,To Parkrose
+22,1,To Gateway Transit Center
+23,0,To Sandy & 148th
+23,1,To Gateway Transit Center
+24,0,To SW Columbia & 18th
+24,1,To Gateway Transit Center
+25,1,To Rockwood
+25,0,To Gateway Transit Center
+26,0,To NW Thurman & Gordon
+26,1,To SW 18th & Salmon
+29,0,To Clackamas Town Center
+29,1,To Milwaukie
+30,0,To Estacada
+30,1,To Clackamas Town Center
+31,0,To Oregon City Transit Center
+31,1,To Clackamas Town Center
+32,1,To Oregon City Transit Center or Milwaukie
+32,0,To Clackamas Community College
+33,0,To Oregon City TC and Clackamas Community College
+33,1,To Milwaukie and Clackamas Town Center
+34,0,To Oregon City Transit Center
+34,1,To Clackamas Town Center
+35,0,To Oregon City Transit Center
+35,1,To University of Portland
+36,1,To Lake Oswego Transit Center or Portland
+36,0,To Tualatin Park & Ride
+37,0,To Tualatin Park & Ride
+37,1,To Lake Oswego Transit Center
+38,1,To Portland City Center
+38,0,To Tualatin Park & Ride
+39,0,To  Lewis & Clark College
+39,1,To Hillsdale
+43,0,To  Washington Square Transit Center
+43,1,To Portland
+44,0,To PCC Sylvania
+44,1,To St Johns
+45,0,To Tigard Transit Center
+45,1,To Portland City Center
+46,1,To Hillsboro Transit Center
+46,0,To Hillsboro Brookwood Library
+47,0,To Hillsboro Transit Center
+47,1,To PCC Rock Creek
+48,0,To Hillsboro Transit Center
+48,1,To Sunset Transit Center
+51,0,To Council Crest or Dosch & Hamilton
+51,1,To Portland City Center
+52,0,To PCC Rock Creek
+52,1,To Beaverton Transit Center
+53,0,Evening Loop
+53,1,Morning Loop
+54,0,To Beaverton Transit Center
+54,1,To Portland City Center
+55,0,To Raleigh Hills
+55,1,To Portland City Center
+56,1,To Portland City Center
+56,0,To Washington Square Transit Center
+57,1,To Beaverton Transit Center
+57,0,To Forest Grove
+58,1,To Portland City Center
+58,0,To Beaverton Transit Center
+59,0,To Willow Creek/SW 185th Ave Transit Center
+59,1,To Sunset Transit Center
+61,0,To Beaverton Transit Center
+61,1,To Marquam Hill
+62,0,To Washington Square Transit Center
+62,1,To Sunset Transit Center
+63,0,To Rose Garden/Japanese Garden
+63,1,To Portland City Center
+64,0,To Tigard Transit Center
+64,1,To Marquam Hill
+65,0,To Taylors Ferry & Terwilliger
+65,1,To Marquam Hill
+66,0,To Hollywood Transit Center
+66,1,To Marquam Hill
+67,0,To PCC Rock Creek
+67,1,To Merlo Rd/158th Ave
+68,0,To Collins Circle at 18th & Jefferson
+68,1,To PSU & Marquam Hill
+70,0,To 33rd & Sunderland
+70,1,To Milwaukie
+71,0,To Clackamas Town Center
+71,1,To Parkrose Transit Center
+72,0,To Swan Island
+72,1,To Clackamas Town Center
+73,0,To Foster & 94th
+73,1,To Parkrose Transit Center
+74,0,To 158th & Airport Way
+74,1,To Powell & 182nd
+75,1,To Milwaukie
+75,0,To St Johns
+76,0,To Tualatin
+76,1,To Beaverton Transit Center
+77,0,To Troutdale
+77,1,To Montgomery Park
+78,0,To Lake Oswego Transit Center
+78,1,To Beaverton Transit Center
+79,0,To Oregon City Transit Center
+79,1,To Clackamas Town Center
+80,0,To Troutdale
+80,1,To Gresham Central Transit Center
+81,0,To Troutdale Reynolds Industrial Park
+81,1,To Gresham Central Transit Center
+82,0,To Powell & 182nd
+82,1,To Gresham Village
+84,0,Evening Loop
+84,1,Morning Loop
+85,0,To Swan Island
+85,1,To Rose Quarter Transit Center
+87,0,To Powell & 182nd
+87,1,To Gateway Transit Center
+88,0,To Willow Creek/SW 185th Ave Transit Center
+88,1,To Beaverton Transit Center
+90,0,To Portland International Airport
+90,1,To Beaverton Transit Center
+94,0,To Sherwood
+94,1,To Tigard or Portland
+96,0,To Commerce Circle
+96,1,To Portland City Center
+97,0,To SW Langer Dr/Sherwood Plaza
+97,1,To Tualatin WES Station
+98,0,Eastbound
+98,1,Westbound
+99,0,To Clackamas Community College via Sellwood
+99,1,To Portland City Center via Sellwood
+100,0,To Gresham
+100,1,To Hillsboro
+152,0,To Clackamas Town Center
+152,1,To Milwaukie
+154,0,To Willamette
+154,1,To Clackamas Heights
+155,0,To 172nd
+155,1,To Clackamas Town Center
+156,1,To Clackamas Town Center
+156,0,To 147th & Oregon Trail
+190,0,To Expo Center
+190,1,To Portland City Center
+193,0,To NW 23rd and Marshall
+193,1,To South Waterfront
+194,0,Clockwise
+195,0,Counter-clockwise
+200,0,To Clackamas Town Center
+200,1,To Portland City Center/PSU
+203,0,To Wilsonville
+203,1,To Beaverton
+208,0,To South Waterfront
+208,1,To Marquam Hill
+290,0,To Portland City Center
+290,1,To Milwaukie
+291,0,To Milwaukie

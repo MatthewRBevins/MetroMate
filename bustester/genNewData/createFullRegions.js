@@ -1,6 +1,5 @@
 const fs = require('fs')
-const prompt = require('prompt-sync')()
-let folder = prompt('Folder: ')
+let folder = require('./folder.json').folder
 const stops = require('./' + folder + '-Output/stops.json');
 let arr = [];
 let lowLat = Infinity

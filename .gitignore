@@ -7,3 +7,9 @@ bustester/newTrips.json
 bustester/newTrips.json
 src/main/assets/newTrips.json
 src/main/assets/fawe.json
+bustester/genNewData/Washington-Output/newTrips.json
+bustester/genNewData/Washington-Output/trips.json
+bustester/genNewData/Washington-Raw/stop_times.txt
+bustester/genNewData/Portland-Output/newTrips.json
+bustester/genNewData/Portland-Output/trips.json
+bustester/genNewData/Portland-Raw/stop_times.txt
