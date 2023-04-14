@@ -3,9 +3,9 @@
  * Authors: Matthew Bevins and Miles Schuler
  */
 
-package com.example.busapp;
+package com.metromate.busapp;
 
-import com.example.busapp.databinding.ActivityMapsBinding;
+import com.metromate.busapp.databinding.ActivityMapsBinding;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -45,7 +45,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dash;
 import com.google.android.gms.maps.model.Dot;
@@ -70,7 +69,6 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -97,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        com.example.busapp.databinding.ActivityMapsBinding binding = ActivityMapsBinding.inflate(getLayoutInflater());
+        com.metromate.busapp.databinding.ActivityMapsBinding binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         //Start map

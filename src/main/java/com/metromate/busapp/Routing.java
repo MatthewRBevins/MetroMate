@@ -1,20 +1,15 @@
-package com.example.busapp;
-
-import android.content.Context;
+package com.metromate.busapp;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import java.io.FileReader;
 import java.time.LocalTime;
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package com.example.busapp.ui.notifications;
+package com.metromate.busapp.ui.notifications;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

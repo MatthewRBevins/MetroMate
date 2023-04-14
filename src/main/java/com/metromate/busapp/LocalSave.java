@@ -1,4 +1,4 @@
-package com.example.busapp;
+package com.metromate.busapp;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;

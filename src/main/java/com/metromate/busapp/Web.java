@@ -1,4 +1,4 @@
-package com.example.busapp;
+package com.metromate.busapp;
 
 import java.io.BufferedReader;
 import java.io.IOException;

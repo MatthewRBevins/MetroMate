@@ -1,4 +1,4 @@
-package com.example.busapp.ui.home;
+package com.metromate.busapp.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.busapp.databinding.FragmentHomeBinding;
+import com.metromate.busapp.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
 

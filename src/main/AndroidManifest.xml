@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.busapp">
+    package="com.metromate.busapp">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -18,7 +18,7 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name="com.metromate.busapp.MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps">
             <intent-filter>
