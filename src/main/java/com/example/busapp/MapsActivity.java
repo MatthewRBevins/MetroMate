@@ -213,6 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 try {
                     r = Web.readJSON(new InputStreamReader(getAssets().open("washington/routes.json")));
                 } catch (Exception e){}///*ParseException | IOException ignored*/) {}
+                System.out.println("DAAAAAAAAAAAAAVEY!!!!!!");
                 JSONObject item = (JSONObject) r.get(routeID);
                 if (item == null) {
                     loadingSnackbar.dismiss();
@@ -220,23 +221,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     ns.show();
                 }
                 else {
+                    System.out.println("AMMMMMMMMMMMMMMONGS");
                     JSONArray shapeIDss = (JSONArray) item.get("shape_ids");
                     assert shapeIDss != null;
                     Object[] shapeIDs = shapeIDss.toArray();
                     //Loop through all shapes in current route
+                    System.out.println("DONNNNNNNNNNNNNNNNNE");
+                    JSONObject o = null;
+                    try {
+                        o = Web.readJSON(new InputStreamReader(getAssets().open("washington/shapes.json")));
+                    } catch (Exception e) {
+                    }
                     for (Object ii : shapeIDs) {
-                        JSONObject o = null;
-                        try {
-                            o = Web.readJSON(new InputStreamReader(getAssets().open("washington/shapes.json")));
-                        } catch (Exception e) {
-                        }
+                        System.out.println("IN LOOP");
                         JSONArray locations = (JSONArray) o.get(ii.toString());
                         Iterator<JSONObject> i = locations.iterator();
                         PolylineOptions polyline = new PolylineOptions();
                         //Add position of shape to polyline
                         while (i.hasNext()) {
                             JSONObject currentObject = i.next();
-                            LatLng hii = new LatLng(Double.parseDouble((String) Objects.requireNonNull(currentObject.get("la"))), Double.parseDouble((String) Objects.requireNonNull(currentObject.get("lo"))));
+                            LatLng hii = new LatLng(Double.parseDouble((String) Objects.requireNonNull(currentObject.get("latitude"))), Double.parseDouble((String) Objects.requireNonNull(currentObject.get("longitude"))));
                             polyline.add(hii);
                             try {
                                 i.next();
