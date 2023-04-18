@@ -82,6 +82,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Routing r = null;
     private Snackbar loadingSnackbar;
 
+    public Object[][] cities = new Object[][]{
+            new Object[]{"seattle", new LatLng(47.606471, -122.334604)},
+            new Object[]{"portland", new LatLng(45.533457, -122.654419)},
+            new Object[]{"washington", new LatLng(38.892958, -77.036163)}
+    };
+    public Object[] city = cities[2];
+
     /**
      * Method to run when app is opened
      * @param savedInstanceState
@@ -148,24 +155,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public ArrayList<LatLng> getBusLocation(String busID) {
         long startTime = System.currentTimeMillis();
+        System.out.println("AMAOAOIA");
         try {
+            System.out.println("GETTING DATA");
             //Open location data for all buses
-            String data = Web.readFromWeb("https://s3.amazonaws.com/kcm-alerts-realtime-prod/vehiclepositions_pb.json");
+            String data = Web.readFromWeb("https://api.wmata.com/Bus.svc/json/jBusPositions?api_key=42604b5787594cd8b5360df332607b8b");
             System.out.println("got data from web after " + (System.currentTimeMillis() - startTime) + " ms");
             JSONObject o = Web.readJSON(new StringReader(data));
             System.out.println("parsed data to json after " + (System.currentTimeMillis() - startTime) + " ms");
-            JSONArray a = (JSONArray) o.get("entity");
+            JSONArray a = (JSONArray) o.get("BusPositions");
             Iterator<JSONObject> iterator = a.iterator();
             ArrayList<LatLng> positions = new ArrayList<>();
             //Loop through all running buses
             while (iterator.hasNext()) {
                 JSONObject jj = iterator.next();
-                JSONObject vehicle = (JSONObject) jj.get("vehicle");
-                JSONObject t = (JSONObject) vehicle.get("trip");
                 //If route ID is correct, add bus to positions
-                if (t.get("route_id").equals(busID)) {
-                    JSONObject pos = (JSONObject) vehicle.get("position");
-                    LatLng latlng = new LatLng((double) pos.get("latitude"), (double) pos.get("longitude"));
+                if (jj.get("RouteID").equals(busID)) {
+                    LatLng latlng = new LatLng((double) jj.get("Lat"), (double) jj.get("Lon"));
                     positions.add(latlng);
                 }
             }
@@ -205,7 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 loadingSnackbar.show();
                 JSONObject r = null;
                 try {
-                    r = Web.readJSON(new InputStreamReader(getAssets().open("routes.json")));
+                    r = Web.readJSON(new InputStreamReader(getAssets().open("washington/routes.json")));
                 } catch (Exception e){}///*ParseException | IOException ignored*/) {}
                 JSONObject item = (JSONObject) r.get(routeID);
                 if (item == null) {
@@ -221,7 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (Object ii : shapeIDs) {
                         JSONObject o = null;
                         try {
-                            o = Web.readJSON(new InputStreamReader(getAssets().open("shapes.json")));
+                            o = Web.readJSON(new InputStreamReader(getAssets().open("washington/shapes.json")));
                         } catch (Exception e) {
                         }
                         JSONArray locations = (JSONArray) o.get(ii.toString());
@@ -294,12 +300,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //When "Show Route" button is pressed
         Button submitDirections = (Button) findViewById(R.id.submitDirections);
         //Initialize starting and ending points for use in routing
-        final LatLng[] currentDestination = {new LatLng(47.606471, -122.334604)};
-        final LatLng[] currentStartingPoint = {new LatLng(47.606471, -122.334604)};
+        final LatLng[] currentDestination = {(LatLng) city[1]};
+        final LatLng[] currentStartingPoint = {(LatLng) city[1]};
 
         //Initialize Google map and set camera to Seattle
         mMap = googleMap;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.6122709,-122.3471455), 12));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((LatLng) city[1], 12));
 
         //Main search views for routing
         SearchView locationSearch = (SearchView) findViewById(R.id.searchView);
@@ -424,9 +430,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.clear();
                             try {
                                 //Get route map of given query
-                                JSONObject obj = Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
+                                /*JSONObject obj = Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
                                 String routeID = (String) obj.get(query);
-                                showRouteMap(routeID, query);
+                                showRouteMap(routeID, query);*/
+                                showRouteMap(query, query);
                             } catch (IOException | ParseException ignored) {}
                         }
                         return false;
@@ -512,7 +519,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     });
                                 }
                                 else {
-                                    currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                                    currentStartingPoint[0] = (LatLng) city[1];
                                 }
                                 currentDestination[0] = new LatLng(lat,lng);
                                 finalSaveDestination.setVisibility(View.VISIBLE);
@@ -589,8 +596,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     SearchView toView = (SearchView) findViewById(R.id.searchView3);
 
                     String query = toView.getQuery().toString();
-
-                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude))[0];
                     String lat = String.valueOf(map.get("latitude"));
                     String lng = String.valueOf(map.get("longitude"));
                     String latlng = lat + ", " + lng;
@@ -610,7 +616,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException _) {
                     SearchView toView = (SearchView) findViewById(R.id.searchView3);
                     String query = toView.getQuery().toString();
-                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude))[0];
                     String lat = String.valueOf(map.get("latitude"));
                     String lng = String.valueOf(map.get("longitude"));
                     String latlng = lat + ", " + lng;
@@ -631,7 +637,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 //Search for food banks and return results
-                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("food bank");
+                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("food bank", Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude));
                 int oi = 0;
                 LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
                 resourceViewerLayout.removeAllViews();
@@ -672,7 +678,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 });
                             }
                             else {
-                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                                currentStartingPoint[0] = (LatLng) city[1];
                             }
                             currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                             finalSaveDestination1.setVisibility(View.VISIBLE);
@@ -697,7 +703,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         resourceShelter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("shelter");
+                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("shelter", Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude));
                 System.out.println(places);
                 int oi = 0;
                 LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
@@ -734,7 +740,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 });
                             }
                             else {
-                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                                currentStartingPoint[0] = (LatLng) city[1];
                             }
                             currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                             finalSaveDestination2.setVisibility(View.VISIBLE);
@@ -758,7 +764,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         resourcePolice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("police station");
+                Object[] places = CoordinateHelper.textToCoordinatesAndAddress("police station", Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude));
                 int oi = 0;
                 LinearLayout resourceViewerLayout = (LinearLayout) findViewById(R.id.resourceViewerLayout);
                 resourceViewerLayout.removeAllViews();
@@ -794,7 +800,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 });
                             }
                             else {
-                                currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                                currentStartingPoint[0] = (LatLng) city[1];
                             }
                             currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                             finalSaveDestination3.setVisibility(View.VISIBLE);
@@ -830,14 +836,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println(currentDestination[0]);
                     final JSONObject[] stops = {null};
                     try {
-                        stops[0] = Web.readJSON(new InputStreamReader(getAssets().open("newStops.json")));
+                        stops[0] = Web.readJSON(new InputStreamReader(getAssets().open("washington/stops.json")));
                     } catch (Exception e){}//ParseException | IOException ignored) {}
                     System.out.println("NEAREST STOP: " + nearestBusStop);
                     LatLng nearestStop = new LatLng(Double.parseDouble(((JSONObject) stops[0].get(nearestBusStop)).get("latitude").toString()), Double.parseDouble(((JSONObject) stops[0].get(nearestBusStop)).get("longitude").toString()));
                     //Generate route between starting and ending position
                     List<Routing.RouteItem> route = null;
                     try {
-                        route = finalR.genRoute(LocalTime.now(), nearestStop, currentDestination[0]);
+                        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHH");
+                        route = finalR.genRoute(LocalTime.now(), nearestStop, currentDestination[0], (String) city[0]);
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
@@ -941,8 +948,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Set destination to query
-                if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
-                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                if (CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude)) != null) {
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude))[0];
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                     mMap.clear();
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Destination", "#09f904", "");
@@ -970,8 +977,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Set starting point to query
-                if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
-                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                if (CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude)) != null) {
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude))[0];
                     currentStartingPoint[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
                     mMap.clear();
                     createMapMarker((Double) map.get("latitude"), (Double) map.get("longitude"), "Start", "#f91104", "home");
@@ -1002,8 +1009,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 submitDirections.setVisibility(View.VISIBLE);
                 System.out.println("*******START");
                 System.out.println(query);
-                System.out.println(Arrays.toString(CoordinateHelper.textToCoordinatesAndAddress(query)));
-                if (CoordinateHelper.textToCoordinatesAndAddress(query) != null) {
+                System.out.println(Arrays.toString(CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude))));
+                if (CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude)) != null) {
                     System.out.println("*******YES");
                     //Show route generation UI
                     RelativeLayout defaultSearchView = (RelativeLayout) findViewById(R.id.defaultSearchLayout);
@@ -1014,7 +1021,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     CharSequence toText = query;
                     fromView.setQuery(fromText, false);
                     toView.setQuery(toText, false);
-                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query)[0];
+                    Map<String, Object> map = (HashMap) CoordinateHelper.textToCoordinatesAndAddress(query, Double.toString(((LatLng) city[1]).latitude), Double.toString(((LatLng) city[1]).longitude))[0];
                     //Set starting point to user location if possible
                     if (checkLocationPermissions()) {
                         System.out.println("CHECK LOCATION PREMREIOERJP");
@@ -1026,14 +1033,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                                 } catch (NullPointerException e) {
                                     LocalSave.makeSnackBar("Unable to find location of user", getWindow().getDecorView().getRootView());
-                                    currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                                    currentStartingPoint[0] = (LatLng) city[1];
                                     createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                                 }
                             }
                         });
                     }
                     else {
-                        currentStartingPoint[0] = new LatLng(47.606470, -122.334289);
+                        currentStartingPoint[0] = (LatLng) city[1];
                         createMapMarker(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude, "Start", "#f91104", "home");
                     }
                     currentDestination[0] = new LatLng((Double) map.get("latitude"), (Double) map.get("longitude"));
