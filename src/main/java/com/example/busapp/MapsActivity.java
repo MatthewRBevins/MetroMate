@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -86,10 +87,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public Object[][] cities = new Object[][]{
             new Object[]{"seattle", new LatLng(47.606471, -122.334604)},
-            new Object[]{"portland", new LatLng(45.533457, -122.654419)},
             new Object[]{"washington", new LatLng(38.892958, -77.036163)}
     };
-    public Object[] city = cities[2];
+    public Object[] city = cities[1];
 
     /**
      * Method to run when app is opened
@@ -315,7 +315,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final LatLng[] currentDestination = {(LatLng) city[1]};
         final LatLng[] currentStartingPoint = {(LatLng) city[1]};
 
-        //Initialize Google map and set camera to Seattle
+        //Initialize Google map and set camera to selected city location
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((LatLng) city[1], 12));
 
@@ -390,6 +390,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 menu[0].setVisibility(View.INVISIBLE);
                 mMap.clear();
                 mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
+            });
+
+            Spinner spinner = (Spinner) findViewById(R.id.CitySpinner);
+            spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    System.out.println("SPINNER SELECTION");
+                    System.out.println(spinner.getSelectedItem().toString());
+                    for (Object[] c : cities) {
+                        if (c[0].toString().equals(spinner.getSelectedItem().toString().toLowerCase())) {
+                            city = c;
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
             });
 
             //If current menu contains a search view (bus finder or route mapper), set onQueryTextListener
