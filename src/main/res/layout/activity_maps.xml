@@ -181,7 +181,7 @@
                     android:orientation="vertical">
 
                 </LinearLayout>
-            </ScrollView>-->
+            </ScrollView>
         </RelativeLayout>
     
         <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
@@ -253,31 +253,51 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:text="x" />
-            <ToggleButton
-                android:id="@+id/setting1"
-                android:onClick="settingsButtonClicked"
+            <ScrollView
+                android:id="@+id/SettingsScroll"
                 android:layout_marginTop="50dp"
-                android:enabled="true"
-                android:textOff="Enable Location: OFF"
-                android:textOn="Enable Location: ON"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <ToggleButton
-                android:id="@+id/setting2"
-                android:onClick="settingsButtonClicked"
-                android:layout_marginTop="100dp"
-                android:textOff="Auto-Show Route Map: OFF"
-                android:textOn="Auto-Show Route Map: ON"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <ToggleButton
-                android:id="@+id/setting3"
-                android:onClick="settingsButtonClicked"
-                android:layout_marginTop="150dp"
-                android:textOff="Auto-Save Destination: OFF"
-                android:textOn="Auto-Save Destination: ON"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:visibility="visible"
+                android:layout_height="200dp">
+                <RelativeLayout
+                    android:gravity="center"
+                    android:id="@+id/SettingsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <Spinner
+                        android:id="@+id/CitySpinner"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="50dp"
+                        android:layout_height="wrap_content" />
+                    <ToggleButton
+                        android:id="@+id/setting1"
+                        android:onClick="settingsButtonClicked"
+                        android:layout_marginTop="100dp"
+                        android:enabled="true"
+                        android:textOff="Enable Location: OFF"
+                        android:textOn="Enable Location: ON"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <ToggleButton
+                        android:id="@+id/setting2"
+                        android:onClick="settingsButtonClicked"
+                        android:layout_marginTop="150dp"
+                        android:textOff="Auto-Show Route Map: OFF"
+                        android:textOn="Auto-Show Route Map: ON"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <ToggleButton
+                        android:id="@+id/setting3"
+                        android:onClick="settingsButtonClicked"
+                        android:layout_marginTop="200dp"
+                        android:layout_marginBottom="200dp"
+                        android:textOff="Auto-Save Destination: OFF"
+                        android:textOn="Auto-Save Destination: ON"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </ScrollView>
         </RelativeLayout>
         <RelativeLayout
             android:layout_height="wrap_content"
