@@ -13,6 +13,19 @@ import java.util.ArrayList;
 
 public class LocalSave {
 
+    public static void saveString(String key, String val, Context context) {
+        try {
+            //Open local storage
+            SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+            //Add boolean to local storage
+            myEdit.putString(key, val);
+            myEdit.commit();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Save boolean to local storage
      * @param key Key to save boolean to

@@ -86,10 +86,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Snackbar loadingSnackbar;
 
     public Object[][] cities = new Object[][]{
-            new Object[]{"seattle", new LatLng(47.606471, -122.334604)},
-            new Object[]{"washington", new LatLng(38.892958, -77.036163)}
+            new Object[]{"seattle", new LatLng(47.606471, -122.334604), true, "https://s3.amazonaws.com/kcm-alerts-realtime-prod/vehiclepositions_pb.json"},
+            new Object[]{"washington", new LatLng(38.892958, -77.036163), false, "https://api.wmata.com/Bus.svc/json/jBusPositions?api_key=42604b5787594cd8b5360df332607b8b"}
     };
-    public Object[] city = cities[1];
+    public Object[] city;
 
     /**
      * Method to run when app is opened
@@ -137,19 +137,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Color.colorToHSV(Color.parseColor(color), hsv);
         switch(type) {
             case "bus":
-                System.out.println("BUS");
                 marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.busicon));
                 break;
             case "home":
-                System.out.println("HOME");
                 marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.house));
                 break;
             default:
-                System.out.println("DEFAULT");
                 marker.icon(BitmapDescriptorFactory.defaultMarker());
                 break;
         }
-        System.out.println("put icon on map");
         marker.title(title);
         mMap.addMarker(marker);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
@@ -163,24 +159,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public ArrayList<LatLng> getBusLocation(String busID) {
         long startTime = System.currentTimeMillis();
-        System.out.println("AMAOAOIA");
         try {
-            System.out.println("GETTING DATA");
             //Open location data for all buses
-            String data = Web.readFromWeb("https://api.wmata.com/Bus.svc/json/jBusPositions?api_key=42604b5787594cd8b5360df332607b8b");
+            String data = Web.readFromWeb(city[3].toString());
             System.out.println("got data from web after " + (System.currentTimeMillis() - startTime) + " ms");
             JSONObject o = Web.readJSON(new StringReader(data));
             System.out.println("parsed data to json after " + (System.currentTimeMillis() - startTime) + " ms");
-            JSONArray a = (JSONArray) o.get("BusPositions");
-            Iterator<JSONObject> iterator = a.iterator();
-            ArrayList<LatLng> positions = new ArrayList<>();
-            //Loop through all running buses
-            while (iterator.hasNext()) {
-                JSONObject jj = iterator.next();
-                //If route ID is correct, add bus to positions
-                if (jj.get("RouteID").equals(busID)) {
-                    LatLng latlng = new LatLng((double) jj.get("Lat"), (double) jj.get("Lon"));
-                    positions.add(latlng);
+            if (city[0] == "washington") {
+                JSONArray a = (JSONArray) o.get("BusPositions");
+                Iterator<JSONObject> iterator = a.iterator();
+                ArrayList<LatLng> positions = new ArrayList<>();
+                //Loop through all running buses
+                while (iterator.hasNext()) {
+                    JSONObject jj = iterator.next();
+                    //If route ID is correct, add bus to positions
+                    if (jj.get("RouteID").equals(busID)) {
+                        LatLng latlng = new LatLng((double) jj.get("Lat"), (double) jj.get("Lon"));
+                        positions.add(latlng);
+                    }
                 }
             }
             //Check whether each position is valid
@@ -219,10 +215,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 loadingSnackbar.show();
                 JSONObject r = null;
                 try {
-                    r = Web.readJSON(new InputStreamReader(getAssets().open("washington/routes.json")));
+                    r = Web.readJSON(new InputStreamReader(getAssets().open(city[0].toString() + "/routes.json")));
                 } catch (Exception e){}///*ParseException | IOException ignored*/) {}
                 System.out.println("DAAAAAAAAAAAAAVEY!!!!!!");
-                JSONObject item = (JSONObject) r.get(routeID);
+                JSONObject item;
+                item = (JSONObject) r.get(routeID);
                 if (item == null) {
                     loadingSnackbar.dismiss();
                     Snackbar ns = Snackbar.make(getWindow().getDecorView().getRootView(), "Route " + routeID + " does not exist", 1500);
@@ -237,7 +234,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("DONNNNNNNNNNNNNNNNNE");
                     JSONObject o = null;
                     try {
-                        o = Web.readJSON(new InputStreamReader(getAssets().open("washington/shapes.json")));
+                        o = Web.readJSON(new InputStreamReader(getAssets().open(city[0].toString() + "/shapes.json")));
                     } catch (Exception e) {
                     }
                     for (Object ii : shapeIDs) {
@@ -308,6 +305,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        Spinner spinner = (Spinner) findViewById(R.id.CitySpinner);
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+        if (sharedPreferences.contains("city")) {
+            int i = 0;
+            for (Object[] c : cities) {
+                if (c[0].toString().equals(sharedPreferences.getString("city", "seattle").toLowerCase())) {
+                    city = cities[i];
+                    spinner.setSelection(i);
+                    break;
+                }
+                i++;
+            }
+        }
+        else {
+            city = cities[0];
+            LocalSave.saveString("city", city[0].toString().toLowerCase(), this);
+        }
         Button saveDestination = (Button) findViewById(R.id.saveDestination);
         //When "Show Route" button is pressed
         Button submitDirections = (Button) findViewById(R.id.submitDirections);
@@ -342,7 +356,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             bi++;
             try {
                 //Set button to local storage value of setting
-                SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
+                //SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", MODE_PRIVATE);
                 ToggleButton button = findViewById(buttonID);
                 //If local storage value does not exist, set button to default value
                 if (! sharedPreferences.contains(String.valueOf(buttonID))) {
@@ -392,7 +406,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mBottomNavigationView.getMenu().setGroupCheckable(0,false,true);
             });
 
-            Spinner spinner = (Spinner) findViewById(R.id.CitySpinner);
             spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -401,6 +414,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (Object[] c : cities) {
                         if (c[0].toString().equals(spinner.getSelectedItem().toString().toLowerCase())) {
                             city = c;
+                            currentDestination[0] = (LatLng) city[1];
+                            currentStartingPoint[0] = (LatLng) city[1];
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((LatLng) city[1], 12));
                             break;
                         }
                     }
@@ -429,12 +445,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
                                 ArrayList<LatLng> positions = null;
                                 try {
-                                    positions = getBusLocation(ch.getRouteID(query));
+                                    positions = getBusLocation(ch.getRouteID(city[0].toString(), query));
                                 } catch (IOException | ParseException e) {
                                     e.printStackTrace();
                                 }
-                                System.out.println("MATOOIE BEVOOIE");
-                                System.out.println(positions);
                                 final ArrayList<LatLng> finalPositions = positions;
                                 mapHandler.post(() -> {
                                     loadingSnackbar.dismiss();
@@ -462,10 +476,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.clear();
                             try {
                                 //Get route map of given query
-                                /*JSONObject obj = Web.readJSON(new InputStreamReader(getAssets().open("displayNameToRouteID.json")));
-                                String routeID = (String) obj.get(query);
-                                showRouteMap(routeID, query);*/
-                                showRouteMap(query, query);
+                                if (Boolean.parseBoolean(city[2].toString())) {
+                                    JSONObject obj = Web.readJSON(new InputStreamReader(getAssets().open(city[0].toString() + "/displayNameToRouteID.json")));
+                                    String routeID = (String) obj.get(query);
+                                    showRouteMap(routeID, query);
+                                }
+                                else {
+                                    showRouteMap(query, query);
+                                }
                             } catch (IOException | ParseException ignored) {}
                         }
                         return false;
@@ -863,12 +881,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     loadingSnackbar = Snackbar.make(getWindow().getDecorView().getRootView(), "Loading Route...", 1000000);
                     loadingSnackbar.show();
                     CoordinateHelper ch = new CoordinateHelper(getApplicationContext());
-                    String nearestBusStop = ch.findNearestBusStop(currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
+                    String nearestBusStop = ch.findNearestBusStop(city[0].toString(), currentStartingPoint[0].latitude, currentStartingPoint[0].longitude);
                     System.out.println("YOUR DESTINATION:");
                     System.out.println(currentDestination[0]);
                     final JSONObject[] stops = {null};
                     try {
-                        stops[0] = Web.readJSON(new InputStreamReader(getAssets().open("washington/stops.json")));
+                        stops[0] = Web.readJSON(new InputStreamReader(getAssets().open(city[0].toString() + "/stops.json")));
                     } catch (Exception e){}//ParseException | IOException ignored) {}
                     System.out.println("NEAREST STOP: " + nearestBusStop);
                     LatLng nearestStop = new LatLng(Double.parseDouble(((JSONObject) stops[0].get(nearestBusStop)).get("latitude").toString()), Double.parseDouble(((JSONObject) stops[0].get(nearestBusStop)).get("longitude").toString()));
@@ -913,7 +931,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     assert stops[0] != null;
                                     System.out.println("SSSSSTOP:" + finalRoute.get(i).stop);
                                     try {
-                                        tv.setText("AT " + finalRoute.get(i).startTime + " TAKE ROUTE " + ch.getRouteNum(finalRoute.get(i).route) + " FROM " + ch.getStopAddr(finalRoute.get(i).startStop) + " TO " + ch.getStopAddr(finalRoute.get(i).stop));
+                                        tv.setText("AT " + finalRoute.get(i).startTime + " TAKE ROUTE " + ch.getRouteNum(city[0].toString(), finalRoute.get(i).route) + " FROM " + ch.getStopAddr(city[0].toString(), finalRoute.get(i).startStop) + " TO " + ch.getStopAddr(city[0].toString(), finalRoute.get(i).stop));
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     } catch (ParseException e) {

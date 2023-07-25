@@ -40,8 +40,8 @@ public class CoordinateHelper {
      * @throws IOException Opening JSON file
      * @throws ParseException Parsing JSON file
      */
-    public String getRouteID(String routeNum) throws IOException, ParseException {
-        JSONObject r = Web.readJSON(new InputStreamReader(context.getAssets().open("washington/routes.json")));
+    public String getRouteID(String city, String routeNum) throws IOException, ParseException {
+        JSONObject r = Web.readJSON(new InputStreamReader(context.getAssets().open(city + "/routes.json")));
         Object[] keys = r.keySet().toArray();
         //Loop through all routes
         for (Object i : keys) {
@@ -61,8 +61,8 @@ public class CoordinateHelper {
      * @throws IOException Opening JSON file
      * @throws ParseException Parsing JSON file
      */
-    public String getStopAddr(String stopID) throws IOException, ParseException {
-        JSONObject s = Web.readJSON(new InputStreamReader(context.getAssets().open("washington/stops.json")));
+    public String getStopAddr(String city, String stopID) throws IOException, ParseException {
+        JSONObject s = Web.readJSON(new InputStreamReader(context.getAssets().open(city + "/stops.json")));
         //Get information about given stop ID
         JSONObject ss = (JSONObject) s.get(stopID);
         if (ss == null) return null;
@@ -77,8 +77,8 @@ public class CoordinateHelper {
      * @throws IOException Opening JSON file
      * @throws ParseException Parsing JSON file
      */
-    public String getRouteNum(String routeID) throws IOException, ParseException {
-        JSONObject r = Web.readJSON(new InputStreamReader(context.getAssets().open("washington/routes.json")));
+    public String getRouteNum(String city, String routeID) throws IOException, ParseException {
+        JSONObject r = Web.readJSON(new InputStreamReader(context.getAssets().open(city + "/routes.json")));
         //Get information about given route ID
         JSONObject rr = (JSONObject) r.get(routeID);
         if (rr == null) return null;
@@ -139,9 +139,9 @@ public class CoordinateHelper {
      * @param currentLng Longitude of given location
      * @return Bus stop ID
      */
-    public String findNearestBusStop(double currentLat, double currentLng) {
+    public String findNearestBusStop(String city, double currentLat, double currentLng) {
         try {
-            JSONObject json = Web.readJSON(new InputStreamReader(context.getAssets().open("washington/stops.json")));
+            JSONObject json = Web.readJSON(new InputStreamReader(context.getAssets().open(city + "/stops.json")));
             double distance = Double.POSITIVE_INFINITY;
             String stopID = "";
             //Loop through all stops

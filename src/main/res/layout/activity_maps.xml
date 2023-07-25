@@ -291,6 +291,7 @@
                         android:id="@+id/setting3"
                         android:onClick="settingsButtonClicked"
                         android:layout_marginTop="200dp"
+                        android:layout_marginBottom="200dp"
                         android:textOff="Auto-Save Destination: OFF"
                         android:textOn="Auto-Save Destination: ON"
                         android:layout_width="match_parent"
