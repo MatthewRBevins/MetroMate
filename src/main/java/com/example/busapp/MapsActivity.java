@@ -165,31 +165,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             System.out.println("got data from web after " + (System.currentTimeMillis() - startTime) + " ms");
             JSONObject o = Web.readJSON(new StringReader(data));
             System.out.println("parsed data to json after " + (System.currentTimeMillis() - startTime) + " ms");
+            ArrayList<LatLng> positions = null;
             if (city[0] == "washington") {
                 JSONArray a = (JSONArray) o.get("BusPositions");
                 Iterator<JSONObject> iterator = a.iterator();
-                ArrayList<LatLng> positions = new ArrayList<>();
+                positions = new ArrayList<>();
                 //Loop through all running buses
                 while (iterator.hasNext()) {
                     JSONObject jj = iterator.next();
                     //If route ID is correct, add bus to positions
                     if (jj.get("RouteID").equals(busID)) {
-                        LatLng latlng = new LatLng((double) jj.get("Lat"), (double) jj.get("Lon"));
+                        double lat = (double) jj.get("Lat");
+                        double lon = (double) jj.get("Lon");
+                        LatLng latlng = new LatLng(lat, lon);
                         positions.add(latlng);
                     }
                 }
             }
-            //Check whether each position is valid
-            ArrayList<LatLng> validPositions = new ArrayList<>();
-            for (LatLng pos : positions) {
-                if (pos.latitude != 0d && pos.longitude != 0d) {
-                    validPositions.add(pos);
+            else if (city[0] == "seattle") {
+                JSONArray a = (JSONArray) o.get("entity");
+                Iterator<JSONObject> iterator = a.iterator();
+                positions = new ArrayList<>();
+                while (iterator.hasNext()) {
+                    JSONObject jj = iterator.next();
+                    JSONObject vehicle = (JSONObject) jj.get("vehicle");
+                    JSONObject trip = (JSONObject) vehicle.get("trip");
+                    if (trip.get("route_id").equals(busID)) {
+                        JSONObject position = (JSONObject) vehicle.get("position");
+                        double lat = (double) position.get("latitude");
+                        double lon = (double) position.get("longitude");
+                        LatLng latlng = new LatLng(lat, lon);
+                        positions.add(latlng);
+                    }
                 }
             }
             //Return positions
-            if (validPositions.size() > 0) {
+            if (positions.size() > 0) {
                 System.out.println("found valid positions in json after " + (System.currentTimeMillis() - startTime) + " ms");
-                return validPositions;
+                return positions;
             }
         } catch (IOException e) {
             e.printStackTrace();
